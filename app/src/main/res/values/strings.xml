@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">Infosys</string>
     <string name="app_title">SMART HEALTH</string>
+    <string name="slide_view_inventory">Medicine Inventory</string>
+    <string name="inventory_pills">Pills</string>
+    <string name="inventory_liquids">Liquids</string>
+    <string name="inventory_others">Others</string>
+    <string name="fillByScan">Smart Scan</string>
+    <string name="fillByForm">Fill By Form</string>
+    <string name="fillByHistory">Fill By History</string>
 </resources>

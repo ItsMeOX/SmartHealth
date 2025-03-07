@@ -1,22 +1,40 @@
 package com.example.smarthealth;
 
-import android.animation.ObjectAnimator;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
+    private LinearLayout pillLayout;
+
+    public void AddNewMedicineButton(View view) {
+        // Here you can handle what happens when the button is clicked
+        // For example, adding a new medicine button
+        AddNewMedicineButton buttonManager = new AddNewMedicineButton(this, findViewById(R.id.pill1)); // Replace with your layout ID
+        buttonManager.addButton("Paracetamol");
+        buttonManager.addButton("Ibuprofen");
+
+        // Optional: Show a toast or log message to confirm the button click
+        Toast.makeText(this, "Add New Medicine Button clicked", Toast.LENGTH_SHORT).show();
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceBundle) {
-        super.onCreate(savedInstanceBundle);
-        setContentView(R.layout.activity_main);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.inventory_medicine); // Your layout
 
+        LinearLayout pillLayout = findViewById(R.id.pill1); // Reference to the layout where buttons will be added
+
+        // Create button manager and add buttons
+        AddNewMedicineButton buttonManager = new AddNewMedicineButton(this, pillLayout);
+        buttonManager.addButton("Paracetamol");
+        buttonManager.addButton("Ibuprofen");
+
+        // Handling the drag gesture for the mainContentView
         View mainContentView = findViewById(R.id.main_content_view);
         mainContentView.setOnTouchListener(new View.OnTouchListener() {
             private float dY;
@@ -27,14 +45,8 @@ public class MainActivity extends AppCompatActivity {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         if (originalY == -1) {
-                            mainContentView.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    originalY = mainContentView.getY();
-                                }
-                            });
+                            mainContentView.post(() -> originalY = mainContentView.getY());
                         }
-
                         dY = v.getY() - event.getRawY();
                         return true;
                     case MotionEvent.ACTION_MOVE:
@@ -44,9 +56,9 @@ public class MainActivity extends AppCompatActivity {
                         }
                         return true;
                 }
-
                 return false;
             }
         });
     }
 }
+
