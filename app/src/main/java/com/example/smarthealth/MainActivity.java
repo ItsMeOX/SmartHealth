@@ -17,13 +17,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceBundle);
         setContentView(R.layout.activity_main);
 
-        View mainContentView = findViewById(R.id.main_content_view);
+        View mainContentView = findViewById(R.id.mainContentView);
         mainContentView.setOnTouchListener(new View.OnTouchListener() {
             private float dY;
             private float originalY = -1;
+            final private float moveThreshY = 100;
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                if (event.getRawY() - mainContentView.getY() <= moveThreshY) {
+                    v.getParent().requestDisallowInterceptTouchEvent(true);
+                }
+
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         if (originalY == -1) {
@@ -38,6 +43,9 @@ public class MainActivity extends AppCompatActivity {
                         dY = v.getY() - event.getRawY();
                         return true;
                     case MotionEvent.ACTION_MOVE:
+                        if (event.getRawY() - mainContentView.getY() > moveThreshY) {
+                            return true;
+                        }
                         float newY = event.getRawY() + dY;
                         if (newY >= originalY) {
                             v.setY(newY);
