@@ -3,25 +3,134 @@ package com.example.smarthealth;
 import android.animation.ObjectAnimator;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.view.GestureDetector;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.animation.OvershootInterpolator;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-public class MainActivity extends AppCompatActivity {
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
+
+public class MainActivity extends AppCompatActivity implements CalendarAdapter.OnItemListener {
+
+    private TextView monthYearText;
+    private RecyclerView calendarRecyclerView;
+    private Calendar selectedDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceBundle) {
         super.onCreate(savedInstanceBundle);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
         setContentView(R.layout.activity_main);
 
+
+        initWidgets();
+        setUpMainContentSlider();
+
+        selectedDate = Calendar.getInstance();
+        setMonthView();
+    }
+
+    private void initWidgets() {
+        LinearLayout calendarParentView = findViewById(R.id.calendarView);
+        View calendarRecycleView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.calendar_view, calendarParentView, false);
+        calendarParentView.addView(calendarRecycleView);
+
+        calendarRecyclerView = (RecyclerView) findViewById(R.id.calendarRecyclerView);
+        monthYearText = (TextView) findViewById(R.id.calendarMonthYear);
+    }
+
+    private void setMonthView() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM yyyy", Locale.ENGLISH);
+        String selectedDateText = dateFormat.format(selectedDate.getTime());
+        monthYearText.setText(selectedDateText);
+
+        Pair<ArrayList<String>, Integer> results = daysInMonthArray(selectedDate);
+        ArrayList<String> daysInMonth = results.first;
+        int currentDatePosition = results.second;
+        CalendarAdapter calendarAdapter = new CalendarAdapter(daysInMonth, currentDatePosition, this);
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(), 7);
+
+        calendarRecyclerView.setLayoutManager(layoutManager);
+        calendarRecyclerView.setAdapter(calendarAdapter);
+    }
+
+    private Pair<ArrayList<String>, Integer> daysInMonthArray(Calendar selectedDate) {
+        ArrayList<String> daysInMonth = new ArrayList<>();
+        selectedDate.set(Calendar.DAY_OF_MONTH, 1);
+        int totalDaysInMonth = selectedDate.getActualMaximum(Calendar.DAY_OF_MONTH);
+        int dayOfWeek = selectedDate.get(Calendar.DAY_OF_WEEK);
+
+        int currentDay = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+        int currentDatePosition = -1;
+
+        // Add days of previous months
+        selectedDate.add(Calendar.MONTH, -1);
+        int totalDaysPrevMonth = selectedDate.getActualMaximum(Calendar.DAY_OF_MONTH);
+        selectedDate.add(Calendar.MONTH, 1);
+        for (int i = 1; i < dayOfWeek; i++) {
+            daysInMonth.add(String.valueOf(totalDaysPrevMonth - (6 - i)));
+        }
+
+        // Add days of the current month
+        for (int day = 1; day <= totalDaysInMonth; day++) {
+            daysInMonth.add(String.valueOf(day));
+
+            if (day == currentDay) {
+                currentDatePosition = daysInMonth.size() - 1;
+            }
+        }
+
+        // Add empty strings for days after the last day of the month
+        int totalSlots = 42;
+        for (int day = 1; daysInMonth.size() < totalSlots; day++) {
+            daysInMonth.add(String.valueOf(day));
+        }
+
+        return new Pair<>(daysInMonth, currentDatePosition);
+    }
+
+
+    public void previousMonthAction(View view) {
+        selectedDate.add(Calendar.MONTH, -1);
+        setMonthView();
+    }
+
+    public void nextMonthAction(View view) {
+        selectedDate.add(Calendar.MONTH, 1);
+        setMonthView();
+    }
+
+    private void setUpMainContentSlider() {
         View mainContentView = findViewById(R.id.mainContentView);
+        View calendarView = findViewById(R.id.calendarView);
         mainContentView.setOnTouchListener(new View.OnTouchListener() {
             private float dY;
             private float originalY = -1;
-            final private float moveThreshY = 100;
+            private final float moveThreshY = 200;
+            private float previousY = -1;
+            private float currentY = -1;
+            private boolean isMoving = false;
+            private float touchDownY = -1;
+            private float initialTranslation = 0;
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -40,21 +149,72 @@ public class MainActivity extends AppCompatActivity {
                             });
                         }
 
+                        touchDownY = event.getRawY();
+                        if (calendarRecyclerView.getChildCount() > 0) {
+                            initialTranslation = calendarRecyclerView.getChildAt(0).getTranslationY();
+                        }
                         dY = v.getY() - event.getRawY();
+                        if (event.getRawY() - mainContentView.getY() <= moveThreshY) {
+                            isMoving = true;
+                        }
                         return true;
                     case MotionEvent.ACTION_MOVE:
-                        if (event.getRawY() - mainContentView.getY() > moveThreshY) {
+                        if (!isMoving) {
                             return true;
                         }
                         float newY = event.getRawY() + dY;
-                        if (newY >= originalY) {
+                        float dyTranslation = event.getRawY() - touchDownY;
+                        previousY = currentY;
+                        currentY = event.getRawY();
+                        int calendarFirstItemPosition = ((GridLayoutManager) calendarRecyclerView.getLayoutManager()).findFirstVisibleItemPosition();
+                        View calendarFirstItemView = calendarRecyclerView.getLayoutManager().findViewByPosition(calendarFirstItemPosition);
+                        Log.d("debug", String.valueOf(calendarFirstItemView.getY()));
+                        if (newY >= originalY && newY <= calendarView.getY() + calendarView.getHeight() + 30) {
                             v.setY(newY);
+                            if (calendarFirstItemView != null && (calendarFirstItemView.getY() < 0)) {
+                                for (int i = 0; i < calendarRecyclerView.getChildCount(); i++) {
+                                    View child = calendarRecyclerView.getChildAt(i);
+                                    child.setTranslationY(Math.min(initialTranslation + dyTranslation, 0));  // Apply translation to each item
+                                }
+                            }
+                        }
+
+                        return true;
+                    case MotionEvent.ACTION_UP:
+                        isMoving = false;
+
+                        float topMost = originalY;
+                        float bottomMost = calendarView.getY() + calendarView.getHeight() + 30;
+                        float swipeDistance = currentY - previousY;
+
+                        if (swipeDistance > 0) {
+                            v.animate().y(bottomMost).setDuration(400).setInterpolator(new OvershootInterpolator()).start();
+                            for (int i = 0; i < calendarRecyclerView.getChildCount(); i++) {
+                                View child = calendarRecyclerView.getChildAt(i);
+                                child.setTranslationY(0);
+                            }
+                        } else {
+                            v.animate().y(topMost).setDuration(400).setInterpolator(new OvershootInterpolator()).start();
+                            Calendar calendar = Calendar.getInstance();
+                            int currentDay = calendar.get(Calendar.DAY_OF_MONTH);
+                            calendar.set(Calendar.DAY_OF_MONTH, 1);
+                            int currentDateRow = (currentDay + calendar.get(Calendar.DAY_OF_WEEK) - 2) / 7;
+                            for (int i = 0; i < calendarRecyclerView.getChildCount(); i++) {
+                                View child = calendarRecyclerView.getChildAt(i);
+                                child.setTranslationY(-child.getHeight() * currentDateRow);
+                            }
                         }
                         return true;
                 }
-
                 return false;
             }
         });
+    }
+
+    @Override
+    public void onItemClick(int position, String dayText) {
+        // TODO: link to Android Calendar? and complete this function.
+        String message = "Selected date" + dayText;
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }
