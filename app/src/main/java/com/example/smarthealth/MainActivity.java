@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity implements CalendarAdapter.OnItemListener {
+public class MainActivity extends BaseActivity implements CalendarAdapter.OnItemListener {
 
     private TextView monthYearText;
     private RecyclerView calendarRecyclerView;
@@ -39,11 +39,6 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
     @Override
     protected void onCreate(Bundle savedInstanceBundle) {
         super.onCreate(savedInstanceBundle);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().hide();
-        }
-        setContentView(R.layout.activity_main);
-
 
         initCalendarWidgets();
         setUpMainContentSlider();
@@ -52,6 +47,11 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
 
         selectedDate = Calendar.getInstance();
         setMonthView();
+    }
+
+    @Override
+    protected int getContentLayoutId() {
+        return R.layout.activity_main;
     }
 
     private void initCalendarWidgets() {
