@@ -1,64 +1,75 @@
 package com.example.smarthealth;
 
+import android.graphics.Color;
 import android.os.Bundle;
-import android.view.MotionEvent;
+import android.os.Debug;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
-    private LinearLayout pillLayout;
-
-    public void AddNewMedicineButton(View view) {
-        // Here you can handle what happens when the button is clicked
-        // For example, adding a new medicine button
-        AddNewMedicineButton buttonManager = new AddNewMedicineButton(this, findViewById(R.id.pill1)); // Replace with your layout ID
-        buttonManager.addButton("Paracetamol");
-        buttonManager.addButton("Ibuprofen");
-
-        // Optional: Show a toast or log message to confirm the button click
-        Toast.makeText(this, "Add New Medicine Button clicked", Toast.LENGTH_SHORT).show();
-    }
+    private ArrayList<MedicineContainer> pillsContainers = new ArrayList<>();
+    private ArrayList<MedicineContainer> liquidsContainers = new ArrayList<>();
+    private ArrayList<MedicineContainer> othersContainers = new ArrayList<>();;
+    private final int MAX_BUTTONS_PER_CONTAINER = 3; // Max buttons per row
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.inventory_medicine); // Your layout
+        getSupportActionBar().hide();
+        setContentView(R.layout.inventory_medicine); // Your main layout
 
-        LinearLayout pillLayout = findViewById(R.id.pill1); // Reference to the layout where buttons will be added
 
-        // Create button manager and add buttons
-        AddNewMedicineButton buttonManager = new AddNewMedicineButton(this, pillLayout);
-        buttonManager.addButton("Paracetamol");
-        buttonManager.addButton("Ibuprofen");
+        LinearLayout pillsLayout = findViewById(R.id.pillsLinearLayout);
+        LinearLayout liquidsLayout = findViewById(R.id.liquidsLinearLayout);
+        LinearLayout othersLayout = findViewById(R.id.othersLinearLayout);
 
-        // Handling the drag gesture for the mainContentView
-        View mainContentView = findViewById(R.id.main_content_view);
-        mainContentView.setOnTouchListener(new View.OnTouchListener() {
-            private float dY;
-            private float originalY = -1;
+        ImageButton pillsButton = findViewById(R.id.fillByScan);
+        ImageButton liquidsButton = findViewById(R.id.fillForm);
+        ImageButton othersButton = findViewById(R.id.fillFormByHistory);
 
+        pillsButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        if (originalY == -1) {
-                            mainContentView.post(() -> originalY = mainContentView.getY());
-                        }
-                        dY = v.getY() - event.getRawY();
-                        return true;
-                    case MotionEvent.ACTION_MOVE:
-                        float newY = event.getRawY() + dY;
-                        if (newY >= originalY) {
-                            v.setY(newY);
-                        }
-                        return true;
-                }
-                return false;
+            public void onClick(View v) {
+                addMedicineToLayout(pillsLayout, pillsContainers);
+                Toast.makeText(MainActivity.this, "New Pill Added", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        liquidsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addMedicineToLayout(liquidsLayout, liquidsContainers);
+                Toast.makeText(MainActivity.this, "New Liquid Added", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        othersButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addMedicineToLayout(othersLayout, othersContainers);
+                Toast.makeText(MainActivity.this, "New Other Medicine Added", Toast.LENGTH_SHORT).show();
             }
         });
     }
-}
 
+    private void addMedicineToLayout(LinearLayout layout, ArrayList<MedicineContainer> containerList) {
+        // Check if we need a new MedicineContainer
+       if (containerList.isEmpty() || containerList.get(containerList.size() - 1).getButtonCount() >= MAX_BUTTONS_PER_CONTAINER) {
+            // Create a new container using the existing LinearLayout
+            MedicineContainer newContainer = new MedicineContainer(this);
+            newContainer.classPointer = findViewById(R.id.pillsLinearLayout);
+            layout.addView(newContainer.containerLayout);
+            containerList.add(newContainer);
+        }
+
+        // Add a new button to the last container
+        containerList.get(containerList.size() - 1).addMediButton(this);
+    }
+    }

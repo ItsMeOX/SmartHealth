@@ -66,7 +66,8 @@
                     android:layout_width="40dp"
                     android:layout_height="match_parent"
                     android:background="@drawable/scan"
-                    android:onClick="AddNewMedicineButton"
+                    android:clickable="true"
+                    android:onClick="createNewContainer"
                     />
 
                 <TextView
@@ -89,7 +90,10 @@
                     android:id="@+id/fillForm"
                     android:layout_width="40dp"
                     android:layout_height="match_parent"
-                    android:background="@drawable/fillform"/>
+                    android:background="@drawable/fillform"
+                    android:clickable="true"
+                    android:onClick="createNewContainer"
+                    />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -112,7 +116,9 @@
                     android:id="@+id/fillFormByHistory"
                     android:layout_width="40dp"
                     android:layout_height="match_parent"
-                    android:background="@drawable/formhistory"/>
+                    android:clickable="true"
+                    android:background="@drawable/formhistory"
+                    android:onClick="createNewContainer"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -129,17 +135,16 @@
     <ScrollView
         android:id="@+id/main_content_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:layout_marginTop="120dp"
         android:background="@drawable/main_content_background"
-        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0">
-
+        app:layout_constraintVertical_bias="1.0"
+        tools:layout_editor_absoluteX="-16dp">
 
         <LinearLayout
+            android:id="@+id/try123"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -174,9 +179,14 @@
                 android:background="#c0c0c0" />
 
             <LinearLayout
+                android:id="@+id/pillsLinearLayout"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:id="@+id/pill1"/>
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+
+            </LinearLayout>
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -191,6 +201,15 @@
                 android:layout_height="2dp"
                 android:background="#c0c0c0" />
 
+            <LinearLayout
+                android:id="@+id/liquidsLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+
+            </LinearLayout>
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -203,11 +222,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:background="#c0c0c0" />
+            <LinearLayout
+                android:id="@+id/othersLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
 
+            </LinearLayout>
 
 
         </LinearLayout>
     </ScrollView>
+
     <Button
         android:id="@+id/navbar_camera_btn"
         android:layout_width="60dp"
@@ -273,6 +300,5 @@
                 android:background="#aaffaa" />
         </LinearLayout>
     </LinearLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

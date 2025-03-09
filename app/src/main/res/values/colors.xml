@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="background">#023B96</color>
     <color name="primary_orange">#FFB011</color>
+    <color name="medicine_gray">#ECECEC</color>
 </resources>
