@@ -2,9 +2,7 @@ package com.example.smarthealth;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,16 +26,19 @@ abstract public class BaseActivity extends AppCompatActivity {
     abstract protected int getContentLayoutId();
 
     private void setNavbarListeners() {
-        Button navbarHomeBtn = findViewById(R.id.navbarHomeBtn);
-        Button navbarInventoryBtn = findViewById(R.id.navbarInventoryBtn);
-        Button navbarMedbotBtn = findViewById(R.id.navbarMedbotBtn);
-        Button navbarUserBtn = findViewById(R.id.navbarUserBtn);
+        View navbarHomeLayout = findViewById(R.id.navbarHomeLayout);
+        View navbarInventoryLayout = findViewById(R.id.navbarInventoryLayout);
+        View navbarMedbotLayout = findViewById(R.id.navbarMedbotLayout);
+        View navbarUserLayout = findViewById(R.id.navbarUserLayout);
 
-        navbarHomeBtn.setOnClickListener(v -> navigateToHome());
-        navbarInventoryBtn.setOnClickListener(v -> navigateToInventory());
-        navbarMedbotBtn.setOnClickListener(v -> navigateToMedbot());
-        navbarUserBtn.setOnClickListener(v -> navigateToUser());
+        navbarHomeLayout.setOnClickListener(v -> navigateToHome());
+        navbarInventoryLayout.setOnClickListener(v -> navigateToInventory());
+        navbarMedbotLayout.setOnClickListener(v -> navigateToMedbot());
+        navbarUserLayout.setOnClickListener(v -> navigateToUser());
     }
+
+    // TODO 1: consider using fragment instead of new activity for smoother transition between pages.
+    // TODO 2: highlight current page icon.
 
     private void navigateToHome() {
         startActivity(new Intent(BaseActivity.this, MainActivity.class));
