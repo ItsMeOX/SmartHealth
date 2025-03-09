@@ -41,15 +41,15 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
         }
         setContentView(R.layout.activity_main);
 
-
-        initWidgets();
+        initCalendarWidgets();
         setUpMainContentSlider();
+        initBotSuggestionWidgets();
 
         selectedDate = Calendar.getInstance();
         setMonthView();
     }
 
-    private void initWidgets() {
+    private void initCalendarWidgets() {
         LinearLayout calendarParentView = findViewById(R.id.calendarView);
         View calendarRecycleView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.calendar_view, calendarParentView, false);
         calendarParentView.addView(calendarRecycleView);
@@ -168,7 +168,6 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
                         currentY = event.getRawY();
                         int calendarFirstItemPosition = ((GridLayoutManager) calendarRecyclerView.getLayoutManager()).findFirstVisibleItemPosition();
                         View calendarFirstItemView = calendarRecyclerView.getLayoutManager().findViewByPosition(calendarFirstItemPosition);
-                        Log.d("debug", String.valueOf(calendarFirstItemView.getY()));
                         if (newY >= originalY && newY <= calendarView.getY() + calendarView.getHeight() + 30) {
                             v.setY(newY);
                             if (calendarFirstItemView != null && (calendarFirstItemView.getY() < 0)) {
@@ -216,5 +215,28 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
         // TODO: link to Android Calendar? and complete this function.
         String message = "Selected date" + dayText;
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    private void initBotSuggestionWidgets() {
+        LinearLayout suggestionContainer = findViewById(R.id.botSuggestionsBox);
+        LayoutInflater inflater = LayoutInflater.from(this);
+
+        // TODO: Replace placeholders with suggestion from AI (pls set word limits)
+        String[] titles = {"Increase Protein Intake", "Choose complex carbohydrates", "Stay hydrated"};
+        String[] descriptions = {"Increase in take of fish, chicken, eggs, tofu, legumes to...",
+                "Choose complex carbohydrates for example whole grains, vegetables to avoid sugar spikes. Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.",
+                "Drink more water, or herbal teas, soups to stay hydrated, because H2O make you human."};
+
+        for (int i = 0; i < titles.length; i++) {
+            View suggestionView = inflater.inflate(R.layout.bot_suggestion_box, suggestionContainer, false);
+
+            TextView titleView = suggestionView.findViewById(R.id.suggestionTitle);
+            TextView descView = suggestionView.findViewById(R.id.suggestionDesc);
+
+            titleView.setText(titles[i]);
+            descView.setText(descriptions[i]);
+
+            suggestionContainer.addView(suggestionView);
+        }
     }
 }
