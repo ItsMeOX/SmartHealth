@@ -88,7 +88,7 @@
                         android:fontFamily="@font/inter_bold"
                         android:text="Nutrient intake"
                         android:textColor="#101010"
-                        android:textSize="16sp" />
+                        android:textSize="20sp" />
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
@@ -101,6 +101,7 @@
                             android:id="@+id/carbLayout"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginRight="0dp"
                             app:layout_constraintHorizontal_weight="1"
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintRight_toLeftOf="@id/proteinLayout"
@@ -118,8 +119,9 @@
                                 android:id="@+id/carbTitle"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="5dp"
-                                android:text="Carbsss"
+                                android:layout_marginStart="5dp"
+                                android:text="Carbs"
+                                android:textColor="@color/lightgray"
                                 app:layout_constraintLeft_toRightOf="@id/carbIcon"
                                 app:layout_constraintTop_toTopOf="@id/carbIcon" />
 
@@ -138,6 +140,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text=" / 216g"
+                                android:textColor="@color/black"
                                 app:layout_constraintBottom_toBottomOf="@id/carbValue"
                                 app:layout_constraintLeft_toRightOf="@id/carbValue"
                                 app:layout_constraintTop_toTopOf="@id/carbValue" />
@@ -167,7 +170,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="5dp"
-                                android:text="Carbs"
+                                android:text="Proteins"
+                                android:textColor="@color/lightgray"
                                 app:layout_constraintLeft_toRightOf="@id/proteinIcon"
                                 app:layout_constraintTop_toTopOf="@id/proteinIcon" />
 
@@ -186,6 +190,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text=" / 216g"
+                                android:textColor="@color/black"
                                 app:layout_constraintBottom_toBottomOf="@id/proteinValue"
                                 app:layout_constraintLeft_toRightOf="@id/proteinValue"
                                 app:layout_constraintTop_toTopOf="@id/proteinValue" />
@@ -196,6 +201,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="15dp"
+                            android:layout_marginVertical="10dp"
                             app:layout_constraintLeft_toLeftOf="@id/carbLayout"
                             app:layout_constraintRight_toRightOf="@id/carbLayout"
                             app:layout_constraintTop_toBottomOf="@id/carbLayout">
@@ -204,7 +210,6 @@
                                 android:id="@+id/fatIcon"
                                 android:layout_width="18dp"
                                 android:layout_height="18dp"
-                                android:layout_marginVertical="10dp"
                                 android:src="@drawable/rice_bowl"
                                 app:layout_constraintLeft_toLeftOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
@@ -214,7 +219,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="5dp"
-                                android:text="Carbs"
+                                android:text="Fats"
+                                android:textColor="@color/lightgray"
                                 app:layout_constraintLeft_toRightOf="@id/fatIcon"
                                 app:layout_constraintTop_toTopOf="@id/fatIcon" />
 
@@ -233,6 +239,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text=" / 216g"
+                                android:textColor="@color/black"
                                 app:layout_constraintBottom_toBottomOf="@id/fatValue"
                                 app:layout_constraintLeft_toRightOf="@id/fatValue"
                                 app:layout_constraintTop_toTopOf="@id/fatValue" />
@@ -260,8 +267,9 @@
                                 android:id="@+id/fibreTitle"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="5dp"
-                                android:text="Carbs"
+                                android:layout_marginStart="5dp"
+                                android:text="Fibre"
+                                android:textColor="@color/lightgray"
                                 app:layout_constraintLeft_toRightOf="@id/fibreIcon"
                                 app:layout_constraintTop_toTopOf="@id/fibreIcon" />
 
@@ -280,6 +288,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text=" / 216g"
+                                android:textColor="@color/black"
                                 app:layout_constraintBottom_toBottomOf="@id/fibreValue"
                                 app:layout_constraintLeft_toRightOf="@id/fibreValue"
                                 app:layout_constraintTop_toTopOf="@id/fibreValue" />
@@ -308,7 +317,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="5dp"
-                                android:text="Carbs"
+                                android:text="Sugars"
+                                android:textColor="@color/lightgray"
                                 app:layout_constraintLeft_toRightOf="@id/sugarIcon"
                                 app:layout_constraintTop_toTopOf="@id/sugarIcon" />
 
@@ -327,6 +337,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text=" / 216g"
+                                android:textColor="@color/black"
                                 app:layout_constraintBottom_toBottomOf="@id/sugarValue"
                                 app:layout_constraintLeft_toRightOf="@id/sugarValue"
                                 app:layout_constraintTop_toTopOf="@id/sugarValue" />
@@ -355,7 +366,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="5dp"
-                                android:text="Carbs"
+                                android:text="Sodium"
+                                android:textColor="@color/lightgray"
                                 app:layout_constraintLeft_toRightOf="@id/sodiumIcon"
                                 app:layout_constraintTop_toTopOf="@id/sodiumIcon" />
 
@@ -374,6 +386,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text=" / 216g"
+                                android:textColor="@color/black"
                                 app:layout_constraintBottom_toBottomOf="@id/sodiumValue"
                                 app:layout_constraintLeft_toRightOf="@id/sodiumValue"
                                 app:layout_constraintTop_toTopOf="@id/sodiumValue" />
@@ -382,6 +395,7 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <LinearLayout
+                        android:id="@+id/upcomingScheduleLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
@@ -393,7 +407,7 @@
                             android:fontFamily="@font/inter_bold"
                             android:text="Upcoming schedule"
                             android:textColor="#101010"
-                            android:textSize="16sp" />
+                            android:textSize="20sp" />
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="wrap_content"
@@ -402,7 +416,7 @@
                             <HorizontalScrollView
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:paddingHorizontal="8dp"
+                                android:paddingHorizontal="10dp"
                                 android:scrollbars="none"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintLeft_toLeftOf="parent"
@@ -437,6 +451,7 @@
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:layout_marginTop="17dp"
+                                            android:textColor="@color/lightgray"
                                             android:text="Today" />
 
                                         <TextView
@@ -471,6 +486,7 @@
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:layout_marginTop="17dp"
+                                            android:textColor="@color/lightgray"
                                             android:text="Today" />
 
                                         <TextView
@@ -505,6 +521,7 @@
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:layout_marginTop="17dp"
+                                            android:textColor="@color/lightgray"
                                             android:text="Today" />
 
                                         <TextView
@@ -524,9 +541,64 @@
                                 app:layout_constraintRight_toRightOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
                         </androidx.constraintlayout.widget.ConstraintLayout>
+                        <LinearLayout
+                            android:id="@+id/botSuggestionLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            >
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="15dp"
+                                android:fontFamily="@font/inter_bold"
+                                android:text="Nutrient intake"
+                                android:textColor="#101010"
+                                android:textSize="20sp"
+                                />
+
+                            <LinearLayout
+                                android:id="@+id/bobSuggestionsBox"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:paddingHorizontal="10dp"
+                                >
+
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="50dp">
+                                    <ImageView
+                                        android:id="@+id/sugImage1"
+                                        android:layout_width="150dp"
+                                        android:layout_height="match_parent"
+                                        android:src="@drawable/suggestion_image"/>
+                                    <TextView
+                                        android:id="@+id/sugTitle1"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="TITLE"
+                                        android:textColor="@color/black"
+                                        android:fontFamily="@font/inter_semibold"
+                                        android:layout_toRightOf="@id/sugImage1" />
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="This is a very long text. what is going on here?!"
+                                        android:textColor="@color/lightgray"
+                                        android:layout_below="@id/sugTitle1"
+                                        />
+                                </RelativeLayout>
+
+                            </LinearLayout>
+
+
+                        </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
+
             </LinearLayout>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
@@ -560,38 +632,128 @@
             android:background="@drawable/navbar_background"
             android:gravity="center">
 
-            <Button
-                android:id="@+id/navbarHomeBtn"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginVertical="15dp"
-                android:background="#aaffaa" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+                <Button
+                    android:id="@+id/navbarHomeBtn"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginHorizontal="20dp"
+                    android:background="@drawable/home"
+                    android:layout_marginTop="5dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/navbarHomeText"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"/>
+                <TextView
+                    android:id="@+id/navbarHomeText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Home"
+                    android:textColor="@color/primary_orange"
+                    android:textSize="13sp"
+                    android:textAlignment="center"
+                    app:layout_constraintTop_toBottomOf="@id/navbarHomeBtn"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <Button
-                android:id="@+id/navbarInventoryBtn"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_marginVertical="15dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="100dp"
-                android:background="#aaffaa" />
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content">
+                <Button
+                    android:id="@+id/navbarInventoryBtn"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:background="@drawable/inventory"
+                    android:layout_marginTop="5dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/navbarInventoryText"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"/>
+                <TextView
+                    android:id="@+id/navbarInventoryText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Inventory"
+                    android:textColor="@color/lightgray"
+                    android:textSize="13sp"
+                    android:textAlignment="center"
+                    app:layout_constraintTop_toBottomOf="@id/navbarInventoryBtn"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <Button
-                android:id="@+id/navbarMedbotBtn"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginVertical="15dp"
-                android:background="#aaffaa" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:background="color/transparent" />
 
-            <Button
-                android:id="@+id/navbar_user_btn"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginVertical="15dp"
-                android:background="#aaffaa" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content">
+                <Button
+                    android:id="@+id/navbarMedbotBtn"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginHorizontal="20dp"
+                    android:background="@drawable/bot"
+                    android:layout_marginTop="5dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/navbarMedBotText"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"/>
+                <TextView
+                    android:id="@+id/navbarMedBotText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="MedBot"
+                    android:textColor="@color/lightgray"
+                    android:textSize="13sp"
+                    android:textAlignment="center"
+                    app:layout_constraintTop_toBottomOf="@id/navbarMedbotBtn"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content">
+                <Button
+                    android:id="@+id/navbarUserBtn"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginHorizontal="20dp"
+                    android:background="@drawable/user"
+                    android:layout_marginTop="5dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/navbarUserText"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"/>
+                <TextView
+                    android:id="@+id/navbarUserText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="User"
+                    android:textColor="@color/lightgray"
+                    android:textSize="13sp"
+                    android:textAlignment="center"
+                    app:layout_constraintTop_toBottomOf="@id/navbarUserBtn"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
     </LinearLayout>
 
