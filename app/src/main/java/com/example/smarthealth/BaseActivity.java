@@ -9,7 +9,7 @@ import android.widget.FrameLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class BaseActivity extends AppCompatActivity {
+abstract public class BaseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.base_activity);
@@ -24,10 +24,8 @@ public class BaseActivity extends AppCompatActivity {
         setNavbarListeners();
     }
 
-    protected int getContentLayoutId() {
-        // To be overriden by child class to attach navbar
-        return 0;
-    }
+    // To be overriden by child class to attach navbar
+    abstract protected int getContentLayoutId();
 
     private void setNavbarListeners() {
         Button navbarHomeBtn = findViewById(R.id.navbarHomeBtn);
