@@ -139,12 +139,22 @@ public class MainActivity extends BaseActivity implements CalendarAdapter.OnItem
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (event.getRawY() - mainContentView.getY() <= moveThreshY) {
-                    v.getParent().requestDisallowInterceptTouchEvent(true);
-                }
+
 
                 switch (event.getAction()) {
+
                     case MotionEvent.ACTION_DOWN:
+                        // coordinate of mainContentView relative to screen
+                        int[] mainContentViewCoord = new int[2];
+                        mainContentView.getLocationOnScreen(mainContentViewCoord);
+                        int mainContentViewY = mainContentViewCoord[1];
+
+                        // If user drag the top part mainContentView, disable scrolling of page
+                        if (event.getRawY() - mainContentViewY <= moveThreshY) {
+                            v.getParent().requestDisallowInterceptTouchEvent(true);
+                        }
+
+                        // Getting originalY for resetting of mainContent after user slide up mainContent
                         if (originalY == -1) {
                             mainContentView.post(new Runnable() {
                                 @Override
@@ -154,16 +164,20 @@ public class MainActivity extends BaseActivity implements CalendarAdapter.OnItem
                             });
                         }
 
+                        // Getting finger touchdownY for translation of calendar view
                         touchDownY = event.getRawY();
+
+                        // Getting initialTranslation of calendar view for clamping of translation value
                         if (calendarRecyclerView.getChildCount() > 0) {
                             initialTranslation = calendarRecyclerView.getChildAt(0).getTranslationY();
                         }
                         dY = v.getY() - event.getRawY();
-                        if (event.getRawY() - mainContentView.getY() <= moveThreshY) {
+                        if (event.getRawY() - mainContentViewY <= moveThreshY) {
                             isMoving = true;
                         }
                         return true;
                     case MotionEvent.ACTION_MOVE:
+
                         if (!isMoving) {
                             return true;
                         }
