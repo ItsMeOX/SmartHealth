@@ -252,7 +252,6 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
                     Dialog botSuggestionDialog = new Dialog(MainActivity.this);
                     botSuggestionDialog.setContentView(R.layout.bot_suggestion_popup);
                     if (botSuggestionDialog.getWindow() != null) {
-//                        botSuggestionDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                         WindowManager.LayoutParams params = botSuggestionDialog.getWindow().getAttributes();
                         params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
                         params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
