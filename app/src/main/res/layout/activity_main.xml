@@ -100,6 +100,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="2"
+                        android:layout_marginTop="-2dp"
                         android:background="@drawable/floating_box_bg"
                         android:padding="35dp">
 
@@ -404,6 +405,7 @@
                         android:id="@+id/upcomingScheduleLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
                         android:orientation="vertical">
 
                         <TextView
@@ -551,6 +553,8 @@
                             android:id="@+id/botSuggestionLayout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:layout_marginBottom="5dp"
                             android:orientation="vertical"
                             >
                             <TextView
