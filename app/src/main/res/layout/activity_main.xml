@@ -607,7 +607,7 @@
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginHorizontal="20dp"
-        android:layout_marginBottom="25dp"
+        android:layout_marginBottom="30dp"
         android:background="@drawable/navbar_camera"
         app:layout_constraintBottom_toBottomOf="@+id/mainConstraintLayout"
         app:layout_constraintEnd_toEndOf="parent"
@@ -663,7 +663,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_marginVertical="15dp"
+                android:layout_marginVertical="10dp"
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content">
@@ -695,7 +695,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:background="color/transparent" />
+                android:background="@color/transparent" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_weight="1"
