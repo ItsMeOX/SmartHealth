@@ -94,7 +94,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="2"
-                        android:background="@drawable/bg"
+                        android:background="@drawable/floating_box_bg"
                         android:padding="35dp">
 
                         <androidx.constraintlayout.widget.ConstraintLayout
@@ -430,7 +430,7 @@
                                     <LinearLayout
                                         android:layout_width="160dp"
                                         android:layout_height="160dp"
-                                        android:background="@drawable/bg"
+                                        android:background="@drawable/floating_box_bg"
                                         android:gravity="center_horizontal"
                                         android:orientation="vertical"
                                         android:padding="30dp">
@@ -465,7 +465,7 @@
                                         android:layout_width="160dp"
                                         android:layout_height="160dp"
 
-                                        android:background="@drawable/bg"
+                                        android:background="@drawable/floating_box_bg"
                                         android:gravity="center_horizontal"
                                         android:orientation="vertical"
                                         android:padding="30dp">
@@ -500,7 +500,7 @@
                                         android:layout_width="160dp"
                                         android:layout_height="160dp"
 
-                                        android:background="@drawable/bg"
+                                        android:background="@drawable/floating_box_bg"
                                         android:gravity="center_horizontal"
                                         android:orientation="vertical"
                                         android:padding="30dp">
