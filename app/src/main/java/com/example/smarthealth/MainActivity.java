@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Pair;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.OvershootInterpolator;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -32,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
     private TextView monthYearText;
     private RecyclerView calendarRecyclerView;
     private Calendar selectedDate;
+    private LinearLayout scheduleContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceBundle) {
@@ -44,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
 
         initCalendarWidgets();
         setUpMainContentSlider();
+        initUpcomingScheduleWidgets();
         initBotSuggestionWidgets();
 
         selectedDate = Calendar.getInstance();
@@ -219,10 +223,8 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
     }
 
     private void initBotSuggestionWidgets() {
-        LinearLayout suggestionContainer = findViewById(R.id.botSuggestionsBox);
-        LayoutInflater inflater = LayoutInflater.from(this);
-
         // TODO: Replace placeholders with suggestion from AI (pls set word limits)
+
         String[] titles = {"Increase Protein Intake", "Choose complex carbohydrates", "Stay hydrated"};
         String[] descriptions = {"Increase in take of fish, chicken, eggs, tofu, legumes to...",
                 "Choose complex carbohydrates for example whole grains, vegetables to avoid sugar spikes. Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao." +
@@ -236,40 +238,70 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
                 "Drink more water, or herbal teas, soups to stay hydrated, because H2O make you human."};
 
         for (int i = 0; i < titles.length; i++) {
-            final int index = i;
-            View suggestionView = inflater.inflate(R.layout.bot_suggestion_view, suggestionContainer, false);
-
-            TextView titleView = suggestionView.findViewById(R.id.suggestionTitle);
-            TextView descView = suggestionView.findViewById(R.id.suggestionDesc);
-
-            titleView.setText(titles[i]);
-            descView.setText(descriptions[i]);
-
-            suggestionView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // Create a popup view for user to view full text (if text is too long)
-                    Dialog botSuggestionDialog = new Dialog(MainActivity.this);
-                    botSuggestionDialog.setContentView(R.layout.bot_suggestion_popup);
-                    if (botSuggestionDialog.getWindow() != null) {
-                        WindowManager.LayoutParams params = botSuggestionDialog.getWindow().getAttributes();
-                        params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
-                        params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-                        botSuggestionDialog.getWindow().setAttributes(params);
-                    }
-
-                    TextView popupTitleView = botSuggestionDialog.findViewById(R.id.suggestionPopupTitle);
-                    TextView popupDescView = botSuggestionDialog.findViewById(R.id.suggestionPopupDesc);
-                    popupTitleView.setText(titles[index]);
-                    popupDescView.setText(descriptions[index]);
-
-                    botSuggestionDialog.show();
-                }
-            });
-
-            suggestionContainer.addView(suggestionView);
+            addBotSuggestion(titles[i], descriptions[i]);
         }
     }
 
+    public void addBotSuggestion(String title, String description) {
+        LinearLayout suggestionContainer = findViewById(R.id.botSuggestionsBox);
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View suggestionView = inflater.inflate(R.layout.bot_suggestion_view, suggestionContainer, false);
+
+        TextView titleView = suggestionView.findViewById(R.id.suggestionTitle);
+        TextView descView = suggestionView.findViewById(R.id.suggestionDesc);
+
+        titleView.setText(title);
+        descView.setText(description);
+
+        suggestionView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Create a popup view for user to view full text (if text is too long)
+                Dialog botSuggestionDialog = new Dialog(MainActivity.this);
+                botSuggestionDialog.setContentView(R.layout.bot_suggestion_popup);
+                if (botSuggestionDialog.getWindow() != null) {
+                    WindowManager.LayoutParams params = botSuggestionDialog.getWindow().getAttributes();
+                    params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+                    params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                    botSuggestionDialog.getWindow().setAttributes(params);
+                }
+
+                TextView popupTitleView = botSuggestionDialog.findViewById(R.id.suggestionPopupTitle);
+                TextView popupDescView = botSuggestionDialog.findViewById(R.id.suggestionPopupDesc);
+                popupTitleView.setText(title);
+                popupDescView.setText(description);
+
+                botSuggestionDialog.show();
+            }
+        });
+
+        suggestionContainer.addView(suggestionView);
+    }
+
+    private void initUpcomingScheduleWidgets() {
+        // TODO: fetch schedule from database.
+
+        scheduleContainer = findViewById(R.id.upcomingScheduleLayout);
+        addSchedule("Aspirin", "Today", "12:00pm", R.drawable.medicine);
+        addSchedule("Lunch", "Today", "12:30pm", R.drawable.meal);
+        addSchedule("Nospirit", "Today", "01:00pm", R.drawable.medicine);
+    }
+
+    public void addSchedule(String scheduleName, String scheduleDay, String scheduleTime, int iconResId) {
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View scheduleView = inflater.inflate(R.layout.upcoming_schedule_view, scheduleContainer, false);
+
+        TextView scheduleNameView = scheduleView.findViewById(R.id.upcomingScheduleName);
+        ImageView scheduleIconView = scheduleView.findViewById(R.id.upcomingScheduleIcon);
+        TextView scheduleDayView = scheduleView.findViewById(R.id.upcomingScheduleDay);
+        TextView scheduleTimeView = scheduleView.findViewById(R.id.upcomingScheduleTime);
+
+        scheduleNameView.setText(scheduleName);
+        scheduleDayView.setText(scheduleDay);
+        scheduleTimeView.setText(scheduleTime);
+
+        scheduleIconView.setImageResource(iconResId);
+        scheduleContainer.addView(scheduleView);
+    }
 
 }

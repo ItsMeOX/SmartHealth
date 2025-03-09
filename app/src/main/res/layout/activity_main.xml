@@ -402,7 +402,6 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <LinearLayout
-                        android:id="@+id/upcomingScheduleLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
@@ -432,113 +431,11 @@
                                 app:layout_constraintTop_toTopOf="parent">
 
                                 <LinearLayout
+                                    android:id="@+id/upcomingScheduleLayout"
+                                    android:orientation="horizontal"
                                     android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content">
+                                    android:layout_height="wrap_content" />
 
-                                    <LinearLayout
-                                        android:layout_width="160dp"
-                                        android:layout_height="160dp"
-                                        android:background="@drawable/floating_box_bg"
-                                        android:gravity="center_horizontal"
-                                        android:orientation="vertical"
-                                        android:padding="30dp">
-
-                                        <ImageView
-                                            android:layout_width="20dp"
-                                            android:layout_height="20dp"
-                                            android:src="@drawable/medicine" />
-
-                                        <TextView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:layout_marginTop="5dp"
-                                            android:text="Aspirin"
-                                            android:textColor="@color/black" />
-
-                                        <TextView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:layout_marginTop="17dp"
-                                            android:textColor="@color/lightgray"
-                                            android:text="Today" />
-
-                                        <TextView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:text="12:00pm"
-                                            android:textColor="@color/black" />
-                                    </LinearLayout>
-
-                                    <LinearLayout
-                                        android:layout_width="160dp"
-                                        android:layout_height="160dp"
-
-                                        android:background="@drawable/floating_box_bg"
-                                        android:gravity="center_horizontal"
-                                        android:orientation="vertical"
-                                        android:padding="30dp">
-
-                                        <ImageView
-                                            android:layout_width="20dp"
-                                            android:layout_height="20dp"
-                                            android:src="@drawable/medicine" />
-
-                                        <TextView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:layout_marginTop="5dp"
-                                            android:text="Aspirin"
-                                            android:textColor="@color/black" />
-
-                                        <TextView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:layout_marginTop="17dp"
-                                            android:textColor="@color/lightgray"
-                                            android:text="Today" />
-
-                                        <TextView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:text="12:00pm"
-                                            android:textColor="@color/black" />
-                                    </LinearLayout>
-
-                                    <LinearLayout
-                                        android:layout_width="160dp"
-                                        android:layout_height="160dp"
-
-                                        android:background="@drawable/floating_box_bg"
-                                        android:gravity="center_horizontal"
-                                        android:orientation="vertical"
-                                        android:padding="30dp">
-
-                                        <ImageView
-                                            android:layout_width="20dp"
-                                            android:layout_height="20dp"
-                                            android:src="@drawable/medicine" />
-
-                                        <TextView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:layout_marginTop="5dp"
-                                            android:text="Aspirin"
-                                            android:textColor="@color/black" />
-
-                                        <TextView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:layout_marginTop="17dp"
-                                            android:textColor="@color/lightgray"
-                                            android:text="Today" />
-
-                                        <TextView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:text="12:00pm"
-                                            android:textColor="@color/black" />
-                                    </LinearLayout>
-                                </LinearLayout>
                             </HorizontalScrollView>
 
                             <View
