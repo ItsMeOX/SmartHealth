@@ -128,18 +128,19 @@ public class MainActivity extends BaseActivity implements CalendarAdapter.OnItem
         View mainContentView = findViewById(R.id.mainContentView);
         View calendarView = findViewById(R.id.calendarView);
         mainContentView.setOnTouchListener(new View.OnTouchListener() {
-            private float dY;
-            private float originalY = -1;
-            private final float moveThreshY = 200;
-            private float previousY = -1;
-            private float currentY = -1;
-            private boolean isMoving = false;
-            private float touchDownY = -1;
-            private float initialTranslation = 0;
+            private float distanceContentFinger; // distance from top of mainContent view to finger, used for repositioning of mainContent during dragging
+            private float mainContentInitialY = -1; // initial y of main content, will be set only once after view initialization, used for repositioning of mainContent after dragging and limiting drag distance
+            private float previousFingerY = -1; // previous finger y for dragging distance tracking
+            private float currentFingerY = -1; // current finger y for dragging distance tracking
+            private boolean isMoving = false; // is moving mainContent or not, is set to true when user finger down on top of mainContent view within moveThresholdY
+            private float touchDownY = -1; // record of y of finger touch down for y translation of calendar
+            private float initialTranslation = 0; // record of old y translation value of calendar before finger touch down
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
 
+                // threshold distance from top of mainContent view to enable dragging
+                float moveThresholdY = 200;
 
                 switch (event.getAction()) {
 
@@ -150,16 +151,16 @@ public class MainActivity extends BaseActivity implements CalendarAdapter.OnItem
                         int mainContentViewY = mainContentViewCoord[1];
 
                         // If user drag the top part mainContentView, disable scrolling of page
-                        if (event.getRawY() - mainContentViewY <= moveThreshY) {
+                        if (event.getRawY() - mainContentViewY <= moveThresholdY) {
                             v.getParent().requestDisallowInterceptTouchEvent(true);
                         }
 
                         // Getting originalY for resetting of mainContent after user slide up mainContent
-                        if (originalY == -1) {
+                        if (mainContentInitialY == -1) {
                             mainContentView.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    originalY = mainContentView.getY();
+                                    mainContentInitialY = mainContentView.getY();
                                 }
                             });
                         }
@@ -171,28 +172,37 @@ public class MainActivity extends BaseActivity implements CalendarAdapter.OnItem
                         if (calendarRecyclerView.getChildCount() > 0) {
                             initialTranslation = calendarRecyclerView.getChildAt(0).getTranslationY();
                         }
-                        dY = v.getY() - event.getRawY();
-                        if (event.getRawY() - mainContentViewY <= moveThreshY) {
+
+                        // Getting position of mainContentView relative to finger position for repositioning according to finger position
+                        distanceContentFinger = v.getY() - event.getRawY();
+
+                        // Set isMoving to true if user drags mainContentView in designated area
+                        if (event.getRawY() - mainContentViewY <= moveThresholdY) {
                             isMoving = true;
                         }
                         return true;
                     case MotionEvent.ACTION_MOVE:
-
                         if (!isMoving) {
                             return true;
                         }
-                        float newY = event.getRawY() + dY;
-                        float dyTranslation = event.getRawY() - touchDownY;
-                        previousY = currentY;
-                        currentY = event.getRawY();
+
+                        previousFingerY = currentFingerY;
+                        currentFingerY = event.getRawY();
+
+                        float mainContentNewY = event.getRawY() + distanceContentFinger;
+                        float dyTranslationCalendar = event.getRawY() - touchDownY;
+                        // Getting the first child to get y position value for clamping of y translation of calendar
                         int calendarFirstItemPosition = ((GridLayoutManager) calendarRecyclerView.getLayoutManager()).findFirstVisibleItemPosition();
                         View calendarFirstItemView = calendarRecyclerView.getLayoutManager().findViewByPosition(calendarFirstItemPosition);
-                        if (newY >= originalY && newY <= calendarView.getY() + calendarView.getHeight() + 30) {
-                            v.setY(newY);
+
+                        if (mainContentNewY >= mainContentInitialY && mainContentNewY <= calendarView.getY() + calendarView.getHeight() + 30) {
+                            // Move mainContent according to finger position
+                            v.setY(mainContentNewY);
+                            // Translate y position of each cells in calendar
                             if (calendarFirstItemView != null && (calendarFirstItemView.getY() < 0)) {
                                 for (int i = 0; i < calendarRecyclerView.getChildCount(); i++) {
                                     View child = calendarRecyclerView.getChildAt(i);
-                                    child.setTranslationY(Math.min(initialTranslation + dyTranslation, 0));  // Apply translation to each item
+                                    child.setTranslationY(Math.min(initialTranslation + dyTranslationCalendar, 0));  // Apply translation to each item in calendar
                                 }
                             }
                         }
@@ -201,18 +211,26 @@ public class MainActivity extends BaseActivity implements CalendarAdapter.OnItem
                     case MotionEvent.ACTION_UP:
                         isMoving = false;
 
-                        float topMost = originalY;
+                        float topMost = mainContentInitialY;
                         float bottomMost = calendarView.getY() + calendarView.getHeight() + 30;
-                        float swipeDistance = currentY - previousY;
+                        float swipeDistance = currentFingerY - previousFingerY;
 
+                        // Set to position of mainContent to original position if user swipe up
+                        // otherwise set to designated bottom position to expand calendar
                         if (swipeDistance > 0) {
+                            // Set mainContent position
                             v.animate().y(bottomMost).setDuration(400).setInterpolator(new OvershootInterpolator()).start();
+
+                            // Set calendar translation
                             for (int i = 0; i < calendarRecyclerView.getChildCount(); i++) {
                                 View child = calendarRecyclerView.getChildAt(i);
                                 child.setTranslationY(0);
                             }
                         } else {
+                            // Set mainContent position
                             v.animate().y(topMost).setDuration(400).setInterpolator(new OvershootInterpolator()).start();
+
+                            // Set calendar translation
                             Calendar calendar = Calendar.getInstance();
                             int currentDay = calendar.get(Calendar.DAY_OF_MONTH);
                             calendar.set(Calendar.DAY_OF_MONTH, 1);
