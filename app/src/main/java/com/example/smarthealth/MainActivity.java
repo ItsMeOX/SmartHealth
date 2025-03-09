@@ -1,18 +1,20 @@
 package com.example.smarthealth;
 
-import android.animation.ObjectAnimator;
+import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.Pair;
-import android.view.GestureDetector;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.OvershootInterpolator;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,8 +23,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
             getSupportActionBar().hide();
         }
         setContentView(R.layout.activity_main);
+
 
         initCalendarWidgets();
         setUpMainContentSlider();
@@ -224,11 +225,19 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
         // TODO: Replace placeholders with suggestion from AI (pls set word limits)
         String[] titles = {"Increase Protein Intake", "Choose complex carbohydrates", "Stay hydrated"};
         String[] descriptions = {"Increase in take of fish, chicken, eggs, tofu, legumes to...",
-                "Choose complex carbohydrates for example whole grains, vegetables to avoid sugar spikes. Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.",
+                "Choose complex carbohydrates for example whole grains, vegetables to avoid sugar spikes. Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao." +
+                        "Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao."
+                +"Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao."
+                +"Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao."
+                +"Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao."
+                +"Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao."
+                +"Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao."
+                +"Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.",
                 "Drink more water, or herbal teas, soups to stay hydrated, because H2O make you human."};
 
         for (int i = 0; i < titles.length; i++) {
-            View suggestionView = inflater.inflate(R.layout.bot_suggestion_box, suggestionContainer, false);
+            final int index = i;
+            View suggestionView = inflater.inflate(R.layout.bot_suggestion_view, suggestionContainer, false);
 
             TextView titleView = suggestionView.findViewById(R.id.suggestionTitle);
             TextView descView = suggestionView.findViewById(R.id.suggestionDesc);
@@ -236,7 +245,32 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
             titleView.setText(titles[i]);
             descView.setText(descriptions[i]);
 
+            suggestionView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Create a popup view for user to view full text (if text is too long)
+                    Dialog botSuggestionDialog = new Dialog(MainActivity.this);
+                    botSuggestionDialog.setContentView(R.layout.bot_suggestion_popup);
+                    if (botSuggestionDialog.getWindow() != null) {
+//                        botSuggestionDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                        WindowManager.LayoutParams params = botSuggestionDialog.getWindow().getAttributes();
+                        params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+                        params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                        botSuggestionDialog.getWindow().setAttributes(params);
+                    }
+
+                    TextView popupTitleView = botSuggestionDialog.findViewById(R.id.suggestionPopupTitle);
+                    TextView popupDescView = botSuggestionDialog.findViewById(R.id.suggestionPopupDesc);
+                    popupTitleView.setText(titles[index]);
+                    popupDescView.setText(descriptions[index]);
+
+                    botSuggestionDialog.show();
+                }
+            });
+
             suggestionContainer.addView(suggestionView);
         }
     }
+
+
 }
