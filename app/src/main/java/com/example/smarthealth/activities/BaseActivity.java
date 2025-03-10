@@ -1,4 +1,4 @@
-package com.example.smarthealth;
+package com.example.smarthealth.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,6 +6,8 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.smarthealth.R;
 
 abstract public class BaseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {

@@ -1,28 +1,26 @@
-package com.example.smarthealth;
+package com.example.smarthealth.activities;
 
 import android.app.Dialog;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.Pair;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.OvershootInterpolator;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.smarthealth.R;
+import com.example.smarthealth.calendarEvent.AndroidCalendarEventProvider;
+import com.example.smarthealth.calendarEvent.CalendarEventProvider;
+import com.example.smarthealth.components.CalendarAdapter;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,10 +33,14 @@ public class MainActivity extends BaseActivity implements CalendarAdapter.OnItem
     private RecyclerView calendarRecyclerView;
     private Calendar selectedDate;
     private LinearLayout scheduleContainer;
+    private CalendarEventProvider calendarEventProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceBundle) {
         super.onCreate(savedInstanceBundle);
+
+        // TODO: change to other calendar adapter, most likely from database.
+        calendarEventProvider = new AndroidCalendarEventProvider(this);
 
         initCalendarWidgets();
         setUpMainContentSlider();
@@ -68,18 +70,19 @@ public class MainActivity extends BaseActivity implements CalendarAdapter.OnItem
         String selectedDateText = dateFormat.format(selectedDate.getTime());
         monthYearText.setText(selectedDateText);
 
-        Pair<ArrayList<String>, Integer> results = daysInMonthArray(selectedDate);
-        ArrayList<String> daysInMonth = results.first;
+        Pair<ArrayList<Calendar>, Integer> results = daysInMonthArray(selectedDate);
+        ArrayList<Calendar> daysInMonth = results.first;
         int currentDatePosition = results.second;
-        CalendarAdapter calendarAdapter = new CalendarAdapter(daysInMonth, currentDatePosition, this);
+
+        CalendarAdapter calendarAdapter = new CalendarAdapter(daysInMonth, calendarEventProvider, currentDatePosition, this);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(), 7);
 
         calendarRecyclerView.setLayoutManager(layoutManager);
         calendarRecyclerView.setAdapter(calendarAdapter);
     }
 
-    private Pair<ArrayList<String>, Integer> daysInMonthArray(Calendar selectedDate) {
-        ArrayList<String> daysInMonth = new ArrayList<>();
+    private Pair<ArrayList<Calendar>, Integer> daysInMonthArray(Calendar selectedDate) {
+        ArrayList<Calendar> daysInMonth = new ArrayList<>();
         selectedDate.set(Calendar.DAY_OF_MONTH, 1);
         int totalDaysInMonth = selectedDate.getActualMaximum(Calendar.DAY_OF_MONTH);
         int dayOfWeek = selectedDate.get(Calendar.DAY_OF_WEEK);
@@ -88,16 +91,20 @@ public class MainActivity extends BaseActivity implements CalendarAdapter.OnItem
         int currentDatePosition = -1;
 
         // Add days of previous months
-        selectedDate.add(Calendar.MONTH, -1);
-        int totalDaysPrevMonth = selectedDate.getActualMaximum(Calendar.DAY_OF_MONTH);
-        selectedDate.add(Calendar.MONTH, 1);
+        Calendar prevMonth = (Calendar) selectedDate.clone();
+        prevMonth.add(Calendar.MONTH, -1);
+        int totalDaysPrevMonth = prevMonth.getActualMaximum(Calendar.DAY_OF_MONTH);
         for (int i = 1; i < dayOfWeek; i++) {
-            daysInMonth.add(String.valueOf(totalDaysPrevMonth - (6 - i)));
+            Calendar day = (Calendar) selectedDate.clone();
+            day.set(Calendar.DAY_OF_MONTH, totalDaysPrevMonth - (6 - i));
+            daysInMonth.add(day);
         }
 
         // Add days of the current month
         for (int day = 1; day <= totalDaysInMonth; day++) {
-            daysInMonth.add(String.valueOf(day));
+            Calendar dayCalendar = (Calendar) selectedDate.clone();
+            dayCalendar.set(Calendar.DAY_OF_MONTH, day);
+            daysInMonth.add(dayCalendar);
 
             if (day == currentDay) {
                 currentDatePosition = daysInMonth.size() - 1;
@@ -105,9 +112,13 @@ public class MainActivity extends BaseActivity implements CalendarAdapter.OnItem
         }
 
         // Add empty strings for days after the last day of the month
+        Calendar nextMonth = (Calendar) selectedDate.clone();
+        nextMonth.add(Calendar.MONTH, 1);
         int totalSlots = 42;
         for (int day = 1; daysInMonth.size() < totalSlots; day++) {
-            daysInMonth.add(String.valueOf(day));
+            Calendar dayCalendar = (Calendar) nextMonth.clone();
+            dayCalendar.set(Calendar.DAY_OF_MONTH, day);
+            daysInMonth.add(dayCalendar);
         }
 
         return new Pair<>(daysInMonth, currentDatePosition);
@@ -248,7 +259,7 @@ public class MainActivity extends BaseActivity implements CalendarAdapter.OnItem
     }
 
     @Override
-    public void onItemClick(int position, String dayText) {
+    public void onCalenderCellClick(int position, String dayText) {
         // TODO: link to Android Calendar? and complete this function.
         String message = "Selected date" + dayText;
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();

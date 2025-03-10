@@ -1,10 +1,12 @@
-package com.example.smarthealth;
+package com.example.smarthealth.components;
 
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.smarthealth.R;
 
 public class CalendarViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
     public final TextView dayOfMonth;
@@ -23,6 +25,6 @@ public class CalendarViewHolder extends RecyclerView.ViewHolder implements View.
 
     @Override
     public void onClick(View v) {
-        onItemListener.onItemClick(getAdapterPosition(), (String) dayOfMonth.getText());
+        onItemListener.onCalenderCellClick(getAdapterPosition(), (String) dayOfMonth.getText());
     }
 }
