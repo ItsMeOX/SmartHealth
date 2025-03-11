@@ -13,6 +13,9 @@
         android:theme="@style/Theme.SmartHealth"
         tools:targetApi="31" >
 
+        <activity android:name="com.example.smarthealth.LoginActivity"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"/>
+
         <activity
             android:name="com.example.smarthealth.MainActivity"
             android:exported="true"
