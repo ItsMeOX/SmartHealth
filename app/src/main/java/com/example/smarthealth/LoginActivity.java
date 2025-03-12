@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LoginActivity extends AppCompatActivity {
-    private TextInputEditText editTextMobile;
+    private TextInputEditText editTextMobile, editTextPassword;
     private ImageView loginButton;
     private Spinner spinnerCountryCode;
     private List<CountryItem> countryList;
@@ -29,17 +29,21 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        loginButton = findViewById(R.id.cirLoginButton);
+
+        editTextMobile = findViewById(R.id.editLoginTextMobile);
+        editTextMobile.setHint("Enter your phone number");
+
+        editTextPassword = findViewById(R.id.editLoginTextPassword);
+        editTextPassword.setHint("*****");
+
+
         spinnerCountryCode = findViewById(R.id.spinnerCountryCode);
         // Initialize country list
         countryList = new ArrayList<>();
         countryList.add(new CountryItem(R.drawable.malaysia, "+60"));
         countryList.add(new CountryItem(R.drawable.singapore, "+65"));
         countryList.add(new CountryItem(R.drawable.vietnam, "+84"));
-
-        loginButton = findViewById(R.id.cirLoginButton);
-        editTextMobile = findViewById(R.id.loginTextMobile);
-        editTextMobile.setHint("Enter your phone number");
-
         // Set up adapter
         countryAdapter = new CountryAdapter(this, countryList);
         spinnerCountryCode.setAdapter(countryAdapter);

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -22,6 +23,7 @@ public class RegisterActivity extends AppCompatActivity {
     private CountryAdapter countryAdapter;
     private TextInputEditText editTextMobile, editTextName, editTextEmail, editTextPassword;
     private TextView toLogIn;
+    private ImageView cirRegisterButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,13 +37,7 @@ public class RegisterActivity extends AppCompatActivity {
         editTextEmail = findViewById(R.id.editTextEmail);
         editTextEmail.setHint("johndoe@gmail.com");
         editTextPassword = findViewById(R.id.editTextPassword);
-        editTextPassword.setHint("***");
-
-        // Initialize country list
-        countryList = new ArrayList<>();
-        countryList.add(new CountryItem(R.drawable.malaysia, "+60"));
-        countryList.add(new CountryItem(R.drawable.singapore, "+65"));
-        countryList.add(new CountryItem(R.drawable.vietnam, "+84"));
+        editTextPassword.setHint("*****");
 
         toLogIn = findViewById(R.id.toLogIn);
         toLogIn.setOnClickListener(new View.OnClickListener() {
@@ -52,6 +48,23 @@ public class RegisterActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        cirRegisterButton = findViewById(R.id.cirRegisterButton);
+        cirRegisterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+
+        // Initialize country list
+        countryList = new ArrayList<>();
+        countryList.add(new CountryItem(R.drawable.malaysia, "+60"));
+        countryList.add(new CountryItem(R.drawable.singapore, "+65"));
+        countryList.add(new CountryItem(R.drawable.vietnam, "+84"));
 
         // Set up adapter
         countryAdapter = new CountryAdapter(this, countryList);
