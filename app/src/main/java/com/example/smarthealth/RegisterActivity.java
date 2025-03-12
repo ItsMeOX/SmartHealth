@@ -1,12 +1,9 @@
 package com.example.smarthealth;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -17,28 +14,44 @@ import com.google.android.material.textfield.TextInputEditText;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LoginActivity extends AppCompatActivity {
-    private TextInputEditText editTextMobile;
-    private ImageView loginButton;
+
+public class RegisterActivity extends AppCompatActivity {
+
     private Spinner spinnerCountryCode;
     private List<CountryItem> countryList;
     private CountryAdapter countryAdapter;
+    private TextInputEditText editTextMobile, editTextName, editTextEmail, editTextPassword;
+    private TextView toLogIn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_register);
 
         spinnerCountryCode = findViewById(R.id.spinnerCountryCode);
+        editTextMobile = findViewById(R.id.editTextMobile);
+        editTextName = findViewById(R.id.editTextName);
+        editTextName.setHint("John Doe");
+        editTextEmail = findViewById(R.id.editTextEmail);
+        editTextEmail.setHint("johndoe@gmail.com");
+        editTextPassword = findViewById(R.id.editTextPassword);
+        editTextPassword.setHint("***");
+
         // Initialize country list
         countryList = new ArrayList<>();
         countryList.add(new CountryItem(R.drawable.malaysia, "+60"));
         countryList.add(new CountryItem(R.drawable.singapore, "+65"));
         countryList.add(new CountryItem(R.drawable.vietnam, "+84"));
 
-        loginButton = findViewById(R.id.cirLoginButton);
-        editTextMobile = findViewById(R.id.loginTextMobile);
-        editTextMobile.setHint("Enter your phone number");
+        toLogIn = findViewById(R.id.toLogIn);
+        toLogIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
 
         // Set up adapter
         countryAdapter = new CountryAdapter(this, countryList);
@@ -49,36 +62,30 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 CountryItem selectedItem = (CountryItem) parent.getItemAtPosition(position);
+                updatePhoneHint(selectedItem.getCountryCode());
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {}
         });
+    }
 
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Simulate a successful login
-                SharedPreferences preferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.putBoolean("isLoggedIn", true);
-                editor.apply();
-
-                // Navigate to MainActivity
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish(); // Prevent going back to LoginActivity
-            }
-        });
-
-        TextView toRegister = findViewById(R.id.toRegister);
-        toRegister.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
+    private void updatePhoneHint(String countryCode) {
+        String hint;
+        switch (countryCode) {
+            case "+65": // Singapore
+                hint = "6012 3456";
+                break;
+            case "+84": // Vietnam
+                hint = "912 345 678";
+                break;
+            case "+60": // Malaysia
+                hint = "12 345 6789";
+                break;
+            default:
+                hint = "Phone Number";
+                break;
+        }
+        editTextMobile.setHint(hint);
     }
 }
