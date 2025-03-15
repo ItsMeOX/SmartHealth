@@ -9,7 +9,7 @@
         </shape>
     </item>
     <item
-        android:drawable="@drawable/camera"
+        android:drawable="@drawable/navbar_camera"
         android:height="26dp"
         android:width="26dp"
         android:gravity="center"

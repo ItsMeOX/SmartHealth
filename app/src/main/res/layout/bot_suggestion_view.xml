@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/floating_box_bg"
+    android:background="@drawable/floating_box_background"
     android:padding="8dp"
     android:paddingRight="15dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -11,7 +11,7 @@
             android:id="@+id/suggestionImage"
             android:layout_width="80dp"
             android:layout_height="90dp"
-            android:src="@drawable/suggestion_image"
+            android:src="@drawable/bot_suggestion_image"
             android:scaleType="centerCrop"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"

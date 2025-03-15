@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="160dp"
     android:layout_height="160dp"
-    android:background="@drawable/floating_box_bg"
+    android:background="@drawable/floating_box_background"
     android:gravity="center_horizontal"
     android:orientation="vertical"
     android:padding="30dp">
@@ -13,7 +13,7 @@
         android:contentDescription="upcoming schedule type"
         android:layout_width="20dp"
         android:layout_height="20dp"
-        android:src="@drawable/medicine" />
+        android:src="@drawable/up_schedule_medicine" />
 
     <TextView
         android:id="@+id/upcomingScheduleName"

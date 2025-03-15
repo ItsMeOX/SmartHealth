@@ -101,7 +101,7 @@
                         android:layout_height="0dp"
                         android:layout_weight="2"
                         android:layout_marginTop="-2dp"
-                        android:background="@drawable/floating_box_bg"
+                        android:background="@drawable/floating_box_background"
                         android:padding="35dp">
 
                         <androidx.constraintlayout.widget.ConstraintLayout
@@ -118,7 +118,7 @@
                                 android:id="@+id/carbIcon"
                                 android:layout_width="18dp"
                                 android:layout_height="18dp"
-                                android:src="@drawable/rice_bowl"
+                                android:src="@drawable/nutrient_rice_bowl"
                                 app:layout_constraintLeft_toLeftOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -168,7 +168,7 @@
                                 android:id="@+id/proteinIcon"
                                 android:layout_width="18dp"
                                 android:layout_height="18dp"
-                                android:src="@drawable/rice_bowl"
+                                android:src="@drawable/nutrient_rice_bowl"
                                 app:layout_constraintLeft_toLeftOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -217,7 +217,7 @@
                                 android:id="@+id/fatIcon"
                                 android:layout_width="18dp"
                                 android:layout_height="18dp"
-                                android:src="@drawable/rice_bowl"
+                                android:src="@drawable/nutrient_rice_bowl"
                                 app:layout_constraintLeft_toLeftOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -266,7 +266,7 @@
                                 android:id="@+id/fibreIcon"
                                 android:layout_width="18dp"
                                 android:layout_height="18dp"
-                                android:src="@drawable/rice_bowl"
+                                android:src="@drawable/nutrient_rice_bowl"
                                 app:layout_constraintLeft_toLeftOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -315,7 +315,7 @@
                                 android:id="@+id/sugarIcon"
                                 android:layout_width="18dp"
                                 android:layout_height="18dp"
-                                android:src="@drawable/rice_bowl"
+                                android:src="@drawable/nutrient_rice_bowl"
                                 app:layout_constraintLeft_toLeftOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -364,7 +364,7 @@
                                 android:id="@+id/sodiumIcon"
                                 android:layout_width="18dp"
                                 android:layout_height="18dp"
-                                android:src="@drawable/rice_bowl"
+                                android:src="@drawable/nutrient_rice_bowl"
                                 app:layout_constraintLeft_toLeftOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -441,7 +441,7 @@
                             <View
                                 android:layout_width="80dp"
                                 android:layout_height="0dp"
-                                android:background="@drawable/upcoming_schedule_gradient"
+                                android:background="@drawable/up_schedule_gradient"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintRight_toRightOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />

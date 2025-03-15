@@ -323,9 +323,9 @@ public class HomeFragment extends Fragment implements CalendarAdapter.OnItemList
         // TODO: fetch schedule from database.
 
         scheduleContainer = view.findViewById(R.id.upcomingScheduleLayout);
-        addSchedule("Aspirin", "Today", "12:00pm", R.drawable.medicine);
-        addSchedule("Lunch", "Today", "12:30pm", R.drawable.meal);
-        addSchedule("Nospirit", "Today", "01:00pm", R.drawable.medicine);
+        addSchedule("Aspirin", "Today", "12:00pm", R.drawable.up_schedule_medicine);
+        addSchedule("Lunch", "Today", "12:30pm", R.drawable.up_schedule_meal);
+        addSchedule("Nospirit", "Today", "01:00pm", R.drawable.up_schedule_medicine);
     }
 
     public void addSchedule(String scheduleName, String scheduleDay, String scheduleTime, int iconResId) {
