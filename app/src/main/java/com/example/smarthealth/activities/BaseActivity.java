@@ -5,11 +5,15 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.smarthealth.R;
 
-abstract public class BaseActivity extends AppCompatActivity {
+public class BaseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.base_activity);
@@ -18,14 +22,12 @@ abstract public class BaseActivity extends AppCompatActivity {
         }
 
         FrameLayout container = findViewById(R.id.activityContainer);
-        View childView = getLayoutInflater().inflate(getContentLayoutId(), container, false);
-        container.addView(childView);
+        if (savedInstanceState == null) {
+            loadFragment(new HomeFragment());
+        }
 
         setNavbarListeners();
     }
-
-    // To be overriden by child class to attach navbar
-    abstract protected int getContentLayoutId();
 
     private void setNavbarListeners() {
         View navbarHomeLayout = findViewById(R.id.navbarHomeLayout);
@@ -33,28 +35,18 @@ abstract public class BaseActivity extends AppCompatActivity {
         View navbarMedbotLayout = findViewById(R.id.navbarMedbotLayout);
         View navbarUserLayout = findViewById(R.id.navbarUserLayout);
 
-        navbarHomeLayout.setOnClickListener(v -> navigateToHome());
-        navbarInventoryLayout.setOnClickListener(v -> navigateToInventory());
-        navbarMedbotLayout.setOnClickListener(v -> navigateToMedbot());
-        navbarUserLayout.setOnClickListener(v -> navigateToUser());
+        navbarHomeLayout.setOnClickListener(v -> loadFragment(new HomeFragment()));
+        navbarInventoryLayout.setOnClickListener(v -> loadFragment(new HomeFragment()));
+        navbarMedbotLayout.setOnClickListener(v -> loadFragment(new HomeFragment()));
+        navbarUserLayout.setOnClickListener(v -> loadFragment(new HomeFragment()));
     }
 
-    // TODO 1: consider using fragment instead of new activity for smoother transition between pages.
-    // TODO 2: highlight current page icon.
-
-    private void navigateToHome() {
-        startActivity(new Intent(BaseActivity.this, MainActivity.class));
+    // TODO 1: highlight current page icon.
+    private void loadFragment(Fragment fragment) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.activityContainer, fragment);
+        transaction.commit();
     }
 
-    private void navigateToInventory() {
-
-    }
-
-    private void navigateToMedbot() {
-
-    }
-
-    private void navigateToUser() {
-
-    }
 }

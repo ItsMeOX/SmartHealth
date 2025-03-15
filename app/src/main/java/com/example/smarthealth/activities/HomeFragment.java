@@ -14,6 +14,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,20 +30,21 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class MainActivity extends BaseActivity implements CalendarAdapter.OnItemListener {
+public class HomeFragment extends Fragment implements CalendarAdapter.OnItemListener {
 
     private TextView monthYearText;
     private RecyclerView calendarRecyclerView;
     private Calendar selectedDate;
     private LinearLayout scheduleContainer;
     private CalendarEventProvider calendarEventProvider;
+    View view;
 
     @Override
-    protected void onCreate(Bundle savedInstanceBundle) {
-        super.onCreate(savedInstanceBundle);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.landing_fragment, container, false);
 
         // TODO: change to other calendar adapter, most likely from database.
-        calendarEventProvider = new AndroidCalendarEventProvider(this);
+        calendarEventProvider = new AndroidCalendarEventProvider(getContext());
 
         initCalendarWidgets();
         setUpMainContentSlider();
@@ -49,20 +53,16 @@ public class MainActivity extends BaseActivity implements CalendarAdapter.OnItem
 
         selectedDate = Calendar.getInstance();
         setMonthView();
-    }
 
-    @Override
-    protected int getContentLayoutId() {
-        return R.layout.activity_main;
+        return view;
     }
 
     private void initCalendarWidgets() {
-        LinearLayout calendarParentView = findViewById(R.id.calendarView);
-        View calendarRecycleView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.calendar_view, calendarParentView, false);
+        LinearLayout calendarParentView = view.findViewById(R.id.calendarView);
+        View calendarRecycleView = LayoutInflater.from(requireContext()).inflate(R.layout.calendar_view, calendarParentView, false);
         calendarParentView.addView(calendarRecycleView);
-
-        calendarRecyclerView = (RecyclerView) findViewById(R.id.calendarRecyclerView);
-        monthYearText = (TextView) findViewById(R.id.calendarMonthYear);
+        calendarRecyclerView = (RecyclerView) view.findViewById(R.id.calendarRecyclerView);
+        monthYearText = (TextView) view.findViewById(R.id.calendarMonthYear);
     }
 
     private void setMonthView() {
@@ -75,8 +75,7 @@ public class MainActivity extends BaseActivity implements CalendarAdapter.OnItem
         int currentDatePosition = results.second;
 
         CalendarAdapter calendarAdapter = new CalendarAdapter(daysInMonth, calendarEventProvider, currentDatePosition, this);
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(), 7);
-
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(requireContext(), 7);
         calendarRecyclerView.setLayoutManager(layoutManager);
         calendarRecyclerView.setAdapter(calendarAdapter);
     }
@@ -136,8 +135,8 @@ public class MainActivity extends BaseActivity implements CalendarAdapter.OnItem
     }
 
     private void setUpMainContentSlider() {
-        View mainContentView = findViewById(R.id.mainContentView);
-        View calendarView = findViewById(R.id.calendarView);
+        View mainContentView = view.findViewById(R.id.mainContentView);
+        View calendarView = view.findViewById(R.id.calendarView);
         mainContentView.setOnTouchListener(new View.OnTouchListener() {
             private float distanceContentFinger; // distance from top of mainContent view to finger, used for repositioning of mainContent during dragging
             private float mainContentInitialY = -1; // initial y of main content, will be set only once after view initialization, used for repositioning of mainContent after dragging and limiting drag distance
@@ -149,7 +148,6 @@ public class MainActivity extends BaseActivity implements CalendarAdapter.OnItem
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-
                 // threshold distance from top of mainContent view to enable dragging
                 float moveThresholdY = 200;
 
@@ -262,7 +260,7 @@ public class MainActivity extends BaseActivity implements CalendarAdapter.OnItem
     public void onCalenderCellClick(int position, String dayText) {
         // TODO: link to Android Calendar? and complete this function.
         String message = "Selected date" + dayText;
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     private void initBotSuggestionWidgets() {
@@ -272,12 +270,12 @@ public class MainActivity extends BaseActivity implements CalendarAdapter.OnItem
         String[] descriptions = {"Increase in take of fish, chicken, eggs, tofu, legumes to...",
                 "Choose complex carbohydrates for example whole grains, vegetables to avoid sugar spikes. Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao." +
                         "Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao."
-                +"Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao."
-                +"Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao."
-                +"Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao."
-                +"Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao."
-                +"Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao."
-                +"Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.",
+                        +"Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao."
+                        +"Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao."
+                        +"Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao."
+                        +"Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao."
+                        +"Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao."
+                        +"Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.",
                 "Drink more water, or herbal teas, soups to stay hydrated, because H2O make you human."};
 
         for (int i = 0; i < titles.length; i++) {
@@ -286,8 +284,8 @@ public class MainActivity extends BaseActivity implements CalendarAdapter.OnItem
     }
 
     public void addBotSuggestion(String title, String description) {
-        LinearLayout suggestionContainer = findViewById(R.id.botSuggestionsBox);
-        LayoutInflater inflater = LayoutInflater.from(this);
+        LinearLayout suggestionContainer = view.findViewById(R.id.botSuggestionsBox);
+        LayoutInflater inflater = LayoutInflater.from(requireContext());
         View suggestionView = inflater.inflate(R.layout.bot_suggestion_view, suggestionContainer, false);
 
         TextView titleView = suggestionView.findViewById(R.id.suggestionTitle);
@@ -300,7 +298,7 @@ public class MainActivity extends BaseActivity implements CalendarAdapter.OnItem
             @Override
             public void onClick(View v) {
                 // Create a popup view for user to view full text (if text is too long)
-                Dialog botSuggestionDialog = new Dialog(MainActivity.this);
+                Dialog botSuggestionDialog = new Dialog(requireActivity());
                 botSuggestionDialog.setContentView(R.layout.bot_suggestion_popup);
                 if (botSuggestionDialog.getWindow() != null) {
                     WindowManager.LayoutParams params = botSuggestionDialog.getWindow().getAttributes();
@@ -324,14 +322,14 @@ public class MainActivity extends BaseActivity implements CalendarAdapter.OnItem
     private void initUpcomingScheduleWidgets() {
         // TODO: fetch schedule from database.
 
-        scheduleContainer = findViewById(R.id.upcomingScheduleLayout);
+        scheduleContainer = view.findViewById(R.id.upcomingScheduleLayout);
         addSchedule("Aspirin", "Today", "12:00pm", R.drawable.medicine);
         addSchedule("Lunch", "Today", "12:30pm", R.drawable.meal);
         addSchedule("Nospirit", "Today", "01:00pm", R.drawable.medicine);
     }
 
     public void addSchedule(String scheduleName, String scheduleDay, String scheduleTime, int iconResId) {
-        LayoutInflater inflater = LayoutInflater.from(this);
+        LayoutInflater inflater = LayoutInflater.from(getContext());
         View scheduleView = inflater.inflate(R.layout.upcoming_schedule_view, scheduleContainer, false);
 
         TextView scheduleNameView = scheduleView.findViewById(R.id.upcomingScheduleName);
