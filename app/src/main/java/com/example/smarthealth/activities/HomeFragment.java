@@ -44,7 +44,7 @@ public class HomeFragment extends Fragment implements CalendarAdapter.OnItemList
         view = inflater.inflate(R.layout.landing_fragment, container, false);
 
         // TODO: change to other calendar adapter, most likely from database.
-        calendarEventProvider = new AndroidCalendarEventProvider(getContext());
+        calendarEventProvider = new AndroidCalendarEventProvider(requireContext());
 
         initCalendarWidgets();
         setUpMainContentSlider();
@@ -329,7 +329,7 @@ public class HomeFragment extends Fragment implements CalendarAdapter.OnItemList
     }
 
     public void addSchedule(String scheduleName, String scheduleDay, String scheduleTime, int iconResId) {
-        LayoutInflater inflater = LayoutInflater.from(getContext());
+        LayoutInflater inflater = LayoutInflater.from(requireContext());
         View scheduleView = inflater.inflate(R.layout.upcoming_schedule_view, scheduleContainer, false);
 
         TextView scheduleNameView = scheduleView.findViewById(R.id.upcomingScheduleName);
