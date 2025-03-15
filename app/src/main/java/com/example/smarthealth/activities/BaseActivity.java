@@ -21,7 +21,6 @@ public class BaseActivity extends AppCompatActivity {
             getSupportActionBar().hide();
         }
 
-        FrameLayout container = findViewById(R.id.activityContainer);
         if (savedInstanceState == null) {
             loadFragment(new HomeFragment());
         }
@@ -45,7 +44,7 @@ public class BaseActivity extends AppCompatActivity {
     private void loadFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.activityContainer, fragment);
+        transaction.replace(R.id.fragmentContainer, fragment);
         transaction.commit();
     }
 
