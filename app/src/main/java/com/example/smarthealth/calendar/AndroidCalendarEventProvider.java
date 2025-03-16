@@ -1,4 +1,4 @@
-package com.example.smarthealth.calendarEvent;
+package com.example.smarthealth.calendar;
 
 import android.content.Context;
 
@@ -27,7 +27,7 @@ public class AndroidCalendarEventProvider implements CalendarEventProvider {
     private List<CalendarEvent> queryAndroidCalendar(Calendar date) {
         // TODO: placeholder code
          CalendarEvent calendarEvent = new CalendarEvent("title", "descp", (Calendar) Calendar.getInstance().clone());
-        return new ArrayList<>(Arrays.asList(calendarEvent));
+        return new ArrayList<>(Arrays.asList(calendarEvent, calendarEvent, calendarEvent, calendarEvent, calendarEvent));
     }
 
 }

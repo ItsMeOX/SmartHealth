@@ -1,4 +1,4 @@
-package com.example.smarthealth.components;
+package com.example.smarthealth.calendar;
 
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -9,8 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.smarthealth.R;
-import com.example.smarthealth.calendarEvent.AndroidCalendarEventProvider;
-import com.example.smarthealth.calendarEvent.CalendarEventProvider;
 
 import java.util.ArrayList;
 import java.util.Calendar;

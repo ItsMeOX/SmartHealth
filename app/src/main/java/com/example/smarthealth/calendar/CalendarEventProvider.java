@@ -1,4 +1,4 @@
-package com.example.smarthealth.calendarEvent;
+package com.example.smarthealth.calendar;
 
 import java.util.Calendar;
 import java.util.List;

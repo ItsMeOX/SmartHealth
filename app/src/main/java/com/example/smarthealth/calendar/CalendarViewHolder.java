@@ -1,4 +1,4 @@
-package com.example.smarthealth.components;
+package com.example.smarthealth.calendar;
 
 import android.view.View;
 import android.widget.TextView;
