@@ -12,7 +12,6 @@ import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,13 +20,15 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.smarthealth.R;
-import com.example.smarthealth.calendarEvent.AndroidCalendarEventProvider;
-import com.example.smarthealth.calendarEvent.CalendarEventProvider;
-import com.example.smarthealth.components.CalendarAdapter;
+import com.example.smarthealth.calendar.AndroidCalendarEventProvider;
+import com.example.smarthealth.calendar.CalendarEvent;
+import com.example.smarthealth.calendar.CalendarEventProvider;
+import com.example.smarthealth.calendar.CalendarAdapter;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 public class HomeFragment extends Fragment implements CalendarAdapter.OnItemListener {
@@ -258,9 +259,32 @@ public class HomeFragment extends Fragment implements CalendarAdapter.OnItemList
 
     @Override
     public void onCalenderCellClick(int position, String dayText) {
-        // TODO: link to Android Calendar? and complete this function.
-        String message = "Selected date" + dayText;
-        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+        // TODO 1: link to Android Calendar? and complete this function.
+        // TODO 2: Set popup title to current date
+        Dialog calendarEventDialog = new Dialog(requireActivity());
+        calendarEventDialog.setContentView(R.layout.calendar_event_popup);
+        if (calendarEventDialog.getWindow() != null) {
+            WindowManager.LayoutParams params = calendarEventDialog.getWindow().getAttributes();
+            params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+            params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            calendarEventDialog.getWindow().setAttributes(params);
+        }
+
+        List<CalendarEvent> calendarEvents = calendarEventProvider.getEventsForDay((Calendar) Calendar.getInstance().clone());
+        LinearLayout eventListContainer = calendarEventDialog.findViewById(R.id.calendarPopupItemContainer);
+
+        TextView dateTextView = calendarEventDialog.findViewById(R.id.calendarPopupDate);
+        dateTextView.setText(dayText);
+
+        LayoutInflater inflater = LayoutInflater.from(requireContext());
+        for (CalendarEvent calendarEvent : calendarEvents) {
+            View eventView = inflater.inflate(R.layout.calendar_event_popup_item, eventListContainer, false);
+            TextView eventTextView = eventView.findViewById(R.id.calendarPopupEventTitle);
+            eventTextView.setText(calendarEvent.getEventTitle());
+            eventListContainer.addView(eventView);
+        }
+
+        calendarEventDialog.show();
     }
 
     private void initBotSuggestionWidgets() {
