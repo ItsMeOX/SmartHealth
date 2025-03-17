@@ -1,16 +1,20 @@
 package com.example.smarthealth;
 
-import android.animation.ObjectAnimator;
+
 import android.os.Bundle;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+//New additions:
+import android.widget.Button;
+import android.content.Intent;
+
 public class MainActivity extends AppCompatActivity {
+    Button clinicNavButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceBundle) {
@@ -44,9 +48,21 @@ public class MainActivity extends AppCompatActivity {
                         }
                         return true;
                 }
-
                 return false;
             }
         });
+
+        //additions:
+        clinicNavButton = (Button)findViewById(R.id.navbar_medbot_btn);
+        clinicNavButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view)
+            {
+                Intent intent = new Intent(MainActivity.this,MapClinicFinder.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
     }
 }

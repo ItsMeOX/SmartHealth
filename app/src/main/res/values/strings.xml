@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Infosys</string>
     <string name="app_title">SMART HEALTH</string>
+    <string name="my_gmap_api_key">AIzaSyDN72pMI0gFI95xQff7T42lUz2AHOKPuvk</string>
 </resources>

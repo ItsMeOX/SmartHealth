@@ -40,6 +40,20 @@
             android:textSize="20sp"
             android:textColor="@color/white"
             android:fontFamily="@font/inter_regular"/>
+
+        <Button
+            android:id="@+id/navbar_medbot_btn"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginHorizontal="80dp"
+            android:layout_marginVertical="15dp"
+            android:background="#aaffaa"
+            tools:layout_editor_absoluteX="261dp"
+            tools:layout_editor_absoluteY="7dp" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -119,15 +133,15 @@
                 android:background="#aaffaa" />
 
             <Button
-                android:id="@+id/navbar_medbot_btn"
+                android:id="@+id/navbar_user_btn"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:layout_marginHorizontal="20dp"
+                android:layout_marginHorizontal="10dp"
                 android:layout_marginVertical="15dp"
                 android:background="#aaffaa" />
 
             <Button
-                android:id="@+id/navbar_user_btn"
+                android:id="@+id/navbar_clinics_btn"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginHorizontal="20dp"
