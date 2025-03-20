@@ -1,4 +1,4 @@
-package com.example.smarthealth;
+package com.example.smarthealth.Inventory;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -11,20 +11,21 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.Toast;
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
+import androidx.lifecycle.ViewModel;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import android.provider.MediaStore;
 import android.net.Uri;
+
+import com.example.smarthealth.R;
 
 public class InventoryFragment extends Fragment {
     private ArrayList<MedicineButton> pillsContainers;
@@ -40,16 +41,20 @@ public class InventoryFragment extends Fragment {
     ConstraintLayout popup_window;
     private ActivityResultLauncher<Intent> resultLauncher;
     private View view;
-    private View popUpWindow;
+    private ImageView popupImageView;
+    private Button uploadImageButton, openCameraButton;
+    private SVMInventory sharedViewModel;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.inventory_fragment, container, false);
 
-        // Create list to hold button
-        pillsContainers = new ArrayList<>();
-        liquidsContainers = new ArrayList<>();
-        othersContainers = new ArrayList<>();
+        sharedViewModel = new ViewModelProvider(requireActivity()).get(SVMInventory.class);
+
+        // Retrieve the information stored in sharedViewModel
+        pillsContainers = sharedViewModel.getPillsButtonList();
+        liquidsContainers = sharedViewModel.getLiquidsButtonList();
+        othersContainers = sharedViewModel.getOthersButtonList();
 
         // Create adapters for each category
         pillsAdapter = new MedicineAdapter(requireContext(), pillsContainers);
@@ -111,17 +116,22 @@ public class InventoryFragment extends Fragment {
         });
         resultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>() {
-                    @Override
-                    public void onActivityResult(ActivityResult result) {
-                        if (result.getResultCode() == requireActivity().RESULT_OK && result.getData() != null) {
-                            Uri imageUri = result.getData().getData();
-                            // Display image
-                            ImageView imageView = view.findViewById(R.id.image);
-                            imageView.setImageURI(imageUri);
+                result -> {
+                    if (result.getResultCode() == requireActivity().RESULT_OK && result.getData() != null) {
+                        Uri imageUri = result.getData().getData();
+
+                        if (popupImageView != null) {
+                            // Update the popup's ImageView
+                            popupImageView.setImageURI(imageUri);
+                            uploadImageButton.setVisibility(View.GONE);
+
+                            openCameraButton.setVisibility(View.GONE);
+
                         } else {
-                            Toast.makeText(requireContext(), "No Image Selected", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(requireContext(), "Popup not open!", Toast.LENGTH_SHORT).show();
                         }
+                    } else {
+                        Toast.makeText(requireContext(), "No Image Selected", Toast.LENGTH_SHORT).show();
                     }
                 }
         );
@@ -130,12 +140,22 @@ public class InventoryFragment extends Fragment {
     private void addMedicineToLayout(ArrayList<MedicineButton> containerList, MedicineAdapter adapter, String category) {
         // Add placeholder medicine button
         MedicineButton placeholder = new MedicineButton(category + " Placeholder", "Description", 100, R.drawable.clock);
-
         // Add the placeholder to the appropriate container list
         containerList.add(placeholder);
-
         // Notify the adapter that the data has changed
         adapter.notifyDataSetChanged();
+
+        if(category.equals("Pills")){
+            sharedViewModel.setPillsButtonList(containerList);
+        }
+        if(category.equals("Liquids")){
+            sharedViewModel.setLiquidsButtonList(containerList);
+        }
+        if(category.equals("Others")){
+            sharedViewModel.setOthersButtonList(containerList);
+        }
+
+
     }
 
     private void showPopUpWindow(){
@@ -143,8 +163,12 @@ public class InventoryFragment extends Fragment {
         int width = LinearLayout.LayoutParams.MATCH_PARENT;
         int height = LinearLayout.LayoutParams.MATCH_PARENT;
         // Focusable allow us to focus on the edit text and key values
+        popupImageView = popupView.findViewById(R.id.image);
+
         PopupWindow popupWindow = new PopupWindow(popupView, width , height ,true);
         popupWindow.showAtLocation(popup_window, Gravity.CENTER, 0,0);
+
+        openCameraButton = popupView.findViewById(R.id.open_camera);
 
         // Exit button to close popup window
         Button exitButton = popupView.findViewById(R.id.exit);
@@ -155,8 +179,8 @@ public class InventoryFragment extends Fragment {
             }}
         );
 
-        Button uploadImage = popupView.findViewById(R.id.upload_image);
-        uploadImage.setOnClickListener(new View.OnClickListener() {
+        uploadImageButton = popupView.findViewById(R.id.upload_image);
+        uploadImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 pickImage();

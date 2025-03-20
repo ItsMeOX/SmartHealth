@@ -1,4 +1,4 @@
-package com.example.smarthealth;
+package com.example.smarthealth.Inventory;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,6 +8,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.smarthealth.R;
 
 import java.util.ArrayList;
 

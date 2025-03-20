@@ -1,4 +1,4 @@
-package com.example.smarthealth;
+package com.example.smarthealth.Inventory;
 
 public class MedicineButton {
     public String medicineName;
