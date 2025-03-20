@@ -136,7 +136,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_marginHorizontal="20dp"
-                    android:background="@drawable/navbar_bot"
+                    android:background="@drawable/navbar_medbot"
                     android:layout_marginTop="5dp"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toTopOf="@id/navbarMedBotText"
