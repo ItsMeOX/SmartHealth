@@ -163,13 +163,28 @@
                 android:textColor="#101010"
                 android:textSize="16sp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/inter_semibold"
-                android:text="@string/inventory_pills"
-                android:textColor="#101010"
-                android:textSize="16sp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/inter_semibold"
+                    android:text="@string/inventory_pills"
+                    android:textColor="#101010"
+                    android:textSize="16sp" />
+
+
+                <ImageView
+                    android:id="@+id/pillsCollapse"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:clickable="true"
+                    android:layout_marginLeft="310dp"
+                    android:src="@drawable/arrow_down">
+                </ImageView>
+            </LinearLayout>
 
             <View
                 android:id="@+id/pill"
@@ -184,14 +199,27 @@
                 android:orientation="vertical">
 
             </androidx.recyclerview.widget.RecyclerView>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/inter_semibold"
+                    android:text="@string/inventory_liquids"
+                    android:textColor="#101010"
+                    android:textSize="16sp" />
+                <ImageView
+                    android:id="@+id/liquidsCollapse"
+                    android:clickable="true"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="285dp"
+                    android:src="@drawable/arrow_down">
+                </ImageView>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/inter_semibold"
-                android:text="@string/inventory_liquids"
-                android:textColor="#101010"
-                android:textSize="16sp" />
+            </LinearLayout>
 
             <View
                 android:id="@+id/liquids"
@@ -206,14 +234,27 @@
                 android:orientation="vertical">
 
             </androidx.recyclerview.widget.RecyclerView>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/inter_semibold"
+                    android:text="@string/inventory_others"
+                    android:textColor="#101010"
+                    android:textSize="16sp" />
+                <ImageView
+                    android:id="@+id/othersCollapse"
+                    android:clickable="true"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="285dp"
+                    android:src="@drawable/arrow_down">
+                </ImageView>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/inter_semibold"
-                android:text="@string/inventory_others"
-                android:textColor="#101010"
-                android:textSize="16sp" />
+            </LinearLayout>
 
             <View
                 android:id="@+id/others"

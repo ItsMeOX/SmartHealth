@@ -8,19 +8,22 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.smarthealth.R;
-
 import java.util.ArrayList;
+import java.util.List;
 
 public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.ViewHolder> {
 
     private final Context context;
     private ArrayList<MedicineButton> medicineButtonList;
+    private List<MedicineButton> medicineSubList;
+    private boolean isExpanded = true;
+    private final int MAX_BUTTON_SHOWN = 4;
 
     public MedicineAdapter(Context context, ArrayList<MedicineButton> medicineContainersList) {
         this.context = context;
         this.medicineButtonList = medicineContainersList;
+        this.medicineSubList = new ArrayList<>(medicineContainersList);medicineButtonList.subList(0, Math.min(MAX_BUTTON_SHOWN, medicineButtonList.size()));
     }
 
     @NonNull
@@ -35,26 +38,66 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull MedicineAdapter.ViewHolder holder, int position) {
         // Get button from list
-        MedicineButton model = medicineButtonList.get(position);
-        // Set all information of the button
+//        MedicineButton model = medicineButtonList.get(position);
+        MedicineButton model = medicineSubList.get(position);
+
+        // Set the button's data (name, description, etc.)
         holder.medicineName.setText(model.getMedicineName());
         holder.medicineDesc.setText(model.getMedicineDesc());
         holder.medicineAmount.setText(String.valueOf(model.getMedicineAmount()));
 
-        // Handling image not found
+        // Handle the image
         if (model.getMedicineImage() != 0) {
-            // catch error
             holder.medicineImage.setImageResource(model.getMedicineImage());
         } else {
-            // Default image if no image found
-            holder.medicineImage.setImageResource(R.drawable.camera);
+            holder.medicineImage.setImageResource(R.drawable.camera); // Default image if no image
+        }
+
+//         Set visibility based on expanded or collapsed state
+        if (isExpanded || position < 4) {
+            holder.itemView.setVisibility(View.VISIBLE);
+        } else {
+            holder.itemView.setVisibility(View.GONE); // Hide items beyond the limit
         }
     }
 
     @Override
     public int getItemCount() {
         // Return the number of items in the list
-        return medicineButtonList.size();
+        return medicineSubList != null ? medicineSubList.size() : 0;
+    }
+
+    public void toggleItemLimits(){
+        isExpanded = !isExpanded;
+
+        if (isExpanded) {
+            // Show all items (reset to original list)
+            medicineSubList = new ArrayList<>(medicineButtonList);
+        } else {
+//             Show only the first 4 items
+            medicineSubList = medicineButtonList.subList(0, Math.min(MAX_BUTTON_SHOWN, medicineButtonList.size()));
+        }
+
+        // Notify the adapter to refresh the view
+        notifyDataSetChanged();
+
+    }
+
+    public boolean getIsExpanded(){
+        return isExpanded;
+    }
+
+    public void updateMedicineList(ArrayList<MedicineButton> newList){
+        this.medicineButtonList = newList;
+        if (!isExpanded) {
+            // Show only the first 4 items
+            this.medicineSubList = medicineButtonList.subList(0, Math.min(MAX_BUTTON_SHOWN, medicineButtonList.size()));
+        } else {
+            // Show all items
+            this.medicineSubList = new ArrayList<>(medicineButtonList);
+        }
+        notifyDataSetChanged();
+
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

@@ -1,6 +1,7 @@
 package com.example.smarthealth.Inventory;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -89,6 +90,59 @@ public class InventoryFragment extends Fragment {
 
         popup_window = view.findViewById(R.id.inventory_medicine);
 
+        // Toggle Buttons
+        ImageView togglePills = view.findViewById(R.id.pillsCollapse);
+        ImageView toggleLiquids = view.findViewById(R.id.liquidsCollapse);
+        ImageView toggleOthers = view.findViewById(R.id.othersCollapse);
+
+        togglePills.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(pillsAdapter != null){
+                    pillsAdapter.toggleItemLimits();
+                }
+                ImageView pillsCollapse = view.findViewById(R.id.pillsCollapse);
+                if(pillsAdapter.getIsExpanded()){
+                    pillsCollapse.setImageResource(R.drawable.arrow_up);
+                }
+                else{
+                    pillsCollapse.setImageResource(R.drawable.arrow_down);
+                }
+            }
+        });
+
+        toggleLiquids.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(liquidsAdapter != null){
+                    liquidsAdapter.toggleItemLimits();
+                }
+                ImageView liquidsCollapse = view.findViewById(R.id.liquidsCollapse);
+                if(liquidsAdapter.getIsExpanded()){
+                    liquidsCollapse.setImageResource(R.drawable.arrow_up);
+                }
+                else{
+                    liquidsCollapse.setImageResource(R.drawable.arrow_down);
+                }
+            }
+        });
+
+        toggleOthers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(othersAdapter != null){
+                    othersAdapter.toggleItemLimits();
+                }
+                ImageView othersCollapse = view.findViewById(R.id.othersCollapse);
+                if(othersAdapter.getIsExpanded()){
+                    othersCollapse.setImageResource(R.drawable.arrow_up);
+                }
+                else{
+                    othersCollapse.setImageResource(R.drawable.arrow_down);
+                }
+            }
+        });
+
         // Set button click for respective buttons
         pillsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,11 +191,16 @@ public class InventoryFragment extends Fragment {
         );
         return view;
     }
+
     private void addMedicineToLayout(ArrayList<MedicineButton> containerList, MedicineAdapter adapter, String category) {
         // Add placeholder medicine button
         MedicineButton placeholder = new MedicineButton(category + " Placeholder", "Description", 100, R.drawable.clock);
         // Add the placeholder to the appropriate container list
         containerList.add(placeholder);
+
+        // Update medicine List such that when new button is added, it will be added to sublist
+        adapter.updateMedicineList(containerList);
+
         // Notify the adapter that the data has changed
         adapter.notifyDataSetChanged();
 
