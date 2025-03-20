@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Infosys</string>
     <string name="app_title">SMART HEALTH</string>
+    <string name="type_message">Write here ...</string>
 </resources>

@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.smarthealth.R;
+import com.example.smarthealth.chatbot.ChatBotFragment;
 
 public class BaseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +37,7 @@ public class BaseActivity extends AppCompatActivity {
 
         navbarHomeLayout.setOnClickListener(v -> loadFragment(new HomeFragment()));
         navbarInventoryLayout.setOnClickListener(v -> loadFragment(new HomeFragment()));
-        navbarMedbotLayout.setOnClickListener(v -> loadFragment(new HomeFragment()));
+        navbarMedbotLayout.setOnClickListener(v -> loadFragment(new ChatBotFragment()));
         navbarUserLayout.setOnClickListener(v -> loadFragment(new HomeFragment()));
     }
 
