@@ -25,8 +25,8 @@ public class AndroidCalendarEventProvider implements CalendarEventProvider {
     }
 
     private List<CalendarEvent> queryAndroidCalendar(Calendar date) {
-        // TODO: placeholder code
-         CalendarEvent calendarEvent = new CalendarEvent("title", "descp", (Calendar) Calendar.getInstance().clone());
+        // TODO: Link with database
+         CalendarEvent calendarEvent = new CalendarEvent("Title", "this is a long description.", (Calendar) Calendar.getInstance().clone());
         return new ArrayList<>(Arrays.asList(calendarEvent, calendarEvent, calendarEvent, calendarEvent, calendarEvent));
     }
 

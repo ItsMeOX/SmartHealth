@@ -12,6 +12,7 @@ import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -258,7 +259,7 @@ public class HomeFragment extends Fragment implements CalendarAdapter.OnItemList
     }
 
     @Override
-    public void onCalenderCellClick(int position, String dayText) {
+    public void onCalenderCellClick(int position, List<Calendar> daysOfMonth) {
         // TODO 1: link to Android Calendar? and complete this function.
         // TODO 2: Set popup title to current date
         Dialog calendarEventDialog = new Dialog(requireActivity());
@@ -274,15 +275,29 @@ public class HomeFragment extends Fragment implements CalendarAdapter.OnItemList
         LinearLayout eventListContainer = calendarEventDialog.findViewById(R.id.calendarPopupItemContainer);
 
         TextView dateTextView = calendarEventDialog.findViewById(R.id.calendarPopupDate);
-        dateTextView.setText(dayText);
+
+        SimpleDateFormat titleDateFormat = new SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH);
+        String selectedDateText = titleDateFormat.format(daysOfMonth.get(position).getTime());
+        dateTextView.setText(selectedDateText);
 
         LayoutInflater inflater = LayoutInflater.from(requireContext());
+        SimpleDateFormat eventTimeFormat = new SimpleDateFormat("hh:mm aa", Locale.ENGLISH);
         for (CalendarEvent calendarEvent : calendarEvents) {
             View eventView = inflater.inflate(R.layout.calendar_event_popup_item, eventListContainer, false);
-            TextView eventTextView = eventView.findViewById(R.id.calendarPopupEventTitle);
-            eventTextView.setText(calendarEvent.getEventTitle());
+            TextView eventTitleView = eventView.findViewById(R.id.calendarPopupEventTitle);
+            TextView eventTimeView = eventView.findViewById(R.id.calendarPopupEventTime);
+            TextView eventDescView = eventView.findViewById(R.id.calendarPopupEventDesc);
+
+            eventTitleView.setText(calendarEvent.getEventTitle());
+            eventTimeView.setText(eventTimeFormat.format(calendarEvent.getEventDateCalendar().getTime()));
+            eventDescView.setText(calendarEvent.getEventDescription());
             eventListContainer.addView(eventView);
         }
+
+        View eventAdder = inflater.inflate(R.layout.calendar_event_popup_add, eventListContainer, false);
+        eventListContainer.addView(eventAdder);
+
+        // TODO: Add onClickListener for event adding button
 
         calendarEventDialog.show();
     }
@@ -367,6 +382,9 @@ public class HomeFragment extends Fragment implements CalendarAdapter.OnItemList
 
         scheduleIconView.setImageResource(iconResId);
         scheduleContainer.addView(scheduleView);
+
     }
+
+
 
 }

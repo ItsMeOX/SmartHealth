@@ -12,6 +12,7 @@ import com.example.smarthealth.R;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
     private final ArrayList<Calendar> daysOfMonth;
@@ -45,7 +46,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
         View view = inflater.inflate(R.layout.calendar_cell, parent ,false);
         ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
         layoutParams.height = (int) (parent.getHeight() * 0.16666666);
-        return new CalendarViewHolder(view, onItemListener);
+        return new CalendarViewHolder(view, onItemListener, daysOfMonth);
     }
 
     @Override
@@ -79,6 +80,6 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
     }
 
     public interface OnItemListener {
-        void onCalenderCellClick(int position, String dayText);
+        void onCalenderCellClick(int position, List<Calendar> daysOfMonth);
     }
 }
