@@ -1,40 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
-<!--        <androidx.appcompat.widget.SearchView-->
-<!--            android:id="@+id/mapSearch"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_margin="10dp"-->
-<!--            android:background="@drawable/maps_search_bar_bg"-->
-<!--            android:elevation="5dp"-->
-<!--            app:iconifiedByDefault="false"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="parent"-->
-<!--            app:queryHint="Find a clinic near you.." />-->
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="10dp">
-
-        <EditText
-            android:id="@+id/searchEditText"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:hint="Search a place"
-            android:focusable="false"
-            android:drawableStart="@android:drawable/ic_search_category_default"
-            android:background="@android:drawable/editbox_background" />
-
-    </LinearLayout>
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/map"
@@ -42,7 +11,49 @@
         android:layout_marginTop="70dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-    
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+
+            <androidx.appcompat.widget.SearchView
+
+                android:id="@+id/mapSearch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/maps_search_bar_bg"
+                app:iconifiedByDefault="false"
+                app:queryHint="Find a clinic near you.."/>
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/hospital_icon"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:onClick="onClick"
+                android:src="@drawable/medical_centre_button_icon" />
+
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/searchResultsList"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="10dp"
+            android:visibility="gone"
+            android:background="@drawable/search_list_background"
+            android:alpha = "0.7"/>
+
+    </LinearLayout>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -54,29 +65,6 @@
             android:layout_height="wrap_content"
             android:background="#DCDFE2">
 
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id = "@+id/hospital_icon"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_alignParentBottom = "true"
-                android:layout_alignParentEnd = "true"
-                android:layout_marginEnd="270dp"
-                android:onClick="onClick"
-                android:src = "@mipmap/hospital"
-                />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="20dp"
-                android:layout_marginTop="10dp"
-                android:padding="15dp"
-                android:text="Search for Nearby Clinics"
-                android:textAppearance="@font/inter_bold"
-                android:textSize="20dp" />
         </RelativeLayout>
-
     </RelativeLayout>
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
