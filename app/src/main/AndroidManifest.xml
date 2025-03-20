@@ -18,7 +18,7 @@
         >
 
         <activity
-            android:name="com.example.smarthealth.MainActivity"
+            android:name="com.example.smarthealth.activities.BaseActivity"
             android:exported="true"
             android:label="Smart Health">
             <intent-filter>

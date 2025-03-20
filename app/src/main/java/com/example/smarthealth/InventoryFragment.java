@@ -2,7 +2,9 @@ package com.example.smarthealth;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -13,15 +15,18 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import android.provider.MediaStore;
 import android.net.Uri;
 
-public class MainActivity extends AppCompatActivity {
+public class InventoryFragment extends Fragment {
     private ArrayList<MedicineButton> pillsContainers;
     private ArrayList<MedicineButton> liquidsContainers;
     private ArrayList<MedicineButton> othersContainers;
@@ -34,15 +39,12 @@ public class MainActivity extends AppCompatActivity {
 
     ConstraintLayout popup_window;
     private ActivityResultLauncher<Intent> resultLauncher;
+    private View view;
+    private View popUpWindow;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().hide();
-        }
-        // Set layout for inventory_medicine
-        setContentView(R.layout.inventory_medicine);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.inventory_fragment, container, false);
 
         // Create list to hold button
         pillsContainers = new ArrayList<>();
@@ -50,19 +52,19 @@ public class MainActivity extends AppCompatActivity {
         othersContainers = new ArrayList<>();
 
         // Create adapters for each category
-        pillsAdapter = new MedicineAdapter(this, pillsContainers);
-        liquidsAdapter = new MedicineAdapter(this, liquidsContainers);
-        othersAdapter = new MedicineAdapter(this, othersContainers);
+        pillsAdapter = new MedicineAdapter(requireContext(), pillsContainers);
+        liquidsAdapter = new MedicineAdapter(requireContext(), liquidsContainers);
+        othersAdapter = new MedicineAdapter(requireContext(), othersContainers);
 
         // Get respective layout
-        pillsLayout = findViewById(R.id.pillsRV);
-        liquidsLayout = findViewById(R.id.liquidsRV);
-        othersLayout = findViewById(R.id.othersRV);
+        pillsLayout = view.findViewById(R.id.pillsRV);
+        liquidsLayout = view.findViewById(R.id.liquidsRV);
+        othersLayout = view.findViewById(R.id.othersRV);
 
         // Create grid layout for each layout
-        GridLayoutManager pillsManager = new GridLayoutManager(this, 2);
-        GridLayoutManager liquidsManager = new GridLayoutManager(this, 2);
-        GridLayoutManager othersManager = new GridLayoutManager(this, 2);
+        GridLayoutManager pillsManager = new GridLayoutManager(requireContext(), 2);
+        GridLayoutManager liquidsManager = new GridLayoutManager(requireContext(), 2);
+        GridLayoutManager othersManager = new GridLayoutManager(requireContext(), 2);
 
         // Set grid as the layout manager for each recycler view
         // Set the respective adapter
@@ -76,11 +78,11 @@ public class MainActivity extends AppCompatActivity {
         othersLayout.setAdapter(othersAdapter);
 
         // Placeholder button
-        ImageButton pillsButton = findViewById(R.id.fillByScan);
-        ImageButton liquidsButton = findViewById(R.id.fillForm);
-        ImageButton othersButton = findViewById(R.id.fillFormByHistory);
+        ImageButton pillsButton = view.findViewById(R.id.fillByScan);
+        ImageButton liquidsButton = view.findViewById(R.id.fillForm);
+        ImageButton othersButton = view.findViewById(R.id.fillFormByHistory);
 
-        popup_window = findViewById(R.id.inventory_medicine);
+        popup_window = view.findViewById(R.id.inventory_medicine);
 
         // Set button click for respective buttons
         pillsButton.setOnClickListener(new View.OnClickListener() {
@@ -88,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // Add placeholder medicine to pills category
                 addMedicineToLayout(pillsContainers, pillsAdapter, "Pills");
-                Toast.makeText(MainActivity.this, "New Pill Added", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "New Pill Added", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -104,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // Add placeholder medicine to others category
                 addMedicineToLayout(othersContainers, othersAdapter, "Others");
-                Toast.makeText(MainActivity.this, "New Other Medicine Added", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "New Other Medicine Added", Toast.LENGTH_SHORT).show();
             }
         });
         resultLauncher = registerForActivityResult(
@@ -112,17 +114,18 @@ public class MainActivity extends AppCompatActivity {
                 new ActivityResultCallback<ActivityResult>() {
                     @Override
                     public void onActivityResult(ActivityResult result) {
-                        if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        if (result.getResultCode() == requireActivity().RESULT_OK && result.getData() != null) {
                             Uri imageUri = result.getData().getData();
                             // Display image
-                            ImageView imageView = findViewById(R.id.image);
+                            ImageView imageView = view.findViewById(R.id.image);
                             imageView.setImageURI(imageUri);
                         } else {
-                            Toast.makeText(MainActivity.this, "No Image Selected", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(requireContext(), "No Image Selected", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
         );
+        return view;
     }
     private void addMedicineToLayout(ArrayList<MedicineButton> containerList, MedicineAdapter adapter, String category) {
         // Add placeholder medicine button
@@ -136,15 +139,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showPopUpWindow(){
-        View view = View.inflate(this, R.layout.form_fillup, null);
+        View popupView = View.inflate(requireContext(), R.layout.form_fillup, null);
         int width = LinearLayout.LayoutParams.MATCH_PARENT;
         int height = LinearLayout.LayoutParams.MATCH_PARENT;
         // Focusable allow us to focus on the edit text and key values
-        PopupWindow popupWindow = new PopupWindow(view, width , height ,true);
+        PopupWindow popupWindow = new PopupWindow(popupView, width , height ,true);
         popupWindow.showAtLocation(popup_window, Gravity.CENTER, 0,0);
 
         // Exit button to close popup window
-        Button exitButton = view.findViewById(R.id.exit);
+        Button exitButton = popupView.findViewById(R.id.exit);
         exitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -152,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
             }}
         );
 
-        Button uploadImage = view.findViewById(R.id.upload_image);
+        Button uploadImage = popupView.findViewById(R.id.upload_image);
         uploadImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

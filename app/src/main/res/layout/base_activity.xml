@@ -9,7 +9,7 @@
     >
 
     <FrameLayout
-        android:id="@+id/activityContainer"
+        android:id="@+id/fragmentContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         />
@@ -20,7 +20,7 @@
         android:layout_height="60dp"
         android:layout_marginHorizontal="20dp"
         android:layout_marginBottom="30dp"
-        android:background="@drawable/navbar_camera"
+        android:background="@drawable/navbar_camera_background"
         app:layout_constraintBottom_toBottomOf="@+id/mainConstraintLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -64,7 +64,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_marginHorizontal="20dp"
-                    android:background="@drawable/home"
+                    android:background="@drawable/navbar_home_selected"
                     android:layout_marginTop="5dp"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toTopOf="@id/navbarHomeText"
@@ -97,7 +97,7 @@
                     android:id="@+id/navbarInventoryIcon"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:background="@drawable/inventory"
+                    android:background="@drawable/navbar_inventory"
                     android:layout_marginTop="5dp"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toTopOf="@id/navbarInventoryText"
@@ -136,7 +136,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_marginHorizontal="20dp"
-                    android:background="@drawable/bot"
+                    android:background="@drawable/navbar_bot"
                     android:layout_marginTop="5dp"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toTopOf="@id/navbarMedBotText"
@@ -169,7 +169,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_marginHorizontal="20dp"
-                    android:background="@drawable/user"
+                    android:background="@drawable/navbar_user"
                     android:layout_marginTop="5dp"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toTopOf="@id/navbarUserText"
