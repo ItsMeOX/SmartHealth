@@ -35,4 +35,6 @@ dependencies {
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
     implementation libs.cardview
+    implementation 'androidx.activity:activity:1.8.0'
+    implementation 'androidx.fragment:fragment:1.6.1'
 }

@@ -10,4 +10,8 @@
     <color name="background">#023B96</color>
     <color name="primary_orange">#FFB011</color>
     <color name="medicine_gray">#ECECEC</color>
+    <color name="lightgray">#727272</color>
+    <color name="transparent">#00000000</color>
+    <color name="green">#68E539</color>
+    <color name="red">#F4502C</color>
 </resources>

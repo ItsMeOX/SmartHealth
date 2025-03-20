@@ -151,9 +151,8 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:orientation="vertical"
-            android:paddingVertical="32dp"
             android:paddingHorizontal="16dp"
-            >
+            android:paddingVertical="32dp">
 
 
             <TextView
@@ -178,14 +177,13 @@
                 android:layout_height="2dp"
                 android:background="#c0c0c0" />
 
-            <LinearLayout
-                android:id="@+id/pillsLinearLayout"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/pillsRV"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                >
+                android:orientation="vertical">
 
-            </LinearLayout>
+            </androidx.recyclerview.widget.RecyclerView>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -201,14 +199,13 @@
                 android:layout_height="2dp"
                 android:background="#c0c0c0" />
 
-            <LinearLayout
-                android:id="@+id/liquidsLinearLayout"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/liquidsRV"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                >
+                android:orientation="vertical">
 
-            </LinearLayout>
+            </androidx.recyclerview.widget.RecyclerView>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -216,89 +213,24 @@
                 android:fontFamily="@font/inter_semibold"
                 android:text="@string/inventory_others"
                 android:textColor="#101010"
-                android:textSize="16sp"/>
+                android:textSize="16sp" />
+
             <View
                 android:id="@+id/others"
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:background="#c0c0c0" />
-            <LinearLayout
-                android:id="@+id/othersLinearLayout"
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/othersRV"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                >
+                android:orientation="vertical">
 
-            </LinearLayout>
-
+            </androidx.recyclerview.widget.RecyclerView>
 
         </LinearLayout>
     </ScrollView>
 
-    <Button
-        android:id="@+id/navbar_camera_btn"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginBottom="25dp"
-        android:background="@drawable/navbar_camera"
-        app:layout_constraintBottom_toBottomOf="@+id/inventory_medicine"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-
-        />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent">
-        <View
-            android:layout_height="8dp"
-            android:layout_width="match_parent"
-            android:background="@drawable/navbar_gradient_top"
-            />
-
-        <LinearLayout
-            android:id="@+id/linearLayout2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/navbar_background"
-            android:gravity="center">
-
-            <Button
-                android:id="@+id/navbar_home_btn"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginVertical="15dp"
-                android:background="#aaffaa" />
-
-            <Button
-                android:id="@+id/navbar_inventory_btn"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_marginVertical="15dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="100dp"
-                android:background="#aaffaa" />
-
-            <Button
-                android:id="@+id/navbar_medbot_btn"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginVertical="15dp"
-                android:background="#aaffaa" />
-
-            <Button
-                android:id="@+id/navbar_user_btn"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginVertical="15dp"
-                android:background="#aaffaa" />
-        </LinearLayout>
-    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
