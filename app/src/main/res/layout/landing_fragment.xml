@@ -118,7 +118,7 @@
                                 android:id="@+id/carbIcon"
                                 android:layout_width="18dp"
                                 android:layout_height="18dp"
-                                android:src="@drawable/nutrient_rice_bowl"
+                                android:src="@drawable/nutrient_carb"
                                 app:layout_constraintLeft_toLeftOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -168,7 +168,7 @@
                                 android:id="@+id/proteinIcon"
                                 android:layout_width="18dp"
                                 android:layout_height="18dp"
-                                android:src="@drawable/nutrient_rice_bowl"
+                                android:src="@drawable/nutrient_carb"
                                 app:layout_constraintLeft_toLeftOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -217,7 +217,7 @@
                                 android:id="@+id/fatIcon"
                                 android:layout_width="18dp"
                                 android:layout_height="18dp"
-                                android:src="@drawable/nutrient_rice_bowl"
+                                android:src="@drawable/nutrient_carb"
                                 app:layout_constraintLeft_toLeftOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -266,7 +266,7 @@
                                 android:id="@+id/fibreIcon"
                                 android:layout_width="18dp"
                                 android:layout_height="18dp"
-                                android:src="@drawable/nutrient_rice_bowl"
+                                android:src="@drawable/nutrient_carb"
                                 app:layout_constraintLeft_toLeftOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -315,7 +315,7 @@
                                 android:id="@+id/sugarIcon"
                                 android:layout_width="18dp"
                                 android:layout_height="18dp"
-                                android:src="@drawable/nutrient_rice_bowl"
+                                android:src="@drawable/nutrient_carb"
                                 app:layout_constraintLeft_toLeftOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -364,7 +364,7 @@
                                 android:id="@+id/sodiumIcon"
                                 android:layout_width="18dp"
                                 android:layout_height="18dp"
-                                android:src="@drawable/nutrient_rice_bowl"
+                                android:src="@drawable/nutrient_carb"
                                 app:layout_constraintLeft_toLeftOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
 
