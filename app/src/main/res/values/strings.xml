@@ -8,4 +8,14 @@
     <string name="fillByScan">Smart Scan</string>
     <string name="fillByForm">Fill By Form</string>
     <string name="fillByHistory">Fill By History</string>
+
+    <string-array name="formMediCategory">
+        <item>Pills</item>
+        <item>Liquids</item>
+        <item>Others</item>
+    </string-array>
+
+
+
+
 </resources>

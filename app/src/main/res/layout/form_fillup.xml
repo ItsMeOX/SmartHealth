@@ -67,48 +67,92 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         >
-
-        <EditText
-            android:id="@+id/formMediName"
-            android:inputType="text"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:layout_alignParentTop="true"
-            android:layout_marginHorizontal="10dp"
             android:layout_marginTop="-200dp"
-            android:hint="Enter Medicine Name"
-            android:focusableInTouchMode="true"
-            android:clickable="true"
-            android:textColor="@color/lightgray"
-            android:textColorHint="@color/lightgray" />
+            >
 
-        <EditText
-            android:id="@+id/formMediDesc"
-            android:inputType="text"
+            <EditText
+                android:id="@+id/formMediName"
+                android:inputType="text"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:hint="Enter Name"
+                android:focusableInTouchMode="true"
+                android:clickable="true"
+                android:textColor="@color/lightgray"
+                android:layout_marginHorizontal="20dp"
+                android:textColorHint="@color/lightgray"
+                android:backgroundTint="@color/black"
+                />
+
+            <EditText
+                android:id="@+id/formMediAmount"
+                android:inputType="number"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="Enter Amount"
+                android:backgroundTint="@color/black"
+                android:layout_weight="1"
+                android:layout_marginHorizontal="20dp"
+                android:focusableInTouchMode="true"
+                android:clickable="true"
+                android:textColor="@color/black"
+                android:textColorHint="@color/lightgray"
+                />
+        </LinearLayout>
+
+
+
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="10dp"
-            android:hint="Enter Medicine Description"
-            android:focusableInTouchMode="true"
-            android:clickable="true"
-            android:textColor="@color/black"
-            android:textColorHint="@color/lightgray"
+            android:orientation="horizontal"
             android:layout_marginTop="-150dp"
-            />
+            >
+            <EditText
+                android:id="@+id/formMediDesc"
+                android:layout_width="0dp"
+                android:layout_weight="0.6"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:layout_marginHorizontal="20dp"
+                android:focusableInTouchMode="true"
+                android:hint="Enter Description"
+                android:backgroundTint="@color/black"
+                android:inputType="text"
+                android:textColor="@color/black"
+                android:textColorHint="@color/lightgray" />
 
-        <EditText
-            android:id="@+id/formMediAmount"
-            android:inputType="number"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="10dp"
-            android:hint="Enter Medicine Amount"
-            android:focusableInTouchMode="true"
-            android:clickable="true"
-            android:textColor="@color/black"
-            android:textColorHint="@color/lightgray"
-            android:layout_marginTop="-100dp"
-            />
+            <TextView
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:text="Type"
+                android:layout_weight="0.1"
+                android:layout_marginLeft="10dp"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textAlignment="center"
+                >
+            </TextView>
+
+            <Spinner
+                android:id="@+id/category"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:entries="@array/formMediCategory"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="@color/black"
+                >
+            </Spinner>
+        </LinearLayout>
+
 
         <EditText
             android:id="@+id/formMediInfo"
@@ -117,10 +161,13 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="10dp"
             android:focusableInTouchMode="true"
-            android:layout_marginTop="-50dp"
+            android:layout_marginTop="-100dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
             android:clickable="true"
-            android:hint="Enter Medicine Information"
+            android:hint="Enter Information"
             android:textColor="@color/black"
+            android:backgroundTint="@color/black"
             android:textColorHint="@color/lightgray" />
 
     </RelativeLayout>

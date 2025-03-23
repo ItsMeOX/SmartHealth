@@ -1,18 +1,25 @@
 package com.example.smarthealth.Inventory;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.lifecycle.ViewModel;
+import android.util.TypedValue;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -43,7 +50,7 @@ public class InventoryFragment extends Fragment {
     private ActivityResultLauncher<Intent> resultLauncher;
     private View view;
     private ImageView popupImageView;
-    private Button uploadImageButton, openCameraButton;
+    private Button uploadImageButton, openCameraButton, confirmButton;
     private SVMInventory sharedViewModel;
 
     @Override
@@ -85,7 +92,7 @@ public class InventoryFragment extends Fragment {
 
         // Placeholder button
         ImageButton pillsButton = view.findViewById(R.id.fillByScan);
-        ImageButton liquidsButton = view.findViewById(R.id.fillForm);
+        ImageButton fillFormButton = view.findViewById(R.id.fillForm);
         ImageButton othersButton = view.findViewById(R.id.fillFormByHistory);
 
         popup_window = view.findViewById(R.id.inventory_medicine);
@@ -148,12 +155,12 @@ public class InventoryFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // Add placeholder medicine to pills category
-                addMedicineToLayout(pillsContainers, pillsAdapter, "Pills");
+                addMedicineToLayout("Pills","PlaceHolder", "Fever", 100,R.drawable.clock);
                 Toast.makeText(requireContext(), "New Pill Added", Toast.LENGTH_SHORT).show();
             }
         });
 
-        liquidsButton.setOnClickListener(new View.OnClickListener() {
+        fillFormButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showPopUpWindow();
@@ -164,7 +171,7 @@ public class InventoryFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // Add placeholder medicine to others category
-                addMedicineToLayout(othersContainers, othersAdapter, "Others");
+                addMedicineToLayout("Others","PlaceHolder", "Fever", 100,R.drawable.clock);
                 Toast.makeText(requireContext(), "New Other Medicine Added", Toast.LENGTH_SHORT).show();
             }
         });
@@ -192,11 +199,28 @@ public class InventoryFragment extends Fragment {
         return view;
     }
 
-    private void addMedicineToLayout(ArrayList<MedicineButton> containerList, MedicineAdapter adapter, String category) {
+    private void addMedicineToLayout(String category, String mediName, String mediDesc, int mediAmount, int mediImage) {
+        ArrayList<MedicineButton> containerList = new ArrayList<>();
+        MedicineAdapter adapter = null;
+
+        if(category.equals("Pills")){
+            containerList = pillsContainers;
+            adapter = pillsAdapter;
+        }
+        else if(category.equals("Liquids")){
+            containerList = liquidsContainers;
+            adapter = liquidsAdapter;
+        }
+        else{
+            containerList = othersContainers;
+            adapter = othersAdapter;
+
+        }
+
         // Add placeholder medicine button
-        MedicineButton placeholder = new MedicineButton(category + " Placeholder", "Description", 100, R.drawable.clock);
+        MedicineButton newButton = new MedicineButton(mediName, mediDesc, mediAmount, mediImage);
         // Add the placeholder to the appropriate container list
-        containerList.add(placeholder);
+        containerList.add(newButton);
 
         // Update medicine List such that when new button is added, it will be added to sublist
         adapter.updateMedicineList(containerList);
@@ -213,8 +237,6 @@ public class InventoryFragment extends Fragment {
         if(category.equals("Others")){
             sharedViewModel.setOthersButtonList(containerList);
         }
-
-
     }
 
     private void showPopUpWindow(){
@@ -228,6 +250,28 @@ public class InventoryFragment extends Fragment {
         popupWindow.showAtLocation(popup_window, Gravity.CENTER, 0,0);
 
         openCameraButton = popupView.findViewById(R.id.open_camera);
+
+        // Drop down list for category
+        Spinner category = popupView.findViewById(R.id.category);
+        category.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                TextView selectedText = (TextView) view;
+                // Change the text color of the selected item
+                selectedText.setTextColor(Color.BLACK);
+                // Change the text size of the selected item (e.g., 20sp)
+                selectedText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+        ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(
+                requireContext(),
+                R.array.formMediCategory,
+                android.R.layout.simple_spinner_item
+        );
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        category.setAdapter(spinnerAdapter);
 
         // Exit button to close popup window
         Button exitButton = popupView.findViewById(R.id.exit);
@@ -245,6 +289,29 @@ public class InventoryFragment extends Fragment {
                 pickImage();
             }}
         );
+
+        confirmButton = popupView.findViewById(R.id.confirm);
+        confirmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO retrieve information from the popup window
+                EditText nameView = popupView.findViewById(R.id.formMediName);
+                EditText amountView = popupView.findViewById(R.id.formMediAmount);
+                EditText descView = popupView.findViewById(R.id.formMediDesc);
+//                EditText infoView = popupView.findViewById(R.id.formMediInfo);
+//                ImageView imageView = popupView.findViewById(R.id.mediImage);
+                String mediType = category.getSelectedItem().toString();
+
+                String mediName = nameView.getText().toString().trim();
+                String mediDesc = descView.getText().toString().trim();
+                String amount = amountView.getText().toString().trim();
+                int mediAmount = Integer.parseInt(amount);
+                // Pass corresponding parameters
+                addMedicineToLayout(mediType,mediName, mediDesc,mediAmount, R.drawable.clock);
+                 popupWindow.dismiss();
+            }
+        });
+
     }
     private void pickImage() {
         // Intent to pick an image from the gallery
