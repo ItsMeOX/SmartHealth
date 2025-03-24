@@ -1,6 +1,7 @@
 package com.example.smarthealth.Inventory;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -18,6 +19,9 @@ import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.lifecycle.ViewModel;
 import android.util.TypedValue;
 import androidx.activity.result.ActivityResultLauncher;
@@ -155,7 +159,7 @@ public class InventoryFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // Add placeholder medicine to pills category
-                addMedicineToLayout("Pills","PlaceHolder", "Fever", 100,R.drawable.clock);
+                addMedicineToLayout("Pills","PlaceHolder", "Fever", 100, ContextCompat.getDrawable(requireContext(), R.drawable.app_logo));
                 Toast.makeText(requireContext(), "New Pill Added", Toast.LENGTH_SHORT).show();
             }
         });
@@ -171,7 +175,7 @@ public class InventoryFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // Add placeholder medicine to others category
-                addMedicineToLayout("Others","PlaceHolder", "Fever", 100,R.drawable.clock);
+                addMedicineToLayout("Others","PlaceHolder", "Fever", 100, ContextCompat.getDrawable(requireContext(), R.drawable.app_logo));
                 Toast.makeText(requireContext(), "New Other Medicine Added", Toast.LENGTH_SHORT).show();
             }
         });
@@ -199,7 +203,7 @@ public class InventoryFragment extends Fragment {
         return view;
     }
 
-    private void addMedicineToLayout(String category, String mediName, String mediDesc, int mediAmount, int mediImage) {
+    private void addMedicineToLayout(String category, String mediName, String mediDesc, int mediAmount, Drawable mediImage) {
         ArrayList<MedicineButton> containerList = new ArrayList<>();
         MedicineAdapter adapter = null;
 
@@ -216,7 +220,6 @@ public class InventoryFragment extends Fragment {
             adapter = othersAdapter;
 
         }
-
         // Add placeholder medicine button
         MedicineButton newButton = new MedicineButton(mediName, mediDesc, mediAmount, mediImage);
         // Add the placeholder to the appropriate container list
@@ -298,16 +301,16 @@ public class InventoryFragment extends Fragment {
                 EditText nameView = popupView.findViewById(R.id.formMediName);
                 EditText amountView = popupView.findViewById(R.id.formMediAmount);
                 EditText descView = popupView.findViewById(R.id.formMediDesc);
-//                EditText infoView = popupView.findViewById(R.id.formMediInfo);
-//                ImageView imageView = popupView.findViewById(R.id.mediImage);
+                ImageView imageView = popupView.findViewById(R.id.image);
                 String mediType = category.getSelectedItem().toString();
 
                 String mediName = nameView.getText().toString().trim();
                 String mediDesc = descView.getText().toString().trim();
                 String amount = amountView.getText().toString().trim();
                 int mediAmount = Integer.parseInt(amount);
+                Drawable image = imageView.getDrawable();
                 // Pass corresponding parameters
-                addMedicineToLayout(mediType,mediName, mediDesc,mediAmount, R.drawable.clock);
+                addMedicineToLayout(mediType,mediName, mediDesc,mediAmount, image);
                  popupWindow.dismiss();
             }
         });

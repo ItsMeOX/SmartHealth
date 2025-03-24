@@ -1,14 +1,16 @@
 package com.example.smarthealth.Inventory;
 
+import android.graphics.drawable.Drawable;
+
 public class MedicineButton {
     public String medicineName;
     public String medicineDesc;
 
     public int medicineAmount;
 
-    public int medicineImage;
+    public Drawable medicineImage;
 
-    MedicineButton(String medicineName, String medicineDesc, int medicineAmount, int medicineImage) {
+    MedicineButton(String medicineName, String medicineDesc, int medicineAmount, Drawable medicineImage) {
         this.medicineName = medicineName;
         this.medicineDesc = medicineDesc;
         this.medicineAmount = medicineAmount;
@@ -38,11 +40,11 @@ public class MedicineButton {
         this.medicineAmount = medicineAmount;
     }
 
-    public int getMedicineImage() {
+    public Drawable getMedicineImage() {
         return medicineImage;
     }
 
-    public void setMedicineImage(int medicineImage) {
+    public void setMedicineImage(Drawable medicineImage) {
         this.medicineImage = medicineImage;
     }
 

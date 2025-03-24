@@ -42,16 +42,17 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.ViewHo
         MedicineButton model = medicineSubList.get(position);
 
         // Set the button's data (name, description, etc.)
+        holder.medicineImage.setImageDrawable(model.getMedicineImage());
         holder.medicineName.setText(model.getMedicineName());
         holder.medicineDesc.setText(model.getMedicineDesc());
         holder.medicineAmount.setText(String.valueOf(model.getMedicineAmount()));
 
         // Handle the image
-        if (model.getMedicineImage() != 0) {
-            holder.medicineImage.setImageResource(model.getMedicineImage());
-        } else {
-            holder.medicineImage.setImageResource(R.drawable.camera); // Default image if no image
-        }
+//        if (model.getMedicineImage() != 0) {
+//            holder.medicineImage.setImageResource(model.getMedicineImage());
+//        } else {
+//            holder.medicineImage.setImageResource(R.drawable.camera); // Default image if no image
+//        }
 
 //         Set visibility based on expanded or collapsed state
         if (isExpanded || position < 4) {
