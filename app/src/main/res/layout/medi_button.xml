@@ -38,7 +38,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="50dp"
+            android:layout_marginBottom="45dp"
             android:fontFamily="@font/inter_bold"
             android:text="Paracetamol"
             android:textColor="@android:color/black"
@@ -56,7 +56,7 @@
             android:fontFamily="@font/inter_regular"
             android:text="Fever"
             android:textColor="@android:color/black"
-            android:layout_marginBottom="30dp"
+            android:layout_marginBottom="25dp"
             android:textSize="15sp" />
 
         <androidx.cardview.widget.CardView

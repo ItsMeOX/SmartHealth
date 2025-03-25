@@ -1,5 +1,8 @@
 package com.example.smarthealth.Inventory;
+import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -20,7 +23,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.lifecycle.ViewModel;
 import android.util.TypedValue;
@@ -33,6 +39,13 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.lang.ref.WeakReference;
+import java.net.URI;
 import java.util.ArrayList;
 import android.provider.MediaStore;
 import android.net.Uri;
@@ -51,11 +64,13 @@ public class InventoryFragment extends Fragment {
     private RecyclerView othersLayout;
 
     ConstraintLayout popup_window;
-    private ActivityResultLauncher<Intent> resultLauncher;
+    private ActivityResultLauncher<Intent> galleryLauncher;
+    private  ActivityResultLauncher<Intent> cameraLauncher;
     private View view;
     private ImageView popupImageView;
     private Button uploadImageButton, openCameraButton, confirmButton;
     private SVMInventory sharedViewModel;
+    private Uri camUri;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -179,30 +194,60 @@ public class InventoryFragment extends Fragment {
                 Toast.makeText(requireContext(), "New Other Medicine Added", Toast.LENGTH_SHORT).show();
             }
         });
-        resultLauncher = registerForActivityResult(
+        galleryLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == requireActivity().RESULT_OK && result.getData() != null) {
                         Uri imageUri = result.getData().getData();
-
                         if (popupImageView != null) {
                             // Update the popup's ImageView
                             popupImageView.setImageURI(imageUri);
                             uploadImageButton.setVisibility(View.GONE);
-
                             openCameraButton.setVisibility(View.GONE);
-
                         } else {
-                            Toast.makeText(requireContext(), "Popup not open!", Toast.LENGTH_SHORT).show();
-                        }
+                            Toast.makeText(requireContext(), "Popup not open!", Toast.LENGTH_SHORT).show();}
                     } else {
-                        Toast.makeText(requireContext(), "No Image Selected", Toast.LENGTH_SHORT).show();
-                    }
+                        Toast.makeText(requireContext(), "No Image Selected", Toast.LENGTH_SHORT).show();}
                 }
         );
+
+        cameraLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+            @Override
+            public void onActivityResult(ActivityResult result) {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    if (camUri != null) {
+                        popupImageView.setImageURI(camUri); // Set image from saved URI
+                        uploadImageButton.setVisibility(View.GONE);
+                        openCameraButton.setVisibility(View.GONE);
+                    }
+                    else{
+                        Toast.makeText(requireContext(), "Popup not open!", Toast.LENGTH_SHORT).show();}
+                    }
+                else {
+                    Toast.makeText(requireContext(), "No Image Selected", Toast.LENGTH_SHORT).show();}
+                }
+        });
         return view;
     }
-
+    private Uri saveImage(Bitmap image) {
+        File imagefolder = new File(requireContext().getCacheDir(), "images");
+        Uri uri = null;
+        try{
+            imagefolder.mkdirs();
+            File file = new File(imagefolder, "captured_image.jpg");
+            FileOutputStream stream = new FileOutputStream(file);
+            image.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+            stream.flush();
+            stream.close();
+            uri = FileProvider.getUriForFile(requireContext().getApplicationContext(), "com.example.smarthealth.provider", file);
+        }
+        catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return uri ;
+    }
     private void addMedicineToLayout(String category, String mediName, String mediDesc, int mediAmount, Drawable mediImage) {
         ArrayList<MedicineButton> containerList = new ArrayList<>();
         MedicineAdapter adapter = null;
@@ -253,6 +298,14 @@ public class InventoryFragment extends Fragment {
         popupWindow.showAtLocation(popup_window, Gravity.CENTER, 0,0);
 
         openCameraButton = popupView.findViewById(R.id.open_camera);
+
+        openCameraButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pickCamera();
+            }
+        });
+
 
         // Drop down list for category
         Spinner category = popupView.findViewById(R.id.category);
@@ -319,7 +372,17 @@ public class InventoryFragment extends Fragment {
     private void pickImage() {
         // Intent to pick an image from the gallery
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        resultLauncher.launch(intent);
+        galleryLauncher.launch(intent);
+    }
+
+    private void pickCamera(){
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.TITLE, "New Medicine");
+        values.put(MediaStore.Images.Media.DESCRIPTION, "Camera");
+        camUri = requireContext().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT,camUri);
+        cameraLauncher.launch(cameraIntent);
     }
 }
 
