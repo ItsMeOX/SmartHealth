@@ -229,25 +229,7 @@ public class InventoryFragment extends Fragment {
         });
         return view;
     }
-    private Uri saveImage(Bitmap image) {
-        File imagefolder = new File(requireContext().getCacheDir(), "images");
-        Uri uri = null;
-        try{
-            imagefolder.mkdirs();
-            File file = new File(imagefolder, "captured_image.jpg");
-            FileOutputStream stream = new FileOutputStream(file);
-            image.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-            stream.flush();
-            stream.close();
-            uri = FileProvider.getUriForFile(requireContext().getApplicationContext(), "com.example.smarthealth.provider", file);
-        }
-        catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return uri ;
-    }
+
     private void addMedicineToLayout(String category, String mediName, String mediDesc, int mediAmount, Drawable mediImage) {
         ArrayList<MedicineButton> containerList = new ArrayList<>();
         MedicineAdapter adapter = null;
