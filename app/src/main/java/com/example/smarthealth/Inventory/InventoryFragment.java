@@ -2,11 +2,9 @@ package com.example.smarthealth.Inventory;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,13 +20,9 @@ import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.lifecycle.ViewModel;
 import android.util.TypedValue;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -39,17 +33,9 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.lang.ref.WeakReference;
-import java.net.URI;
 import java.util.ArrayList;
 import android.provider.MediaStore;
 import android.net.Uri;
-
 import com.example.smarthealth.R;
 
 public class InventoryFragment extends Fragment {
@@ -174,7 +160,7 @@ public class InventoryFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // Add placeholder medicine to pills category
-                addMedicineToLayout("Pills","PlaceHolder", "Fever", 100, ContextCompat.getDrawable(requireContext(), R.drawable.app_logo));
+                addMedicineToLayout("Pills","PlaceHolder", "Fever", 100, ContextCompat.getDrawable(requireContext(), R.drawable.app_logo),"info");
                 Toast.makeText(requireContext(), "New Pill Added", Toast.LENGTH_SHORT).show();
             }
         });
@@ -190,7 +176,7 @@ public class InventoryFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // Add placeholder medicine to others category
-                addMedicineToLayout("Others","PlaceHolder", "Fever", 100, ContextCompat.getDrawable(requireContext(), R.drawable.app_logo));
+                addMedicineToLayout("Others","PlaceHolder", "Fever", 100, ContextCompat.getDrawable(requireContext(), R.drawable.app_logo), "info");
                 Toast.makeText(requireContext(), "New Other Medicine Added", Toast.LENGTH_SHORT).show();
             }
         });
@@ -230,7 +216,7 @@ public class InventoryFragment extends Fragment {
         return view;
     }
 
-    private void addMedicineToLayout(String category, String mediName, String mediDesc, int mediAmount, Drawable mediImage) {
+    private void addMedicineToLayout(String category, String mediName, String mediDesc, int mediAmount, Drawable mediImage, String info) {
         ArrayList<MedicineButton> containerList = new ArrayList<>();
         MedicineAdapter adapter = null;
 
@@ -248,7 +234,7 @@ public class InventoryFragment extends Fragment {
 
         }
         // Add placeholder medicine button
-        MedicineButton newButton = new MedicineButton(mediName, mediDesc, mediAmount, mediImage);
+        MedicineButton newButton = new MedicineButton(mediName, mediDesc, mediAmount, mediImage, info);
         // Add the placeholder to the appropriate container list
         containerList.add(newButton);
 
@@ -338,15 +324,30 @@ public class InventoryFragment extends Fragment {
                 EditText descView = popupView.findViewById(R.id.formMediDesc);
                 ImageView imageView = popupView.findViewById(R.id.image);
                 String mediType = category.getSelectedItem().toString();
+                EditText mediInfo = popupView.findViewById(R.id.formMediInfo);
 
                 String mediName = nameView.getText().toString().trim();
                 String mediDesc = descView.getText().toString().trim();
                 String amount = amountView.getText().toString().trim();
-                int mediAmount = Integer.parseInt(amount);
                 Drawable image = imageView.getDrawable();
+                String info = mediInfo.getText().toString().trim();
+
                 // Pass corresponding parameters
-                addMedicineToLayout(mediType,mediName, mediDesc,mediAmount, image);
-                 popupWindow.dismiss();
+                if(mediName.isEmpty() || mediDesc.isEmpty() || amount.isEmpty() || imageView.getDrawable() == null || info.isEmpty()){
+                    if(mediName.isEmpty()){nameView.setError("Required");}
+                    if(mediDesc.isEmpty()){descView.setError("Required");}
+                    if(amount.isEmpty()){amountView.setError("Required");}
+                    if(info.isEmpty()){mediInfo.setError("Required");}
+                    if(imageView.getDrawable() == null){
+                        Toast.makeText(requireContext(), "Please select an image!", Toast.LENGTH_SHORT).show();
+                    }
+                    return;
+                }
+                else{
+                    int mediAmount = Integer.parseInt(amount);
+                    addMedicineToLayout(mediType,mediName, mediDesc,mediAmount, image, info);
+                    popupWindow.dismiss();
+                }
             }
         });
 

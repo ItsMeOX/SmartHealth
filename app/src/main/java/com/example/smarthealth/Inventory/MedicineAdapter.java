@@ -38,7 +38,6 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull MedicineAdapter.ViewHolder holder, int position) {
         // Get button from list
-//        MedicineButton model = medicineButtonList.get(position);
         MedicineButton model = medicineSubList.get(position);
 
         // Set the button's data (name, description, etc.)

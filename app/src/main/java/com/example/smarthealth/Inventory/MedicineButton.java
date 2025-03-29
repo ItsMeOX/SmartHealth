@@ -10,11 +10,14 @@ public class MedicineButton {
 
     public Drawable medicineImage;
 
-    MedicineButton(String medicineName, String medicineDesc, int medicineAmount, Drawable medicineImage) {
+    public String medicineInfo;
+
+    MedicineButton(String medicineName, String medicineDesc, int medicineAmount, Drawable medicineImage, String medicineInfo) {
         this.medicineName = medicineName;
         this.medicineDesc = medicineDesc;
         this.medicineAmount = medicineAmount;
         this.medicineImage = medicineImage;
+        this.medicineInfo = medicineInfo;
     }
     public String getMedicineName() {
         return medicineName;
@@ -47,6 +50,10 @@ public class MedicineButton {
     public void setMedicineImage(Drawable medicineImage) {
         this.medicineImage = medicineImage;
     }
+
+    public String getMedicineInfo(){return this.medicineInfo;}
+
+    public void setMedicineInfo(String info){this.medicineInfo = info; }
 
 }
 
