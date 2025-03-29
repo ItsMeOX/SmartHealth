@@ -1,7 +1,6 @@
 package com.example.smarthealth.Inventory;
 import androidx.lifecycle.ViewModel;
 import java.util.ArrayList;
-import java.util.List;
 
 public class SVMInventory extends ViewModel {
     private ArrayList<MedicineButton> pillsButtonList = new ArrayList<>();

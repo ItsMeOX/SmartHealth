@@ -1,5 +1,6 @@
 package com.example.smarthealth.Inventory;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Color;
@@ -57,6 +58,8 @@ public class InventoryFragment extends Fragment {
     private Button uploadImageButton, openCameraButton, confirmButton;
     private SVMInventory sharedViewModel;
     private Uri camUri;
+
+    private ArrayList<MedicineTag> allTags;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -160,7 +163,8 @@ public class InventoryFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // Add placeholder medicine to pills category
-                addMedicineToLayout("Pills","PlaceHolder", "Fever", 100, ContextCompat.getDrawable(requireContext(), R.drawable.app_logo),"info");
+                addMedicineToLayout("Pills","PlaceHolder", "Fever", 100,
+                        ContextCompat.getDrawable(requireContext(), R.drawable.app_logo),"info","Pills");
                 Toast.makeText(requireContext(), "New Pill Added", Toast.LENGTH_SHORT).show();
             }
         });
@@ -176,7 +180,8 @@ public class InventoryFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // Add placeholder medicine to others category
-                addMedicineToLayout("Others","PlaceHolder", "Fever", 100, ContextCompat.getDrawable(requireContext(), R.drawable.app_logo), "info");
+                addMedicineToLayout("Others","PlaceHolder", "Fever", 100,
+                        ContextCompat.getDrawable(requireContext(), R.drawable.app_logo), "info", "Others");
                 Toast.makeText(requireContext(), "New Other Medicine Added", Toast.LENGTH_SHORT).show();
             }
         });
@@ -216,7 +221,7 @@ public class InventoryFragment extends Fragment {
         return view;
     }
 
-    private void addMedicineToLayout(String category, String mediName, String mediDesc, int mediAmount, Drawable mediImage, String info) {
+    private void addMedicineToLayout(String category, String mediName, String mediDesc, int mediAmount, Drawable mediImage, String info, String type) {
         ArrayList<MedicineButton> containerList = new ArrayList<>();
         MedicineAdapter adapter = null;
 
@@ -234,7 +239,7 @@ public class InventoryFragment extends Fragment {
 
         }
         // Add placeholder medicine button
-        MedicineButton newButton = new MedicineButton(mediName, mediDesc, mediAmount, mediImage, info);
+        MedicineButton newButton = new MedicineButton(mediName, mediDesc, mediAmount, mediImage, info, type);
         // Add the placeholder to the appropriate container list
         containerList.add(newButton);
 
@@ -273,8 +278,6 @@ public class InventoryFragment extends Fragment {
                 pickCamera();
             }
         });
-
-
         // Drop down list for category
         Spinner category = popupView.findViewById(R.id.category);
         category.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -296,6 +299,46 @@ public class InventoryFragment extends Fragment {
         );
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         category.setAdapter(spinnerAdapter);
+
+        allTags = new ArrayList<>();
+        allTags.add(new MedicineTag("Cough",Color.BLACK));
+        allTags.add(new MedicineTag("Flu",Color.CYAN));
+        allTags.add(new MedicineTag("Headache",Color.MAGENTA));
+
+        Spinner tagSpinner = popupView.findViewById(R.id.multiSelectSpinner);
+        boolean[] selectedItems = new boolean[allTags.size()];
+        ArrayList<MedicineTag> selectedTags = new ArrayList<>();
+
+//        tagSpinner.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+//                builder.setTitle("Select Tags");
+//
+//                String[] tagNames = new String[allTags.size()];
+//                for(int i = 0; i < allTags.size(); i++){
+//                    tagNames[i] = allTags.get(i).getName();
+//                }
+//
+//                builder.setMultiChoiceItems(tagNames, selectedItems, ((dialog, which, isChecked) -> {
+//                    if(isChecked){
+//                        selectedTags.add(allTags.get(which));
+//                    }
+//                    else{
+//                        selectedTags.remove(allTags.get(which));
+//                    }
+//                }));
+//
+//                builder.setPositiveButton("OK",((dialog, which) -> {
+//                    displaySelectedTags(popupView, selectedTags);
+//                }));
+//                builder.setNegativeButton("Cancel",((dialog, which) -> {
+//                    dialog.dismiss();
+//                }));
+//                builder.show();
+//            }
+//        });
+
 
         // Exit button to close popup window
         Button exitButton = popupView.findViewById(R.id.exit);
@@ -345,10 +388,31 @@ public class InventoryFragment extends Fragment {
                 }
                 else{
                     int mediAmount = Integer.parseInt(amount);
-                    addMedicineToLayout(mediType,mediName, mediDesc,mediAmount, image, info);
+                    addMedicineToLayout(mediType,mediName, mediDesc,mediAmount, image, info, mediType);
                     popupWindow.dismiss();
                 }
             }
+//            private void displaySelectedTags(View popupView, ArrayList<MedicineTag> selectedTags) {
+//                // Find the LinearLayout where you want to display the selected tags
+//                LinearLayout selectedTagsLayout = popupView.findViewById(R.id.multiSelectSpinner); // Use LinearLayout or similar
+//
+//                // Clear the previous tags
+//                selectedTagsLayout.removeAllViews();
+//
+//                // Iterate over selected tags and display them
+//                for (MedicineTag tag : selectedTags) {
+//                    // Create a new TextView for each tag
+//                    TextView tagTextView = new TextView(requireContext());
+//                    tagTextView.setText(tag.getName());
+//                    tagTextView.setBackgroundColor(tag.getBackgroundColour());
+//                    tagTextView.setPadding(10, 10, 10, 10);
+//                    tagTextView.setTextColor(Color.WHITE); // Set text color for readability
+//
+//                    // Add the TextView to the layout
+//                    selectedTagsLayout.addView(tagTextView);
+//                }
+//            }
+
         });
 
     }
@@ -367,6 +431,7 @@ public class InventoryFragment extends Fragment {
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT,camUri);
         cameraLauncher.launch(cameraIntent);
     }
+
 }
 
 

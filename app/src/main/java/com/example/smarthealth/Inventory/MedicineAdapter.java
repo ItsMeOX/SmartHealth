@@ -1,12 +1,18 @@
 package com.example.smarthealth.Inventory;
 
 import android.content.Context;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.smarthealth.R;
 import java.util.ArrayList;
@@ -19,6 +25,7 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.ViewHo
     private List<MedicineButton> medicineSubList;
     private boolean isExpanded = true;
     private final int MAX_BUTTON_SHOWN = 4;
+    ConstraintLayout popup_window;
 
     public MedicineAdapter(Context context, ArrayList<MedicineButton> medicineContainersList) {
         this.context = context;
@@ -46,6 +53,7 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.ViewHo
         holder.medicineDesc.setText(model.getMedicineDesc());
         holder.medicineAmount.setText(String.valueOf(model.getMedicineAmount()));
 
+
         // Handle the image
 //        if (model.getMedicineImage() != 0) {
 //            holder.medicineImage.setImageResource(model.getMedicineImage());
@@ -59,6 +67,14 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.ViewHo
         } else {
             holder.itemView.setVisibility(View.GONE); // Hide items beyond the limit
         }
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MedicineButton mediClicked = medicineButtonList.get(position);
+                MedicineInfoPage.showInfo(context, mediClicked, v);
+            }
+        });
+
     }
 
     @Override
@@ -114,4 +130,15 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.ViewHo
             medicineAmount = itemView.findViewById(R.id.amountText);
         }
     }
+    public void showInfo(View anchorView) {
+        View popupView = LayoutInflater.from(context).inflate(R.layout.medicine_fullview, null);
+
+        PopupWindow popupWindow = new PopupWindow(popupView,
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                true);
+
+        popupWindow.showAtLocation(anchorView.getRootView(), Gravity.CENTER, 0, 0);
+    }
+
 }
