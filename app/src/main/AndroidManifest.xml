@@ -13,18 +13,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SmartHealth"
         tools:targetApi="31" >
-
-        <activity android:name="com.example.smarthealth.LoginActivity"
-            android:exported="true"
-            android:theme="@style/LoginTheme">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-        <activity android:name="com.example.smarthealth.RegisterActivity" />
-
         <activity
             android:name="com.example.smarthealth.MainActivity"
             android:exported="true"
@@ -34,5 +22,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.example.smarthealth.UserActivity"
+            android:exported="false" />
+
+        <activity
+            android:name="com.example.smarthealth.EditProfileActivity"
+            android:exported="false" />
+
+        <activity
+            android:name="com.example.smarthealth.EditMetricsActivity"
+            android:exported="false" />
     </application>
 </manifest>
