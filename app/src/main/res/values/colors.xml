@@ -22,4 +22,9 @@
 
     <color name="blackTextColor">#000</color>
     <color name="colorLoginPrimaryDark">#FDFFFF</color>
+
+    <color name="blue">#2196F3</color> <!-- Underweight -->
+    <color name="green">#4CAF50</color> <!-- Normal weight -->
+    <color name="orange">#FF9800</color> <!-- Overweight -->
+    <color name="red">#F44336</color> <!-- Obese -->
 </resources>

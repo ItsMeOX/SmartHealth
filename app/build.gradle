@@ -27,6 +27,11 @@ android {
         targetCompatibility JavaVersion.VERSION_11
     }
 }
+android {
+    viewBinding {
+        enabled = true
+    }
+}
 
 dependencies {
     implementation libs.appcompat

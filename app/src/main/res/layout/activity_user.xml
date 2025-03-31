@@ -49,7 +49,7 @@
             </androidx.cardview.widget.CardView>
 
             <TextView
-                android:id="@+id/userName"
+                android:id="@+id/fullNameText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="John Doe"
@@ -59,7 +59,7 @@
                 android:layout_marginTop="8dp"/>
 
             <TextView
-                android:id="@+id/userEmail"
+                android:id="@+id/emailText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="johndoe@email.com"
@@ -115,6 +115,7 @@
                         android:textColor="@color/blackTextColor"/>
 
                     <TextView
+                        android:id="@+id/mobileText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Phone_Number_Holder"
@@ -160,6 +161,7 @@
                         android:textColor="@color/blackTextColor"/>
 
                     <TextView
+                        android:id="@+id/dobText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Date_Of_Birth_Hoder"
@@ -205,6 +207,7 @@
                     android:textColor="@color/blackTextColor"/>
 
                 <TextView
+                    android:id="@+id/addressText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Address_Holder"
@@ -250,6 +253,7 @@
                         android:textColor="@color/blackTextColor"/>
 
                     <TextView
+                        android:id="@+id/metricsText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="75 kg | 160 cm"
@@ -302,6 +306,7 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/signOutBtn"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_weight="1"
