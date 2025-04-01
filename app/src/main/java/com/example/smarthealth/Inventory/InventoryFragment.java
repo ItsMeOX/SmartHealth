@@ -3,7 +3,10 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -31,6 +34,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentResultListener;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -189,6 +193,29 @@ public class InventoryFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // Retrieve medicine data from dialog fragment
+        getParentFragmentManager().setFragmentResultListener("medicineData", this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                // Retrieve the data needed to add medicine
+                String name = result.getString("Name");
+                String desc = result.getString("Desc");
+                String info = result.getString("Info");
+                int amount = result.getInt("Amount");
+                String type = result.getString("Type");
+                byte[] imageData = result.getByteArray("Image");
+
+                Drawable imageDrawable = byteArrayToDrawable(imageData);
+                // Add medicine to layout
+                addMedicineToLayout(type, name, desc, amount, imageDrawable, info, type);
+            }
+        });
+    }
+
     private void addMedicineToLayout(String category, String mediName, String mediDesc, int mediAmount, Drawable mediImage, String info, String type) {
         ArrayList<MedicineButton> containerList = new ArrayList<>();
         MedicineAdapter adapter = null;
@@ -227,7 +254,11 @@ public class InventoryFragment extends Fragment {
             sharedViewModel.setOthersButtonList(containerList);
         }
     }
-
+    private Drawable byteArrayToDrawable(byte[] imageData) {
+        if (imageData == null) return null;
+        Bitmap bitmap = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
+        return new BitmapDrawable(getResources(), bitmap);
+    }
 //        ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(
 //                requireContext(),
 //                R.array.formMediCategory,

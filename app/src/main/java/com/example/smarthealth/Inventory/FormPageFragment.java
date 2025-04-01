@@ -3,7 +3,10 @@ package com.example.smarthealth.Inventory;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -28,8 +31,11 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 
 import com.example.smarthealth.R;
+
+import java.io.ByteArrayOutputStream;
 
 public class FormPageFragment extends DialogFragment {
     private Uri camUri;
@@ -167,10 +173,17 @@ public class FormPageFragment extends DialogFragment {
                     return;
                 } else {
                     int mediAmount = Integer.parseInt(amount);
+                    byte[] imageData = drawableToByteArray(image);
 
-//                    addMedicineToLayout(mediType,mediName, mediDesc,mediAmount, image, info, mediType);
-                    // Package data to be sent over
+                    Bundle result = new Bundle();
+                    result.putString("Name", mediName);
+                    result.putString("Desc", mediDesc);
+                    result.putString("Info", info);
+                    result.putInt("Amount", mediAmount);
+                    result.putString("Type", mediType);
+                    result.putByteArray("Image", imageData);
 
+                    getParentFragmentManager().setFragmentResult("medicineData", result);
                     dismiss();
                 }
             };
@@ -194,4 +207,24 @@ public class FormPageFragment extends DialogFragment {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         galleryLauncher.launch(intent);
     }
+    private byte[] drawableToByteArray(Drawable drawable) {
+        if (drawable == null) return null;
+
+        Bitmap bitmap;
+        if (drawable instanceof BitmapDrawable) {
+            bitmap = ((BitmapDrawable) drawable).getBitmap();
+        } else {
+            bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
+                    drawable.getIntrinsicHeight(),
+                    Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(bitmap);
+            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+            drawable.draw(canvas);
+        }
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        return stream.toByteArray();
+    }
+
 }

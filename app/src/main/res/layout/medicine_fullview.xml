@@ -144,12 +144,22 @@
             app:layout_constraintTop_toBottomOf="@+id/tags"
             android:layout_marginStart="30dp"
             android:paddingTop="15dp"
+            android:orientation="vertical"
             >
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Description"
                 android:textSize="20dp"
+                android:textColor="@color/black"
+                >
+            </TextView>
+
+            <TextView
+                android:id="@+id/mediFullInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
                 android:textColor="@color/black"
                 >
             </TextView>

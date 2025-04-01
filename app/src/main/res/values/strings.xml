@@ -8,6 +8,16 @@
     <string name="fillByScan">Smart Scan</string>
     <string name="fillByForm">Fill By Form</string>
     <string name="fillByHistory">Fill By History</string>
+    <string name="enter_information">Enter Information</string>
+    <string name="type">Type</string>
+    <string name="enter_description">Enter Description</string>
+    <string name="enter_amount">Enter Amount</string>
+    <string name="enter_name">Enter Name</string>
+    <string name="open_camera">Open Camera</string>
+    <string name="upload_image">Upload Image</string>
+    <string name="x">X</string>
+    <string name="confirm">Confirm</string>
+    <string name="medicine_image">Medicine Image</string>
 
     <string-array name="formMediCategory">
         <item>Pills</item>
