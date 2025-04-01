@@ -172,7 +172,8 @@ public class InventoryFragment extends Fragment {
         fillFormButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showPopUpWindow();
+                FormPageFragment formDialog = new FormPageFragment();
+                formDialog.show(getParentFragmentManager(), "Form fill");
             }
         });
 
@@ -184,39 +185,6 @@ public class InventoryFragment extends Fragment {
                         ContextCompat.getDrawable(requireContext(), R.drawable.app_logo), "info", "Others");
                 Toast.makeText(requireContext(), "New Other Medicine Added", Toast.LENGTH_SHORT).show();
             }
-        });
-        galleryLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == requireActivity().RESULT_OK && result.getData() != null) {
-                        Uri imageUri = result.getData().getData();
-                        if (popupImageView != null) {
-                            // Update the popup's ImageView
-                            popupImageView.setImageURI(imageUri);
-                            uploadImageButton.setVisibility(View.GONE);
-                            openCameraButton.setVisibility(View.GONE);
-                        } else {
-                            Toast.makeText(requireContext(), "Popup not open!", Toast.LENGTH_SHORT).show();}
-                    } else {
-                        Toast.makeText(requireContext(), "No Image Selected", Toast.LENGTH_SHORT).show();}
-                }
-        );
-
-        cameraLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-            @Override
-            public void onActivityResult(ActivityResult result) {
-                if (result.getResultCode() == Activity.RESULT_OK) {
-                    if (camUri != null) {
-                        popupImageView.setImageURI(camUri); // Set image from saved URI
-                        uploadImageButton.setVisibility(View.GONE);
-                        openCameraButton.setVisibility(View.GONE);
-                    }
-                    else{
-                        Toast.makeText(requireContext(), "Popup not open!", Toast.LENGTH_SHORT).show();}
-                    }
-                else {
-                    Toast.makeText(requireContext(), "No Image Selected", Toast.LENGTH_SHORT).show();}
-                }
         });
         return view;
     }
@@ -260,54 +228,22 @@ public class InventoryFragment extends Fragment {
         }
     }
 
-    private void showPopUpWindow(){
-        View popupView = View.inflate(requireContext(), R.layout.form_fillup, null);
-        int width = LinearLayout.LayoutParams.MATCH_PARENT;
-        int height = LinearLayout.LayoutParams.MATCH_PARENT;
-        // Focusable allow us to focus on the edit text and key values
-        popupImageView = popupView.findViewById(R.id.image);
-
-        PopupWindow popupWindow = new PopupWindow(popupView, width , height ,true);
-        popupWindow.showAtLocation(popup_window, Gravity.CENTER, 0,0);
-
-        openCameraButton = popupView.findViewById(R.id.open_camera);
-
-        openCameraButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                pickCamera();
-            }
-        });
-        // Drop down list for category
-        Spinner category = popupView.findViewById(R.id.category);
-        category.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                TextView selectedText = (TextView) view;
-                // Change the text color of the selected item
-                selectedText.setTextColor(Color.BLACK);
-                // Change the text size of the selected item (e.g., 20sp)
-                selectedText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
-        });
-        ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(
-                requireContext(),
-                R.array.formMediCategory,
-                android.R.layout.simple_spinner_item
-        );
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        category.setAdapter(spinnerAdapter);
-
-        allTags = new ArrayList<>();
-        allTags.add(new MedicineTag("Cough",Color.BLACK));
-        allTags.add(new MedicineTag("Flu",Color.CYAN));
-        allTags.add(new MedicineTag("Headache",Color.MAGENTA));
-
-        Spinner tagSpinner = popupView.findViewById(R.id.multiSelectSpinner);
-        boolean[] selectedItems = new boolean[allTags.size()];
-        ArrayList<MedicineTag> selectedTags = new ArrayList<>();
+//        ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(
+//                requireContext(),
+//                R.array.formMediCategory,
+//                android.R.layout.simple_spinner_item
+//        );
+//        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        category.setAdapter(spinnerAdapter);
+//
+//        allTags = new ArrayList<>();
+//        allTags.add(new MedicineTag("Cough",Color.BLACK));
+//        allTags.add(new MedicineTag("Flu",Color.CYAN));
+//        allTags.add(new MedicineTag("Headache",Color.MAGENTA));
+//
+//        Spinner tagSpinner = popupView.findViewById(R.id.multiSelectSpinner);
+//        boolean[] selectedItems = new boolean[allTags.size()];
+//        ArrayList<MedicineTag> selectedTags = new ArrayList<>();
 
 //        tagSpinner.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -340,58 +276,6 @@ public class InventoryFragment extends Fragment {
 //        });
 
 
-        // Exit button to close popup window
-        Button exitButton = popupView.findViewById(R.id.exit);
-        exitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                popupWindow.dismiss();
-            }}
-        );
-
-        uploadImageButton = popupView.findViewById(R.id.upload_image);
-        uploadImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                pickImage();
-            }}
-        );
-
-        confirmButton = popupView.findViewById(R.id.confirm);
-        confirmButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO retrieve information from the popup window
-                EditText nameView = popupView.findViewById(R.id.formMediName);
-                EditText amountView = popupView.findViewById(R.id.formMediAmount);
-                EditText descView = popupView.findViewById(R.id.formMediDesc);
-                ImageView imageView = popupView.findViewById(R.id.image);
-                String mediType = category.getSelectedItem().toString();
-                EditText mediInfo = popupView.findViewById(R.id.formMediInfo);
-
-                String mediName = nameView.getText().toString().trim();
-                String mediDesc = descView.getText().toString().trim();
-                String amount = amountView.getText().toString().trim();
-                Drawable image = imageView.getDrawable();
-                String info = mediInfo.getText().toString().trim();
-
-                // Pass corresponding parameters
-                if(mediName.isEmpty() || mediDesc.isEmpty() || amount.isEmpty() || imageView.getDrawable() == null || info.isEmpty()){
-                    if(mediName.isEmpty()){nameView.setError("Required");}
-                    if(mediDesc.isEmpty()){descView.setError("Required");}
-                    if(amount.isEmpty()){amountView.setError("Required");}
-                    if(info.isEmpty()){mediInfo.setError("Required");}
-                    if(imageView.getDrawable() == null){
-                        Toast.makeText(requireContext(), "Please select an image!", Toast.LENGTH_SHORT).show();
-                    }
-                    return;
-                }
-                else{
-                    int mediAmount = Integer.parseInt(amount);
-                    addMedicineToLayout(mediType,mediName, mediDesc,mediAmount, image, info, mediType);
-                    popupWindow.dismiss();
-                }
-            }
 //            private void displaySelectedTags(View popupView, ArrayList<MedicineTag> selectedTags) {
 //                // Find the LinearLayout where you want to display the selected tags
 //                LinearLayout selectedTagsLayout = popupView.findViewById(R.id.multiSelectSpinner); // Use LinearLayout or similar
@@ -413,24 +297,7 @@ public class InventoryFragment extends Fragment {
 //                }
 //            }
 
-        });
 
-    }
-    private void pickImage() {
-        // Intent to pick an image from the gallery
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        galleryLauncher.launch(intent);
-    }
-
-    private void pickCamera(){
-        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        ContentValues values = new ContentValues();
-        values.put(MediaStore.Images.Media.TITLE, "New Medicine");
-        values.put(MediaStore.Images.Media.DESCRIPTION, "Camera");
-        camUri = requireContext().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT,camUri);
-        cameraLauncher.launch(cameraIntent);
-    }
 
 }
 
