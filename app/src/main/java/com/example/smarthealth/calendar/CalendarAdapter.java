@@ -64,7 +64,6 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
                 // Transition Y up to show only current week
                 holder.itemView.setTranslationY(-holder.itemView.getHeight() * (float)(currentDatePosition/7)));
 
-        // TODO: link events to Android calendar system
         if (!calendarEventProvider.hasEvent(currentDayCalendar)) {
             holder.hasEventMarker.setVisibility(View.INVISIBLE);
         }
