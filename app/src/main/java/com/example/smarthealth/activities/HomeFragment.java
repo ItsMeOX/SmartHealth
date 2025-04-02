@@ -12,19 +12,27 @@ import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.smarthealth.R;
-import com.example.smarthealth.calendar.AndroidCalendarEventProvider;
+import com.example.smarthealth.calendar.DatabaseCalendarEventProvider;
 import com.example.smarthealth.calendar.CalendarEvent;
 import com.example.smarthealth.calendar.CalendarEventProvider;
 import com.example.smarthealth.calendar.CalendarAdapter;
+import com.example.smarthealth.nutrient_intake.NutrientIntake;
+import com.example.smarthealth.nutrient_intake.NutrientIntakeAdapter;
+import com.example.smarthealth.nutrient_intake.NutrientIntakeProvider;
+import com.example.smarthealth.nutrient_intake.DatabaseNutrientIntakeProvider;
+import com.example.smarthealth.upcoming_schedule.DatabaseUpcomingScheduleProvider;
+import com.example.smarthealth.upcoming_schedule.UpcomingSchedule;
+import com.example.smarthealth.upcoming_schedule.UpcomingScheduleAdapter;
+import com.example.smarthealth.upcoming_schedule.UpcomingScheduleProvider;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -37,24 +45,32 @@ public class HomeFragment extends Fragment implements CalendarAdapter.OnItemList
     private TextView monthYearText;
     private RecyclerView calendarRecyclerView;
     private Calendar selectedDate;
-    private LinearLayout scheduleContainer;
+    private RecyclerView scheduleRecyclerView;
     private CalendarEventProvider calendarEventProvider;
-    View view;
+    private NutrientIntakeProvider nutrientIntakeProvider;
+    private UpcomingScheduleProvider upcomingScheduleProvider;
+
+    private RecyclerView nutrientRecyclerView;
+    private View view;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.landing_fragment, container, false);
+        view = inflater.inflate(R.layout.home_fragment, container, false);
 
-        // TODO: change to other calendar adapter, most likely from database.
-        calendarEventProvider = new AndroidCalendarEventProvider(requireContext());
+        calendarEventProvider = new DatabaseCalendarEventProvider(requireContext());
+        nutrientIntakeProvider = new DatabaseNutrientIntakeProvider();
+        upcomingScheduleProvider = new DatabaseUpcomingScheduleProvider();
 
         initCalendarWidgets();
         setUpMainContentSlider();
+        initNutrientWidgets();
         initUpcomingScheduleWidgets();
         initBotSuggestionWidgets();
 
         selectedDate = Calendar.getInstance();
         setMonthView();
+        setNutrientIntakeView();
+        setUpcomingSchedules();
 
         return view;
     }
@@ -124,7 +140,6 @@ public class HomeFragment extends Fragment implements CalendarAdapter.OnItemList
 
         return new Pair<>(daysInMonth, currentDatePosition);
     }
-
 
     public void previousMonthAction(View view) {
         selectedDate.add(Calendar.MONTH, -1);
@@ -258,6 +273,20 @@ public class HomeFragment extends Fragment implements CalendarAdapter.OnItemList
         });
     }
 
+    private void initNutrientWidgets() {
+        nutrientRecyclerView = (RecyclerView) view.findViewById(R.id.nutrientIntakeRecyclerView);
+    }
+
+    private void setNutrientIntakeView() {
+        List<NutrientIntake> nutrientIntakeList = nutrientIntakeProvider.getNutrientIntakes();
+
+        NutrientIntakeAdapter nutrientIntakeAdapter = new NutrientIntakeAdapter(nutrientIntakeList);
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(requireContext(), 2);
+        nutrientRecyclerView.setLayoutManager(layoutManager);
+        nutrientRecyclerView.setAdapter(nutrientIntakeAdapter);
+        nutrientRecyclerView.setNestedScrollingEnabled(false);
+    }
+
     @Override
     public void onCalenderCellClick(int position, List<Calendar> daysOfMonth) {
         // TODO 1: link to Android Calendar? and complete this function.
@@ -359,32 +388,16 @@ public class HomeFragment extends Fragment implements CalendarAdapter.OnItemList
     }
 
     private void initUpcomingScheduleWidgets() {
-        // TODO: fetch schedule from database.
-
-        scheduleContainer = view.findViewById(R.id.upcomingScheduleLayout);
-        addSchedule("Aspirin", "Today", "12:00pm", R.drawable.up_schedule_medicine);
-        addSchedule("Lunch", "Today", "12:30pm", R.drawable.up_schedule_meal);
-        addSchedule("Nospirit", "Today", "01:00pm", R.drawable.up_schedule_medicine);
+        scheduleRecyclerView = (RecyclerView) view.findViewById(R.id.upcomingScheduleRecyclerView);
     }
 
-    public void addSchedule(String scheduleName, String scheduleDay, String scheduleTime, int iconResId) {
-        LayoutInflater inflater = LayoutInflater.from(requireContext());
-        View scheduleView = inflater.inflate(R.layout.upcoming_schedule_view, scheduleContainer, false);
+    public void setUpcomingSchedules() {
+        List<UpcomingSchedule> upcomingSchedules = upcomingScheduleProvider.getTodaySchedules();
 
-        TextView scheduleNameView = scheduleView.findViewById(R.id.upcomingScheduleName);
-        ImageView scheduleIconView = scheduleView.findViewById(R.id.upcomingScheduleIcon);
-        TextView scheduleDayView = scheduleView.findViewById(R.id.upcomingScheduleDay);
-        TextView scheduleTimeView = scheduleView.findViewById(R.id.upcomingScheduleTime);
-
-        scheduleNameView.setText(scheduleName);
-        scheduleDayView.setText(scheduleDay);
-        scheduleTimeView.setText(scheduleTime);
-
-        scheduleIconView.setImageResource(iconResId);
-        scheduleContainer.addView(scheduleView);
-
+        UpcomingScheduleAdapter upcomingScheduleAdapter = new UpcomingScheduleAdapter(upcomingSchedules);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
+        scheduleRecyclerView.setLayoutManager(layoutManager);
+        scheduleRecyclerView.setAdapter(upcomingScheduleAdapter);
     }
-
-
 
 }
