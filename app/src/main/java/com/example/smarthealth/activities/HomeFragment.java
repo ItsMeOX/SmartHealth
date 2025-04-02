@@ -2,6 +2,7 @@ package com.example.smarthealth.activities;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -21,6 +22,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.smarthealth.R;
+import com.example.smarthealth.bot_suggestions.BotSuggestion;
+import com.example.smarthealth.bot_suggestions.BotSuggestionAdapter;
+import com.example.smarthealth.bot_suggestions.BotSuggestionProvider;
+import com.example.smarthealth.bot_suggestions.DatabaseBotSuggestionProvider;
 import com.example.smarthealth.calendar.DatabaseCalendarEventProvider;
 import com.example.smarthealth.calendar.CalendarEvent;
 import com.example.smarthealth.calendar.CalendarEventProvider;
@@ -40,18 +45,19 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-public class HomeFragment extends Fragment implements CalendarAdapter.OnItemListener {
+public class HomeFragment extends Fragment implements CalendarAdapter.OnItemListener, BotSuggestionAdapter.OnItemListener {
 
     private TextView monthYearText;
-    private RecyclerView calendarRecyclerView;
     private Calendar selectedDate;
+    private RecyclerView calendarRecyclerView;
+    private RecyclerView nutrientRecyclerView;
     private RecyclerView scheduleRecyclerView;
+    private RecyclerView botSuggestionsRecyclerView;
     private CalendarEventProvider calendarEventProvider;
     private NutrientIntakeProvider nutrientIntakeProvider;
     private UpcomingScheduleProvider upcomingScheduleProvider;
-
-    private RecyclerView nutrientRecyclerView;
-    private View view;
+    private BotSuggestionProvider botSuggestionProvider;
+    private View view; // main view for this fragment
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -60,6 +66,7 @@ public class HomeFragment extends Fragment implements CalendarAdapter.OnItemList
         calendarEventProvider = new DatabaseCalendarEventProvider(requireContext());
         nutrientIntakeProvider = new DatabaseNutrientIntakeProvider();
         upcomingScheduleProvider = new DatabaseUpcomingScheduleProvider();
+        botSuggestionProvider = new DatabaseBotSuggestionProvider();
 
         initCalendarWidgets();
         setUpMainContentSlider();
@@ -71,6 +78,7 @@ public class HomeFragment extends Fragment implements CalendarAdapter.OnItemList
         setMonthView();
         setNutrientIntakeView();
         setUpcomingSchedules();
+        setBotSuggestionsView();
 
         return view;
     }
@@ -80,6 +88,7 @@ public class HomeFragment extends Fragment implements CalendarAdapter.OnItemList
         View calendarRecycleView = LayoutInflater.from(requireContext()).inflate(R.layout.calendar_view, calendarParentView, false);
         calendarParentView.addView(calendarRecycleView);
         calendarRecyclerView = (RecyclerView) view.findViewById(R.id.calendarRecyclerView);
+        calendarRecyclerView.setNestedScrollingEnabled(false);
         monthYearText = (TextView) view.findViewById(R.id.calendarMonthYear);
     }
 
@@ -289,8 +298,6 @@ public class HomeFragment extends Fragment implements CalendarAdapter.OnItemList
 
     @Override
     public void onCalenderCellClick(int position, List<Calendar> daysOfMonth) {
-        // TODO 1: link to Android Calendar? and complete this function.
-        // TODO 2: Set popup title to current date
         Dialog calendarEventDialog = new Dialog(requireActivity());
         calendarEventDialog.setContentView(R.layout.calendar_event_popup);
         if (calendarEventDialog.getWindow() != null) {
@@ -332,59 +339,17 @@ public class HomeFragment extends Fragment implements CalendarAdapter.OnItemList
     }
 
     private void initBotSuggestionWidgets() {
-        // TODO: Replace placeholders with suggestion from AI (pls set word limits)
-
-        String[] titles = {"Increase Protein Intake", "Choose complex carbohydrates", "Stay hydrated"};
-        String[] descriptions = {"Increase in take of fish, chicken, eggs, tofu, legumes to...",
-                "Choose complex carbohydrates for example whole grains, vegetables to avoid sugar spikes. Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao." +
-                        "Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao."
-                        +"Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao."
-                        +"Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao."
-                        +"Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao."
-                        +"Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao."
-                        +"Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao."
-                        +"Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.",
-                "Drink more water, or herbal teas, soups to stay hydrated, because H2O make you human."};
-
-        for (int i = 0; i < titles.length; i++) {
-            addBotSuggestion(titles[i], descriptions[i]);
-        }
+        botSuggestionsRecyclerView = view.findViewById(R.id.botSuggestionsRecyclerView);
     }
 
-    public void addBotSuggestion(String title, String description) {
-        LinearLayout suggestionContainer = view.findViewById(R.id.botSuggestionsBox);
-        LayoutInflater inflater = LayoutInflater.from(requireContext());
-        View suggestionView = inflater.inflate(R.layout.bot_suggestion_view, suggestionContainer, false);
+    public void setBotSuggestionsView() {
+        List<BotSuggestion> botSuggestionsList = botSuggestionProvider.getBotSuggestions();
 
-        TextView titleView = suggestionView.findViewById(R.id.suggestionTitle);
-        TextView descView = suggestionView.findViewById(R.id.suggestionDesc);
-
-        titleView.setText(title);
-        descView.setText(description);
-
-        suggestionView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Create a popup view for user to view full text (if text is too long)
-                Dialog botSuggestionDialog = new Dialog(requireActivity());
-                botSuggestionDialog.setContentView(R.layout.bot_suggestion_popup);
-                if (botSuggestionDialog.getWindow() != null) {
-                    WindowManager.LayoutParams params = botSuggestionDialog.getWindow().getAttributes();
-                    params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
-                    params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-                    botSuggestionDialog.getWindow().setAttributes(params);
-                }
-
-                TextView popupTitleView = botSuggestionDialog.findViewById(R.id.suggestionPopupTitle);
-                TextView popupDescView = botSuggestionDialog.findViewById(R.id.suggestionPopupDesc);
-                popupTitleView.setText(title);
-                popupDescView.setText(description);
-
-                botSuggestionDialog.show();
-            }
-        });
-
-        suggestionContainer.addView(suggestionView);
+        BotSuggestionAdapter botSuggestionAdapter = new BotSuggestionAdapter(botSuggestionsList, this);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false);
+        botSuggestionsRecyclerView.setLayoutManager(layoutManager);
+        botSuggestionsRecyclerView.setAdapter(botSuggestionAdapter);
+        botSuggestionsRecyclerView.setNestedScrollingEnabled(false);
     }
 
     private void initUpcomingScheduleWidgets() {
@@ -400,4 +365,22 @@ public class HomeFragment extends Fragment implements CalendarAdapter.OnItemList
         scheduleRecyclerView.setAdapter(upcomingScheduleAdapter);
     }
 
+    public void onBotSuggestionClick(int position, List<BotSuggestion> botSuggestions) {
+        BotSuggestion botSuggestion = botSuggestions.get(position);
+        Dialog botSuggestionDialog = new Dialog(requireActivity());
+        botSuggestionDialog.setContentView(R.layout.bot_suggestion_popup);
+        if (botSuggestionDialog.getWindow() != null) {
+            WindowManager.LayoutParams params = botSuggestionDialog.getWindow().getAttributes();
+            params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+            params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            botSuggestionDialog.getWindow().setAttributes(params);
+        }
+
+        TextView popupTitleView = botSuggestionDialog.findViewById(R.id.suggestionPopupTitle);
+        TextView popupDescView = botSuggestionDialog.findViewById(R.id.suggestionPopupDesc);
+        popupTitleView.setText(botSuggestion.getTitle());
+        popupDescView.setText(botSuggestion.getDescription());
+
+        botSuggestionDialog.show();
+    }
 }

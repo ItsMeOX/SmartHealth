@@ -143,34 +143,37 @@
                                 app:layout_constraintRight_toRightOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
                         </androidx.constraintlayout.widget.ConstraintLayout>
-                        <LinearLayout
-                            android:id="@+id/botSuggestionLayout"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="20dp"
-                            android:layout_marginBottom="5dp"
-                            android:orientation="vertical"
-                            >
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="15dp"
-                                android:fontFamily="@font/inter_bold"
-                                android:text="Bob's suggestion"
-                                android:textColor="#101010"
-                                android:textSize="20sp"
-                                />
-
-                            <LinearLayout
-                                android:id="@+id/botSuggestionsBox"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                android:paddingHorizontal="10dp"
-                                >
-                            </LinearLayout>
-                        </LinearLayout>
                     </LinearLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/botSuggestionLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="5dp"
+                        android:orientation="vertical"
+                        >
+                        <TextView
+                            android:id="@+id/botSuggestionSectionTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="15dp"
+                            android:fontFamily="@font/inter_bold"
+                            android:text="Bob's suggestion"
+                            android:textColor="#101010"
+                            android:textSize="20sp"
+                            />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:layout_marginTop="5dp"
+                            android:layout_below="@id/botSuggestionSectionTitle"
+                            android:id="@+id/botSuggestionsRecyclerView"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:paddingHorizontal="8dp"
+                            >
+                        </androidx.recyclerview.widget.RecyclerView>
+                    </RelativeLayout>
                 </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
