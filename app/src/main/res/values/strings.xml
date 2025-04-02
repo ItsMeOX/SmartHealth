@@ -25,6 +25,20 @@
         <item>Others</item>
     </string-array>
 
+    <string-array name="formMediTag">
+        <item>Cough</item>
+        <item>Fever</item>
+        <item>Cold</item>
+        <item>Diarhoea</item>
+        <item>Phlegm</item>
+        <item>Painkiller</item>
+        <item>Diabetes</item>
+        <item>High Cholesterol</item>
+        <item>Dry Eyes</item>
+        <item>High-Blood Pressure</item>
+        <item>Others</item>
+    </string-array>
+
 
 
 

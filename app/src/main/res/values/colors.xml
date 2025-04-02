@@ -14,4 +14,17 @@
     <color name="transparent">#00000000</color>
     <color name="green">#68E539</color>
     <color name="red">#F4502C</color>
+
+    <color name="tagColor1">#FFB011</color>
+    <color name="tagColor2">#68E539</color>
+    <color name="tagColor3">#3357FF</color>
+    <color name="tagColor4">#FFBB86FC</color>
+    <color name="tagColor5">#CAB45D</color>
+    <color name="tagColor6">#C74B17</color>
+    <color name="tagColor7">#0098DB</color>
+    <color name="tagColor8">#006131</color>
+    <color name="tagColor9">#DE3939</color>
+    <color name="tagColor10">#220266</color>
+    <color name="tagColor11">#662E8C</color>
+
 </resources>

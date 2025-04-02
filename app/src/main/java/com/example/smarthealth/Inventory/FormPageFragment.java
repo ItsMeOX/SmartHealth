@@ -1,8 +1,10 @@
 package com.example.smarthealth.Inventory;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -12,15 +14,20 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,16 +38,17 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-
 import com.example.smarthealth.R;
-
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 
 public class FormPageFragment extends DialogFragment {
     private Uri camUri;
     private ImageView popupImageView;
     private Button openCameraButton, uploadImageButton;
+
+    private String[] mediTag = {"Cough", "Fever", "Cold", "Diarhoea","Phlegm", "Painkiller", "Diabetes", "High Cholesterol",
+    "Dry Eyes" , "High-blood Pressure"};
 
     private final ActivityResultLauncher<Intent> galleryLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -135,6 +143,22 @@ public class FormPageFragment extends DialogFragment {
             public void onNothingSelected(AdapterView<?> parent) {}
         });
 
+        Spinner medicineTags = popupView.findViewById(R.id.multiSelectSpinner);
+        TextView text = popupView.findViewById(R.id.tagChosen);
+
+        String[] mediTag = getResources().getStringArray(R.array.formMediTag);
+        boolean[] selectedItems = new boolean[mediTag.length];
+        ArrayList<String> selectedTags = new ArrayList<>();
+        medicineTags.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    showMultiSelectDialog(text, mediTag, selectedItems, selectedTags);
+                }
+                return true; // Prevents default spinner behavior
+            }
+        });
+
         Button confirmButton = popupView.findViewById(R.id.confirm);
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -190,7 +214,6 @@ public class FormPageFragment extends DialogFragment {
         });
 
                 return popupView;
-
     }
 
     private void pickCamera(){
@@ -225,6 +248,78 @@ public class FormPageFragment extends DialogFragment {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
         return stream.toByteArray();
+    }
+
+    private void showMultiSelectDialog(TextView textView, String[] items, boolean[] selectedItems, ArrayList<String> selectedTags) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Select Tags");
+
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.tag_multiselect, null);
+        ListView listView = dialogView.findViewById(R.id.multiSelectListView);
+
+        // Define colors dynamically
+        int[] tagColors = {
+                getResources().getColor(R.color.tagColor1,getContext().getTheme()),
+                getResources().getColor(R.color.tagColor2,getContext().getTheme()),
+                getResources().getColor(R.color.tagColor3,getContext().getTheme()),
+                getResources().getColor(R.color.tagColor4,getContext().getTheme()),
+                getResources().getColor(R.color.tagColor5,getContext().getTheme()),
+                getResources().getColor(R.color.tagColor6,getContext().getTheme()),
+                getResources().getColor(R.color.tagColor7,getContext().getTheme()),
+                getResources().getColor(R.color.tagColor8,getContext().getTheme()),
+                getResources().getColor(R.color.tagColor9,getContext().getTheme()),
+                getResources().getColor(R.color.tagColor10,getContext().getTheme()),
+                getResources().getColor(R.color.tagColor11,getContext().getTheme())
+        };
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(requireContext(), R.layout.spinner_tag, R.id.tagText, items) {
+            @NonNull
+            @Override
+            public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                if (convertView == null) {
+                    convertView = LayoutInflater.from(getContext()).inflate(R.layout.spinner_tag, parent, false);
+                }
+
+                CheckBox checkBox = convertView.findViewById(R.id.checkBox);
+                TextView textView = convertView.findViewById(R.id.tagText);
+
+                textView.setText(items[position]);
+                checkBox.setChecked(selectedItems[position]);
+
+                // Set background tint color dynamically
+                ColorStateList colorStateList = ColorStateList.valueOf(tagColors[position % tagColors.length]);
+                textView.setBackgroundTintList(colorStateList);  // Apply background tint
+
+                textView.setPadding(20, 5, 20, 5);
+                textView.setTextColor(Color.WHITE); // Set text color to white for contrast
+
+                checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                    selectedItems[position] = isChecked;
+                    if (isChecked) {
+                        if (!selectedTags.contains(items[position])) {
+                            selectedTags.add(items[position]);
+                        }
+                    } else {
+                        selectedTags.remove(items[position]);
+                    }
+                });
+
+                return convertView;
+            }
+        };
+
+        listView.setAdapter(adapter);
+        builder.setView(dialogView);
+
+        builder.setPositiveButton("OK", (dialog, which) -> {
+            String displayText = selectedTags.isEmpty() ? "Select Tags" : TextUtils.join(", ", selectedTags);
+            textView.setText(displayText);
+        });
+
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+
+        builder.show();
     }
 
 }
