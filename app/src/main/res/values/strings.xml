@@ -18,6 +18,12 @@
     <string name="x">X</string>
     <string name="confirm">Confirm</string>
     <string name="medicine_image">Medicine Image</string>
+    <string name="remove_from_schedule">Remove From Schedule</string>
+    <string name="add_to_schedule">Add To Schedule</string>
+    <string name="description">Description</string>
+    <string name="remaining">remaining</string>
+    <string name="detailed_info">Detailed Info</string>
+    <string name="back_arrow">Back Arrow</string>
 
     <string-array name="formMediCategory">
         <item>Pills</item>
@@ -29,7 +35,7 @@
         <item>Cough</item>
         <item>Fever</item>
         <item>Cold</item>
-        <item>Diarhoea</item>
+        <item>Diarrhoea</item>
         <item>Phlegm</item>
         <item>Painkiller</item>
         <item>Diabetes</item>

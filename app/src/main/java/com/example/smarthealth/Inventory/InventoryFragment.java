@@ -1,35 +1,16 @@
 package com.example.smarthealth.Inventory;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.ContentValues;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
-import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.core.content.ContextCompat;
-import android.util.TypedValue;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -39,8 +20,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
-import android.provider.MediaStore;
-import android.net.Uri;
+import java.util.Optional;
 import com.example.smarthealth.R;
 
 public class InventoryFragment extends Fragment {
@@ -55,15 +35,8 @@ public class InventoryFragment extends Fragment {
     private RecyclerView othersLayout;
 
     ConstraintLayout popup_window;
-    private ActivityResultLauncher<Intent> galleryLauncher;
-    private  ActivityResultLauncher<Intent> cameraLauncher;
     private View view;
-    private ImageView popupImageView;
-    private Button uploadImageButton, openCameraButton, confirmButton;
     private SVMInventory sharedViewModel;
-    private Uri camUri;
-
-    private ArrayList<MedicineTag> allTags;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -167,8 +140,10 @@ public class InventoryFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // Add placeholder medicine to pills category
+                ArrayList<String> list = new ArrayList<>();
+                list.add("Cough");
                 addMedicineToLayout("Pills","PlaceHolder", "Fever", 100,
-                        ContextCompat.getDrawable(requireContext(), R.drawable.app_logo),"info","Pills");
+                        ContextCompat.getDrawable(requireContext(), R.drawable.app_logo),"info",list);
                 Toast.makeText(requireContext(), "New Pill Added", Toast.LENGTH_SHORT).show();
             }
         });
@@ -185,8 +160,10 @@ public class InventoryFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // Add placeholder medicine to others category
+                ArrayList<String> list = new ArrayList<>();
+                list.add("Cough");
                 addMedicineToLayout("Others","PlaceHolder", "Fever", 100,
-                        ContextCompat.getDrawable(requireContext(), R.drawable.app_logo), "info", "Others");
+                        ContextCompat.getDrawable(requireContext(), R.drawable.app_logo), "info", list);
                 Toast.makeText(requireContext(), "New Other Medicine Added", Toast.LENGTH_SHORT).show();
             }
         });
@@ -208,15 +185,16 @@ public class InventoryFragment extends Fragment {
                 int amount = result.getInt("Amount");
                 String type = result.getString("Type");
                 byte[] imageData = result.getByteArray("Image");
+                ArrayList<String> tagList = result.getStringArrayList("Tags");
 
                 Drawable imageDrawable = byteArrayToDrawable(imageData);
                 // Add medicine to layout
-                addMedicineToLayout(type, name, desc, amount, imageDrawable, info, type);
+                addMedicineToLayout(type, name, desc, amount, imageDrawable, info, tagList);
             }
         });
     }
 
-    private void addMedicineToLayout(String category, String mediName, String mediDesc, int mediAmount, Drawable mediImage, String info, String type) {
+    private void addMedicineToLayout(String category, String mediName, String mediDesc, int mediAmount, Drawable mediImage, String info, ArrayList<String> type) {
         ArrayList<MedicineButton> containerList = new ArrayList<>();
         MedicineAdapter adapter = null;
 
@@ -234,7 +212,7 @@ public class InventoryFragment extends Fragment {
 
         }
         // Add placeholder medicine button
-        MedicineButton newButton = new MedicineButton(mediName, mediDesc, mediAmount, mediImage, info, type);
+        MedicineButton newButton = new MedicineButton(mediName, category, mediDesc, mediAmount, mediImage, info, type);
         // Add the placeholder to the appropriate container list
         containerList.add(newButton);
 
@@ -259,77 +237,6 @@ public class InventoryFragment extends Fragment {
         Bitmap bitmap = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
         return new BitmapDrawable(getResources(), bitmap);
     }
-//        ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(
-//                requireContext(),
-//                R.array.formMediCategory,
-//                android.R.layout.simple_spinner_item
-//        );
-//        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        category.setAdapter(spinnerAdapter);
-//
-//        allTags = new ArrayList<>();
-//        allTags.add(new MedicineTag("Cough",Color.BLACK));
-//        allTags.add(new MedicineTag("Flu",Color.CYAN));
-//        allTags.add(new MedicineTag("Headache",Color.MAGENTA));
-//
-//        Spinner tagSpinner = popupView.findViewById(R.id.multiSelectSpinner);
-//        boolean[] selectedItems = new boolean[allTags.size()];
-//        ArrayList<MedicineTag> selectedTags = new ArrayList<>();
-
-//        tagSpinner.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-//                builder.setTitle("Select Tags");
-//
-//                String[] tagNames = new String[allTags.size()];
-//                for(int i = 0; i < allTags.size(); i++){
-//                    tagNames[i] = allTags.get(i).getName();
-//                }
-//
-//                builder.setMultiChoiceItems(tagNames, selectedItems, ((dialog, which, isChecked) -> {
-//                    if(isChecked){
-//                        selectedTags.add(allTags.get(which));
-//                    }
-//                    else{
-//                        selectedTags.remove(allTags.get(which));
-//                    }
-//                }));
-//
-//                builder.setPositiveButton("OK",((dialog, which) -> {
-//                    displaySelectedTags(popupView, selectedTags);
-//                }));
-//                builder.setNegativeButton("Cancel",((dialog, which) -> {
-//                    dialog.dismiss();
-//                }));
-//                builder.show();
-//            }
-//        });
-
-
-//            private void displaySelectedTags(View popupView, ArrayList<MedicineTag> selectedTags) {
-//                // Find the LinearLayout where you want to display the selected tags
-//                LinearLayout selectedTagsLayout = popupView.findViewById(R.id.multiSelectSpinner); // Use LinearLayout or similar
-//
-//                // Clear the previous tags
-//                selectedTagsLayout.removeAllViews();
-//
-//                // Iterate over selected tags and display them
-//                for (MedicineTag tag : selectedTags) {
-//                    // Create a new TextView for each tag
-//                    TextView tagTextView = new TextView(requireContext());
-//                    tagTextView.setText(tag.getName());
-//                    tagTextView.setBackgroundColor(tag.getBackgroundColour());
-//                    tagTextView.setPadding(10, 10, 10, 10);
-//                    tagTextView.setTextColor(Color.WHITE); // Set text color for readability
-//
-//                    // Add the TextView to the layout
-//                    selectedTagsLayout.addView(tagTextView);
-//                }
-//            }
-
-
-
 }
 
 
