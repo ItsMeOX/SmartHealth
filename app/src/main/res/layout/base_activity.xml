@@ -14,7 +14,7 @@
         android:layout_height="match_parent"
         />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/navbarCameraBtn"
         android:layout_width="60dp"
         android:layout_height="60dp"
