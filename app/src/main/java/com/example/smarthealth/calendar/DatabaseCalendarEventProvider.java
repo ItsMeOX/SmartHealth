@@ -7,10 +7,10 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
-public class AndroidCalendarEventProvider implements CalendarEventProvider {
+public class DatabaseCalendarEventProvider implements CalendarEventProvider {
     private final Context context;
 
-    public AndroidCalendarEventProvider(Context context) {
+    public DatabaseCalendarEventProvider(Context context) {
         this.context = context;
     }
 
@@ -21,12 +21,12 @@ public class AndroidCalendarEventProvider implements CalendarEventProvider {
 
     @Override
     public List<CalendarEvent> getEventsForDay(Calendar date) {
-        return queryAndroidCalendar(date);
+        return queryDatabaseCalendar(date);
     }
 
-    private List<CalendarEvent> queryAndroidCalendar(Calendar date) {
-        // TODO: Link with database
-         CalendarEvent calendarEvent = new CalendarEvent("Title", "this is a long description.", (Calendar) Calendar.getInstance().clone());
+    private List<CalendarEvent> queryDatabaseCalendar(Calendar date) {
+        // TODO: Link with database with Tristan
+        CalendarEvent calendarEvent = new CalendarEvent("Title", "this is a long description.", (Calendar) Calendar.getInstance().clone());
         return new ArrayList<>(Arrays.asList(calendarEvent, calendarEvent, calendarEvent, calendarEvent, calendarEvent));
     }
 
