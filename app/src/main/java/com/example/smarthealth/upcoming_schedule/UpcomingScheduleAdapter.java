@@ -5,14 +5,17 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.smarthealth.R;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 public class UpcomingScheduleAdapter extends RecyclerView.Adapter<UpcomingScheduleViewHolder> {
-    private List<UpcomingSchedule> upcomingSchedules;
+    private final List<UpcomingSchedule> upcomingSchedules;
 
     public UpcomingScheduleAdapter(List<UpcomingSchedule> upcomingSchedules) {
         this.upcomingSchedules = upcomingSchedules;
@@ -30,17 +33,17 @@ public class UpcomingScheduleAdapter extends RecyclerView.Adapter<UpcomingSchedu
     @Override
     public void onBindViewHolder(@NonNull UpcomingScheduleViewHolder holder, int position) {
         UpcomingSchedule schedule = upcomingSchedules.get(position);
-        if (schedule.getScheduleType() == UpcomingSchedule.ScheduleType.MEDICINE) {
-            holder.scheduleTypeImage = R.drawable.up_schedule_medicine;
-        } else if (schedule.getScheduleType() == UpcomingSchedule.ScheduleType.MEAL) {
-            holder.scheduleTypeImage.setImageDrawable(R.drawable.up_schedule_meal);
-        }
+        holder.scheduleTypeImage.setImageDrawable(
+                ContextCompat.getDrawable(holder.itemView.getContext(), schedule.getScheduleType().getIconResId())
+        );
         holder.scheduleTitle.setText(schedule.getScheduleTitle());
-        holder.scheduleTime = schedule.getScheduleCalender().getTime();
+        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+        String formattedTime = sdf.format(schedule.getScheduleCalender().getTime());
+        holder.scheduleTime.setText(formattedTime);
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return upcomingSchedules.size();
     }
 }

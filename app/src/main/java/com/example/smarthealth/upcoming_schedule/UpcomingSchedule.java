@@ -1,21 +1,18 @@
 package com.example.smarthealth.upcoming_schedule;
 
+import com.example.smarthealth.upcoming_schedule.schedule_types.ScheduleType;
+
 import java.util.Calendar;
 
 public class UpcomingSchedule {
 
-    public enum ScheduleType {
-        MEDICINE,
-        MEAL
-    }
-
-    private String scheduleTitle;
-    private Calendar scheduleCalender;
-    private ScheduleType scheduleType;
+    private final String scheduleTitle;
+    private final Calendar scheduleCalender;
+    private final ScheduleType scheduleType;
 
     public UpcomingSchedule(String scheduleTitle, Calendar scheduleCalendar, ScheduleType scheduleType) {
         this.scheduleTitle = scheduleTitle;
-        this.scheduleCalender = scheduleCalendar;
+        this.scheduleCalender = (Calendar) scheduleCalendar.clone();
         this.scheduleType = scheduleType;
     }
 
@@ -24,7 +21,7 @@ public class UpcomingSchedule {
     }
 
     public Calendar getScheduleCalender() {
-        return scheduleCalender;
+        return (Calendar) scheduleCalender.clone();
     }
 
     public ScheduleType getScheduleType() {
