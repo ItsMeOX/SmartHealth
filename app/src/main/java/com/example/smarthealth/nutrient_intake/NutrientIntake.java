@@ -1,5 +1,7 @@
 package com.example.smarthealth.nutrient_intake;
 
+import com.example.smarthealth.nutrient_intake.units.Unit;
+
 public class NutrientIntake {
     private String nutrientName;
     private int nutrientIconId;
