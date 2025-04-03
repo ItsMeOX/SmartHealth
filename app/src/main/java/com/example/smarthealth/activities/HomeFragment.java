@@ -368,15 +368,8 @@ public class HomeFragment extends Fragment implements
             eventTimeView.setText(eventTimeFormat.format(event.getEventDateCalendar().first.getTime()));
             eventDescView.setText(event.getEventDescription());
 
-            addToDatabase();
-
             eventListContainer.addView(eventView, eventListContainer.getChildCount()-1); // Add before "Add Event" button
         }
-    }
-
-    private void addToDatabase() {
-        // TODO: to be done by Tristan.
-
     }
 
     private void initBotSuggestionWidgets() {

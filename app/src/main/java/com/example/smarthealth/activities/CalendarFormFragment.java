@@ -220,6 +220,7 @@ public class CalendarFormFragment extends DialogFragment {
                         endDate
                 );
                 listener.onNewCalendarEventCreated(calendarEvent, eventListContainer);
+                addToDatabase(calendarEvent);
                 dismiss();
             }
 
@@ -227,6 +228,10 @@ public class CalendarFormFragment extends DialogFragment {
             dateInputLayout.setError("Wrong date or time format");
             return;
         }
+    }
+
+    private void addToDatabase(CalendarEvent calendarEvent) {
+        // TODO: to be continued by Tristan.
     }
 
     public void setOnCalendarEventCreated(NewEventCreatedListener listener) {
