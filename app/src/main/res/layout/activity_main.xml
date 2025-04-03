@@ -91,7 +91,7 @@
         android:layout_height="60dp"
         android:layout_marginHorizontal="20dp"
         android:layout_marginBottom="25dp"
-        android:background="@drawable/navbar_camera"
+        android:background="@drawable/app_logo"
         app:layout_constraintBottom_toBottomOf="@+id/mainConstraintLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
