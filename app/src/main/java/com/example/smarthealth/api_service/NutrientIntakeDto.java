@@ -8,7 +8,7 @@ public class NutrientIntakeDto {
     private double currentNutrient;
     private double totalNutrient;
     private String intakeUnit;
-    private Calendar intakeDate;
+    private String intakeDate;
     private Long userId;
 
     public Long getId() {
@@ -59,11 +59,11 @@ public class NutrientIntakeDto {
         this.userId = userId;
     }
 
-    public Calendar getIntakeDate() {
+    public String getIntakeDate() {
         return intakeDate;
     }
 
-    public void setIntakeDate(Calendar intakeDate) {
+    public void setIntakeDate(String intakeDate) {
         this.intakeDate = intakeDate;
     }
 }

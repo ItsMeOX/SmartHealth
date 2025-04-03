@@ -21,7 +21,7 @@ public class DatabaseNutrientIntakeProvider implements NutrientIntakeProvider {
 
     private NutrientIntakeService nutrientIntakeService = RetrofitClient.getInstance().create(NutrientIntakeService.class);
     @Override
-    public List<NutrientIntake> getNutrientIntakes(long userId) {
+    public List<NutrientIntake> getNutrientIntakes(long userId, OnDataLoadedCallback callback) {
         // TODO: to be connected to database by Tristan + AI by Haile.
         List<NutrientIntake> res = new ArrayList<>();
 
@@ -40,11 +40,11 @@ public class DatabaseNutrientIntakeProvider implements NutrientIntakeProvider {
                         res.add(nutrientIntake);
                     }
                 }
+                callback.onDataLoaded(res);
             }
 
             @Override
             public void onFailure(Call<List<NutrientIntakeDto>> call, Throwable t) {
-                Log.d("NutritientIntakeCall", "Context: " + this);
             }
         });
 
@@ -54,7 +54,6 @@ public class DatabaseNutrientIntakeProvider implements NutrientIntakeProvider {
 //        res.add(new NutrientIntake("Fibre", R.drawable.nutrient_fibre, 15.0, 30.0, MassUnit.GRAM));
 //        res.add(new NutrientIntake("Sugars", R.drawable.nutrient_sugar, 12.5, 25.0, MassUnit.GRAM));
 //        res.add(new NutrientIntake("Sodium", R.drawable.nutrient_sodium, 0.9, 1.5, MassUnit.GRAM));
-        Log.d("NutrientCall", "Context: " + res.size());
         return res;
     }
 }

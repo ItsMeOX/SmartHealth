@@ -39,6 +39,7 @@ import com.example.smarthealth.nutrient_intake.NutrientIntake;
 import com.example.smarthealth.nutrient_intake.NutrientIntakeAdapter;
 import com.example.smarthealth.nutrient_intake.NutrientIntakeProvider;
 import com.example.smarthealth.nutrient_intake.DatabaseNutrientIntakeProvider;
+import com.example.smarthealth.nutrient_intake.OnDataLoadedCallback;
 import com.example.smarthealth.upcoming_schedule.DatabaseUpcomingScheduleProvider;
 import com.example.smarthealth.upcoming_schedule.UpcomingSchedule;
 import com.example.smarthealth.upcoming_schedule.UpcomingScheduleAdapter;
@@ -296,13 +297,18 @@ public class HomeFragment extends Fragment implements
     }
 
     private void setNutrientIntakeView() {
-        List<NutrientIntake> nutrientIntakeList = nutrientIntakeProvider.getNutrientIntakes(16);
-
-        NutrientIntakeAdapter nutrientIntakeAdapter = new NutrientIntakeAdapter(nutrientIntakeList);
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(requireContext(), 2);
-        nutrientRecyclerView.setLayoutManager(layoutManager);
-        nutrientRecyclerView.setAdapter(nutrientIntakeAdapter);
-        nutrientRecyclerView.setNestedScrollingEnabled(false);
+        nutrientIntakeProvider.getNutrientIntakes(16, new OnDataLoadedCallback() {
+            @Override
+            public void onDataLoaded(List<NutrientIntake> nutrientIntakeList) {
+                getActivity().runOnUiThread(() -> {
+                    NutrientIntakeAdapter nutrientIntakeAdapter = new NutrientIntakeAdapter(nutrientIntakeList);
+                    RecyclerView.LayoutManager layoutManager = new GridLayoutManager(requireContext(), 2);
+                    nutrientRecyclerView.setLayoutManager(layoutManager);
+                    nutrientRecyclerView.setAdapter(nutrientIntakeAdapter);
+                    nutrientRecyclerView.setNestedScrollingEnabled(false);
+                });
+            }
+        });
     }
 
     @Override

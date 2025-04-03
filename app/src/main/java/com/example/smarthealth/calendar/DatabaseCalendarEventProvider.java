@@ -41,9 +41,7 @@ public class DatabaseCalendarEventProvider implements CalendarEventProvider {
             @Override
             public void onResponse(Call<List<EventDto>> call, Response<List<EventDto>> response) {
                 if(response.body() != null){
-                    Log.d("EventCall", "Successful");
                     for(EventDto event : response.body()){
-                        Log.d("EventCall", "UserID: " + event.getUserId());
                         CalendarEvent calendarEvent = new CalendarEvent(
                                 event.getEventTitle(),
                                 event.getEventDescription(),
@@ -54,10 +52,9 @@ public class DatabaseCalendarEventProvider implements CalendarEventProvider {
             }
             @Override
             public void onFailure(Call<List<EventDto>> call, Throwable t) {
-
             }
         });
-        Log.d("EventCall", "Context: " + calendarEvents.size());
+
         return calendarEvents;
     }
 

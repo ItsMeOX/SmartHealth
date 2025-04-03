@@ -1,6 +1,8 @@
 package com.example.smarthealth.api_service;
 
 
+import android.util.Log;
+
 import java.util.Calendar;
 
 public class EventDto {
