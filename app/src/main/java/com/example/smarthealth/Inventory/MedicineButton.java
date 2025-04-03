@@ -7,19 +7,22 @@ import java.util.ArrayList;
 public class MedicineButton {
     public String medicineName;
     public String medicineCategory;
-    public String medicineDesc;
     public int medicineAmount;
     public Drawable medicineImage;
-    public String medicineInfo;
+    public String medicineDosage;
+    public String medicineContains;
+    public String medicineSideEffect;
     public ArrayList<String> medicineType;
 
-    MedicineButton(String medicineName, String medicineCategory, String medicineDesc, int medicineAmount, Drawable medicineImage, String medicineInfo, ArrayList<String> medicineType) {
+    MedicineButton(String medicineName, String medicineCategory, int medicineAmount, Drawable medicineImage,
+                   String medicineDosage, String medicineContains, String medicineSideEffect, ArrayList<String> medicineType) {
         this.medicineName = medicineName;
         this.medicineCategory = medicineCategory;
-        this.medicineDesc = medicineDesc;
         this.medicineAmount = medicineAmount;
         this.medicineImage = medicineImage;
-        this.medicineInfo = medicineInfo;
+        this.medicineDosage = medicineDosage;
+        this.medicineContains = medicineContains;
+        this.medicineSideEffect = medicineSideEffect;
         this.medicineType = medicineType;
     }
     public String getMedicineName() {
@@ -30,8 +33,14 @@ public class MedicineButton {
         return medicineCategory;
     }
 
-    public String getMedicineDesc() {
-        return medicineDesc;
+    public String getMedicineDosage() {
+        return medicineDosage;
+    }
+    public String getMedicineContains() {
+        return medicineContains;
+    }
+    public String getMedicineSideEffect() {
+        return medicineSideEffect;
     }
 
 
@@ -42,8 +51,6 @@ public class MedicineButton {
     public Drawable getMedicineImage() {
         return medicineImage;
     }
-
-    public String getMedicineInfo(){return this.medicineInfo;}
 
      public ArrayList<String> getMedicineType(){return this.medicineType;}
 

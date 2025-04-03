@@ -104,6 +104,7 @@
                 android:textColor="@color/black"
             >
             </TextView>
+
             <View
                 android:layout_width="0dp"
                 android:layout_weight="1"
@@ -138,6 +139,7 @@
             android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/nameLinear"
+            android:layout_marginHorizontal="20dp"
             >
         </LinearLayout>
 
@@ -149,6 +151,7 @@
             android:orientation="vertical"
             android:layout_marginHorizontal="20dp"
             >
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -158,15 +161,63 @@
                 >
             </TextView>
             <TextView
-                android:id="@+id/displayDesc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text=""
+                android:layout_marginTop="10dp"
                 android:textSize="18sp"
                 android:textColor="@color/black"
-                android:inputType="textMultiLine"
+                android:text="Recommended Dosage:"
                 >
             </TextView>
+
+            <TextView
+                android:id="@+id/displayDosage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:textColor="@color/black"
+                >
+            </TextView>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textSize="18sp"
+                android:textColor="@color/black"
+                android:text="Contains:"
+                >
+            </TextView>
+
+            <TextView
+                android:id="@+id/displayContain"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:textColor="@color/black"
+                >
+            </TextView>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textSize="18sp"
+                android:textColor="@color/black"
+                android:text="Side Effect:"
+                >
+            </TextView>
+
+            <TextView
+                android:id="@+id/displaySideEffect"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:textColor="@color/black"
+                >
+            </TextView>
+
+
 
 
         </LinearLayout>

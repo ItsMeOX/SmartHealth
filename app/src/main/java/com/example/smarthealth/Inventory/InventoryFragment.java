@@ -144,8 +144,9 @@ public class InventoryFragment extends Fragment {
                 // Add placeholder medicine to pills category
                 ArrayList<String> list = new ArrayList<>();
                 list.add("Cough");
-                addMedicineToLayout("Pills","PlaceHolder", "Fever", 100,
-                        ContextCompat.getDrawable(requireContext(), R.drawable.app_logo),"info",list);
+                addMedicineToLayout("Pills","PlaceHolder", 100,
+                        ContextCompat.getDrawable(requireContext(), R.drawable.app_logo),"1 tab per day",
+                        "Paracetamol","Drowsy",list);
                 Toast.makeText(requireContext(), "New Pill Added", Toast.LENGTH_SHORT).show();
             }
         });
@@ -178,21 +179,43 @@ public class InventoryFragment extends Fragment {
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
                 // Retrieve the data needed to add medicine
                 String name = result.getString("Name");
-                String desc = result.getString("Desc");
-                String info = result.getString("Info");
+                String category = result.getString("Category");
                 int amount = result.getInt("Amount");
-                String type = result.getString("Type");
                 byte[] imageData = result.getByteArray("Image");
+                String dosage = result.getString("Dosage");
+                String contains = result.getString("Contains");
+                String sideEffect = result.getString("Side Effect");
                 ArrayList<String> tagList = result.getStringArrayList("Tags");
 
                 Drawable imageDrawable = byteArrayToDrawable(imageData);
                 // Add medicine to layout
-                addMedicineToLayout(type, name, desc, amount, imageDrawable, info, tagList);
+                addMedicineToLayout(name, category, amount, imageDrawable, dosage, contains, sideEffect, tagList);
+            }
+        });
+
+        getParentFragmentManager().setFragmentResultListener("History Data", this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                // Retrieve the data needed to add medicine
+                String name = result.getString("Name");
+                String category = result.getString("Category");
+                int amount = result.getInt("Amount");
+                byte[] imageData = result.getByteArray("Image");
+                String dosage = result.getString("Dosage");
+                String contains = result.getString("Contains");
+                String sideEffect = result.getString("Side Effect");
+                ArrayList<String> tagList = result.getStringArrayList("Tags");
+
+                Drawable imageDrawable = byteArrayToDrawable(imageData);
+                // Add medicine to layout
+                addMedicineToLayout(name, category, amount, imageDrawable, dosage, contains, sideEffect, tagList);
             }
         });
     }
 
-    private void addMedicineToLayout(String category, String mediName, String mediDesc, int mediAmount, Drawable mediImage, String info, ArrayList<String> type) {
+    private void addMedicineToLayout(String mediName, String category, int mediAmount,
+                                     Drawable mediImage, String mediDosage, String mediContains,
+                                     String mediSideEffect, ArrayList<String> type) {
         ArrayList<MedicineButton> containerList = new ArrayList<>();
         MedicineAdapter adapter = null;
 
@@ -210,7 +233,8 @@ public class InventoryFragment extends Fragment {
 
         }
         // Add placeholder medicine button
-        MedicineButton newButton = new MedicineButton(mediName, category, mediDesc, mediAmount, mediImage, info, type);
+        MedicineButton newButton = new MedicineButton(mediName, category, mediAmount,
+                mediImage, mediDosage, mediContains, mediSideEffect, type);
         // Add the placeholder to the appropriate container list
         containerList.add(newButton);
 

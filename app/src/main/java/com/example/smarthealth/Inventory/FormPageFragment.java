@@ -167,22 +167,22 @@ public class FormPageFragment extends DialogFragment {
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO retrieve information from the popup window
                 EditText nameView = popupView.findViewById(R.id.formMediName);
+                String type = category.getSelectedItem().toString();
                 EditText amountView = popupView.findViewById(R.id.formMediAmount);
-                EditText descView = popupView.findViewById(R.id.formMediDesc);
                 ImageView imageView = popupView.findViewById(R.id.image);
-                String mediType = category.getSelectedItem().toString();
-                EditText mediInfo = popupView.findViewById(R.id.formMediInfo);
+                EditText dosageView = popupView.findViewById(R.id.formMediDosage);
+                EditText sideEffectView = popupView.findViewById(R.id.formMediSideEffect);
+                EditText containsView = popupView.findViewById(R.id.formMediContains);
                 LinearLayout mediTags = popupView.findViewById(R.id.tagChosen);
 
                 String mediName = nameView.getText().toString().trim();
-                String mediDesc = descView.getText().toString().trim();
                 String amount = amountView.getText().toString().trim();
                 Drawable image = imageView.getDrawable();
-                String info = mediInfo.getText().toString().trim();
+                String mediDosage = dosageView.getText().toString().trim();
+                String mediSideEffect = sideEffectView.getText().toString().trim();
+                String mediContains = containsView.getText().toString().trim();
                 ArrayList<String> tagList = new ArrayList<>();
-
                 for(int i=0; i<mediTags.getChildCount();i++){
                     TextView child = (TextView) mediTags.getChildAt(i);
                     String tag = child.getText().toString().trim();
@@ -190,20 +190,23 @@ public class FormPageFragment extends DialogFragment {
                 }
 
                 // Pass corresponding parameters
-                if (mediName.isEmpty() || mediDesc.isEmpty() || amount.isEmpty() ||
-                        imageView.getDrawable() == null || info.isEmpty() || Integer.parseInt(amount) > 999
+                if (mediName.isEmpty() || mediDosage.isEmpty() || amount.isEmpty() || mediSideEffect.isEmpty() ||
+                    mediContains.isEmpty() || imageView.getDrawable() == null || Integer.parseInt(amount) > 999
                 || Integer.parseInt(amount) <= 0) {
                     if (mediName.isEmpty()) {
                         nameView.setError("Required");
                     }
-                    if (mediDesc.isEmpty()) {
-                        descView.setError("Required");
+                    if (mediContains.isEmpty()) {
+                        containsView.setError("Required");
                     }
                     if (amount.isEmpty()) {
                         amountView.setError("Required");
                     }
-                    if (info.isEmpty()) {
-                        mediInfo.setError("Required");
+                    if (mediSideEffect.isEmpty()) {
+                        sideEffectView.setError("Required");
+                    }
+                    if (mediDosage.isEmpty()) {
+                        dosageView.setError("Required");
                     }
                     if (imageView.getDrawable() == null) {
                         Toast.makeText(requireContext(), "Please select an image!", Toast.LENGTH_SHORT).show();
@@ -222,11 +225,12 @@ public class FormPageFragment extends DialogFragment {
 
                     Bundle result = new Bundle();
                     result.putString("Name", mediName);
-                    result.putString("Desc", mediDesc);
-                    result.putString("Info", info);
+                    result.putString("Category", type);
                     result.putInt("Amount", mediAmount);
-                    result.putString("Type", mediType);
                     result.putByteArray("Image", imageData);
+                    result.putString("Dosage", mediDosage);
+                    result.putString("Contains", mediContains);
+                    result.putString("Side Effect", mediSideEffect);
                     result.putStringArrayList("Tags",tagList);
 
                     getParentFragmentManager().setFragmentResult("medicineData", result);

@@ -25,11 +25,15 @@ public class MedicineInfoPage {
         ImageView mediImage = popupView.findViewById(R.id.infoImage);
         TextView mediName = popupView.findViewById(R.id.infoName);
         TextView mediAmount = popupView.findViewById(R.id.infoAmount);
-        TextView mediInfo = popupView.findViewById(R.id.mediFullInfo);
+        TextView mediDosage = popupView.findViewById(R.id.mediDosage);
+        TextView mediContain = popupView.findViewById(R.id.mediContain);
+        TextView mediSideEffect = popupView.findViewById(R.id.mediSideEffect);
         LinearLayout mediTags = popupView.findViewById(R.id.tags);
 
         // Set model's information to be displayed in info page
-        mediInfo.setText(model.getMedicineInfo());
+        mediDosage.setText(model.getMedicineDosage());
+        mediContain.setText(model.getMedicineContains());
+        mediSideEffect.setText(model.getMedicineSideEffect());
         mediImage.setImageDrawable(model.getMedicineImage());
         mediName.setText(model.getMedicineName().trim());
         if(model.getMedicineCategory().equals("Liquids")){

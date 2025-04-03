@@ -144,14 +144,14 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 >
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/formMediDesc"
+                    android:id="@+id/formMediDosage"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="20dp"
                     android:clickable="true"
                     android:focusable="true"
                     android:focusableInTouchMode="true"
-                    android:hint="@string/enter_description"
+                    android:hint="Enter Dosage"
                     android:backgroundTint="@color/black"
                     android:inputType="text"
                     android:textColor="@color/black"
@@ -190,32 +190,70 @@
             </LinearLayout>
         </LinearLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:orientation="horizontal"
             android:layout_alignParentTop="true"
             android:layout_marginTop="-60dp"
+            android:weightSum="2"
+
+            >
+            <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             >
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/formMediInfo"
-                android:inputType="textMultiLine"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="10dp"
-                android:focusableInTouchMode="true"
-                android:layout_marginTop="-100dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:hint="@string/enter_information"
-                android:textColor="@color/black"
-                android:textColorHint="@color/lightgray"
-                >
+                    android:id="@+id/formMediContains"
+                    android:inputType="textMultiLine"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:focusableInTouchMode="true"
+                    android:layout_marginTop="-300dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:hint="Enter Ingredient"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/lightgray"
+                    >
 
-            </com.google.android.material.textfield.TextInputEditText>
-        </com.google.android.material.textfield.TextInputLayout>
+                </com.google.android.material.textfield.TextInputEditText>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                >
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/formMediSideEffect"
+                    android:inputType="textMultiLine"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:focusableInTouchMode="true"
+                    android:layout_marginTop="-300dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:hint="Enter SideEffect"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/lightgray"
+                    >
+
+                </com.google.android.material.textfield.TextInputEditText>
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+        </LinearLayout>
+
 
 
 

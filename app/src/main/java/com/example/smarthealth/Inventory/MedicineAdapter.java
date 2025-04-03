@@ -50,7 +50,7 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.ViewHo
         // Set the button's data (name, description, etc.)
         holder.medicineImage.setImageDrawable(model.getMedicineImage());
         holder.medicineName.setText(model.getMedicineName());
-        holder.medicineDesc.setText(model.getMedicineDesc());
+        holder.medicineTag.setText(model.getMedicineType().get(0));
         holder.medicineAmount.setText(String.valueOf(model.getMedicineAmount()));
 
 //         Set visibility based on expanded or collapsed state
@@ -111,14 +111,14 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.ViewHo
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final ImageView medicineImage;
         private final TextView medicineName;
-        private final TextView medicineDesc;
+        private final TextView medicineTag;
         private final TextView medicineAmount;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             medicineImage = itemView.findViewById(R.id.mediImage);
             medicineName = itemView.findViewById(R.id.mediName);
-            medicineDesc = itemView.findViewById(R.id.mediDesc);
+            medicineTag = itemView.findViewById(R.id.mediDesc);
             medicineAmount = itemView.findViewById(R.id.amountText);
         }
     }

@@ -74,7 +74,7 @@
                 android:paddingVertical="10dp"
                 android:textSize="25sp"
                 android:textColor="@color/black"
-                android:layout_marginStart="30dp"
+                android:layout_marginStart="20dp"
                 >
             </TextView>
 
@@ -106,14 +106,15 @@
             app:layout_constraintTop_toBottomOf="@id/header"
             app:layout_constraintStart_toStartOf="@id/header"
             android:orientation="horizontal"
-            android:layout_marginStart="30dp">
+            android:layout_marginStart="20dp">
         </LinearLayout>
+
         <LinearLayout
             android:id="@+id/medicineAllInfo"
             android:layout_width="match_parent"
             android:layout_height="250dp"
             app:layout_constraintTop_toBottomOf="@+id/tags"
-            android:layout_marginStart="30dp"
+            android:layout_marginHorizontal="20dp"
             android:paddingTop="15dp"
             android:orientation="vertical"
             >
@@ -127,13 +128,64 @@
             </TextView>
 
             <TextView
-                android:id="@+id/mediFullInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textSize="18sp"
+                android:textColor="@color/black"
+                android:text="Recommended Dosage:"
+                >
+            </TextView>
+
+            <TextView
+                android:id="@+id/mediDosage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="15sp"
                 android:textColor="@color/black"
                 >
             </TextView>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textSize="18sp"
+                android:textColor="@color/black"
+                android:text="Contains:"
+                >
+            </TextView>
+
+            <TextView
+                android:id="@+id/mediContain"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:textColor="@color/black"
+                >
+            </TextView>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textSize="18sp"
+                android:textColor="@color/black"
+                android:text="Side Effect:"
+                >
+            </TextView>
+
+            <TextView
+                android:id="@+id/mediSideEffect"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:textColor="@color/black"
+                >
+            </TextView>
+
+
+
         </LinearLayout>
 
         <LinearLayout
