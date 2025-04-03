@@ -2,7 +2,6 @@ package com.example.smarthealth.activities;
 
 import android.app.Dialog;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -10,8 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.OvershootInterpolator;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -20,7 +17,6 @@ import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -39,7 +35,6 @@ import com.example.smarthealth.nutrient_intake.NutrientIntake;
 import com.example.smarthealth.nutrient_intake.NutrientIntakeAdapter;
 import com.example.smarthealth.nutrient_intake.NutrientIntakeProvider;
 import com.example.smarthealth.nutrient_intake.DatabaseNutrientIntakeProvider;
-import com.example.smarthealth.nutrient_intake.OnDataLoadedCallback;
 import com.example.smarthealth.upcoming_schedule.DatabaseUpcomingScheduleProvider;
 import com.example.smarthealth.upcoming_schedule.UpcomingSchedule;
 import com.example.smarthealth.upcoming_schedule.UpcomingScheduleAdapter;
@@ -297,7 +292,7 @@ public class HomeFragment extends Fragment implements
     }
 
     private void setNutrientIntakeView() {
-        nutrientIntakeProvider.getNutrientIntakes(16, new OnDataLoadedCallback() {
+        nutrientIntakeProvider.getNutrientIntakes(16, new DatabaseNutrientIntakeProvider.OnDataLoadedCallback() {
             @Override
             public void onDataLoaded(List<NutrientIntake> nutrientIntakeList) {
                 getActivity().runOnUiThread(() -> {

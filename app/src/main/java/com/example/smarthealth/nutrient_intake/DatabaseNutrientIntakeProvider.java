@@ -56,4 +56,9 @@ public class DatabaseNutrientIntakeProvider implements NutrientIntakeProvider {
 //        res.add(new NutrientIntake("Sodium", R.drawable.nutrient_sodium, 0.9, 1.5, MassUnit.GRAM));
         return res;
     }
+
+    public interface OnDataLoadedCallback {
+        void onDataLoaded(List<NutrientIntake> nutrientIntakes);
+    }
+
 }
