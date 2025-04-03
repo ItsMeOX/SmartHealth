@@ -296,7 +296,7 @@ public class HomeFragment extends Fragment implements
     }
 
     private void setNutrientIntakeView() {
-        List<NutrientIntake> nutrientIntakeList = nutrientIntakeProvider.getNutrientIntakes();
+        List<NutrientIntake> nutrientIntakeList = nutrientIntakeProvider.getNutrientIntakes(16);
 
         NutrientIntakeAdapter nutrientIntakeAdapter = new NutrientIntakeAdapter(nutrientIntakeList);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(requireContext(), 2);
