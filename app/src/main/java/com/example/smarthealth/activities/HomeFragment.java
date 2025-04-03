@@ -18,8 +18,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -48,7 +50,11 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-public class HomeFragment extends Fragment implements CalendarAdapter.OnItemListener, BotSuggestionAdapter.OnItemListener {
+public class HomeFragment extends Fragment implements
+        CalendarAdapter.OnItemListener,
+        BotSuggestionAdapter.OnItemListener,
+        CalendarFormFragment.NewEventCreatedListener
+{
 
     private TextView monthYearText;
     private Calendar selectedDate;
@@ -337,11 +343,40 @@ public class HomeFragment extends Fragment implements CalendarAdapter.OnItemList
         eventListContainer.addView(eventAdder);
 
         eventAdder.setOnClickListener(v -> {
-            CalendarFormFragment dialog = new CalendarFormFragment();
+            CalendarFormFragment dialog = new CalendarFormFragment(eventListContainer);
+            dialog.setOnCalendarEventCreated(this);
             dialog.show(getParentFragmentManager(), "CalendarFormDialog");
         });
 
         calendarEventDialog.show();
+    }
+    @Override
+    public void onNewCalendarEventCreated(CalendarEvent event, LinearLayout eventListContainer) {
+        FragmentManager fragmentManager = getParentFragmentManager();
+        Fragment fragment = fragmentManager.findFragmentByTag("CalendarFormDialog");
+        Dialog dialog = fragment instanceof DialogFragment ? ((DialogFragment) fragment).getDialog() : null;
+
+        if (dialog != null) {
+            LayoutInflater inflater = LayoutInflater.from(requireContext());
+            SimpleDateFormat eventTimeFormat = new SimpleDateFormat("hh:mm aa", Locale.ENGLISH);
+            View eventView = inflater.inflate(R.layout.calendar_event_popup_item, eventListContainer, false);
+            TextView eventTitleView = eventView.findViewById(R.id.calendarPopupEventTitle);
+            TextView eventTimeView = eventView.findViewById(R.id.calendarPopupEventTime);
+            TextView eventDescView = eventView.findViewById(R.id.calendarPopupEventDesc);
+
+            eventTitleView.setText(event.getEventTitle());
+            eventTimeView.setText(eventTimeFormat.format(event.getEventDateCalendar().first.getTime()));
+            eventDescView.setText(event.getEventDescription());
+
+            addToDatabase();
+
+            eventListContainer.addView(eventView, eventListContainer.getChildCount()-1); // Add before "Add Event" button
+        }
+    }
+
+    private void addToDatabase() {
+        // TODO: to be done by Tristan.
+
     }
 
     private void initBotSuggestionWidgets() {
@@ -389,4 +424,6 @@ public class HomeFragment extends Fragment implements CalendarAdapter.OnItemList
 
         botSuggestionDialog.show();
     }
+
+
 }
