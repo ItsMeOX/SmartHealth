@@ -10,13 +10,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.OvershootInterpolator;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -302,7 +305,7 @@ public class HomeFragment extends Fragment implements CalendarAdapter.OnItemList
         calendarEventDialog.setContentView(R.layout.calendar_event_popup);
         if (calendarEventDialog.getWindow() != null) {
             WindowManager.LayoutParams params = calendarEventDialog.getWindow().getAttributes();
-            params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
             params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
             calendarEventDialog.getWindow().setAttributes(params);
         }
@@ -325,15 +328,18 @@ public class HomeFragment extends Fragment implements CalendarAdapter.OnItemList
             TextView eventDescView = eventView.findViewById(R.id.calendarPopupEventDesc);
 
             eventTitleView.setText(calendarEvent.getEventTitle());
-            eventTimeView.setText(eventTimeFormat.format(calendarEvent.getEventDateCalendar().getTime()));
+            eventTimeView.setText(eventTimeFormat.format(calendarEvent.getEventDateCalendar().first.getTime()));
             eventDescView.setText(calendarEvent.getEventDescription());
             eventListContainer.addView(eventView);
         }
 
-        View eventAdder = inflater.inflate(R.layout.calendar_event_popup_add, eventListContainer, false);
+        CardView eventAdder = (CardView) inflater.inflate(R.layout.calendar_event_popup_add, eventListContainer, false);
         eventListContainer.addView(eventAdder);
 
-        // TODO: Add onClickListener for event adding button
+        eventAdder.setOnClickListener(v -> {
+            CalendarFormFragment dialog = new CalendarFormFragment();
+            dialog.show(getParentFragmentManager(), "CalendarFormDialog");
+        });
 
         calendarEventDialog.show();
     }
@@ -371,7 +377,7 @@ public class HomeFragment extends Fragment implements CalendarAdapter.OnItemList
         botSuggestionDialog.setContentView(R.layout.bot_suggestion_popup);
         if (botSuggestionDialog.getWindow() != null) {
             WindowManager.LayoutParams params = botSuggestionDialog.getWindow().getAttributes();
-            params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
             params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
             botSuggestionDialog.getWindow().setAttributes(params);
         }

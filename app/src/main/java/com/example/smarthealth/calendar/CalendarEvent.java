@@ -1,16 +1,20 @@
 package com.example.smarthealth.calendar;
 
+import android.util.Pair;
+
 import java.util.Calendar;
 
 public class CalendarEvent {
     private String eventTitle;
     private String eventDescription;
-    private Calendar eventDateCalendar;
+    private Calendar eventStartCalendar;
+    private Calendar eventEndCalendar;
 
-    CalendarEvent(String eventTitle, String eventDescription, Calendar eventDateCalendar) {
+    CalendarEvent(String eventTitle, String eventDescription, Calendar eventStartCalendar, Calendar eventEndCalendar) {
         this.eventTitle = eventTitle;
         this.eventDescription = eventDescription;
-        this.eventDateCalendar = (Calendar) eventDateCalendar.clone();
+        this.eventStartCalendar = (Calendar) eventStartCalendar.clone();
+        this.eventEndCalendar = (Calendar) eventEndCalendar.clone();
     }
 
     public String getEventTitle() {
@@ -29,11 +33,15 @@ public class CalendarEvent {
         this.eventDescription = eventDescription;
     }
 
-    public Calendar getEventDateCalendar() {
-        return (Calendar) eventDateCalendar.clone();
+    public Pair<Calendar, Calendar> getEventDateCalendar() {
+        return new Pair<>((Calendar) eventStartCalendar.clone(), (Calendar) eventEndCalendar);
     }
 
-    public void setEventDate(Calendar eventDateCalendar) {
-        this.eventDateCalendar = eventDateCalendar;
+    public void setEventStartCalendar(Calendar eventDateCalendar) {
+        eventStartCalendar = eventDateCalendar;
+    }
+
+    public void setEventEndCalendar(Calendar eventDateCalendar) {
+        eventEndCalendar = eventDateCalendar;
     }
 }

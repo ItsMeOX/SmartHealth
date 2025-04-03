@@ -1,6 +1,7 @@
 package com.example.smarthealth.calendar;
 
 import android.content.Context;
+import android.util.Pair;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,7 +27,12 @@ public class DatabaseCalendarEventProvider implements CalendarEventProvider {
 
     private List<CalendarEvent> queryDatabaseCalendar(Calendar date) {
         // TODO: Link with database with Tristan
-        CalendarEvent calendarEvent = new CalendarEvent("Title", "this is a long description.", (Calendar) Calendar.getInstance().clone());
+        CalendarEvent calendarEvent = new CalendarEvent(
+                "Title",
+                "this is a long description.",
+                (Calendar) Calendar.getInstance().clone(),
+                (Calendar) Calendar.getInstance().clone()
+        );
         return new ArrayList<>(Arrays.asList(calendarEvent, calendarEvent, calendarEvent, calendarEvent, calendarEvent));
     }
 
