@@ -41,6 +41,8 @@ public class ChatBotFragment extends Fragment {
     MessageAdapter messageAdapter;
     View view;
 
+    ChatBot chatBot = new ChatBot();
+
     public static final MediaType JSON = MediaType.get("application/json");
 
     OkHttpClient client = new OkHttpClient();
@@ -106,28 +108,20 @@ public class ChatBotFragment extends Fragment {
         //okhttp
 
         messageList.add(new Message("Typing...", Message.SENT_BY_BOT));
-        JSONObject jsonBody = new JSONObject();
-        try {
-            jsonBody.put("model", "gpt-3.5-turbo-instruct");
-            jsonBody.put("prompt", question);
-            jsonBody.put("max_tokens", 4000);
-            jsonBody.put("temperature", 0);
-            jsonBody.put("top_p", 1);
+        chatBot.addMessage("user", question);
 
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
-        RequestBody body = RequestBody.create(jsonBody.toString(), JSON);
+        JSONObject Jsonprompt = chatBot.getPrompt();
+        RequestBody body = RequestBody.create(Jsonprompt.toString(), JSON);
         Request request = new Request.Builder()
-                .url("https://api.openai.com/v1/completions")
-                .header("Authorization", "Bearer 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")
+                .url(chatBot.getAPI_URL())
+                .header("Authorization", "Bearer " + chatBot.getAPI_Key())
                 .post(body)
                 .build();
 
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                addResponse("Failed to load response due to" + e.getMessage());
+                addResponse("Failed to load response due to " + e.getMessage());
             }
 
             @Override
@@ -135,9 +129,21 @@ public class ChatBotFragment extends Fragment {
                 if(response.isSuccessful()) {
                     JSONObject jsonObject = null;
                     try {
+                        // Parse the JSON response
                         jsonObject = new JSONObject(response.body().string());
-                        JSONArray jsonArray = jsonObject.getJSONArray("choices");
-                        String result = jsonArray.getJSONObject(0).getString("text");
+
+                        // Get the "choices" array
+                        JSONArray choicesArray = jsonObject.getJSONArray("choices");
+
+                        // Extract the content from the "message" object inside the first choice
+                        String result = choicesArray.getJSONObject(0)
+                                .getJSONObject("message")
+                                .getString("content");
+
+                        // Trim the result if needed and add it to the conversation history
+                        chatBot.addMessage("assistant", result.trim());
+
+                        // Optionally, you can also update the UI or perform other actions with the result
                         addResponse(result.trim());
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -145,7 +151,7 @@ public class ChatBotFragment extends Fragment {
 
                 }else{
 
-                    addResponse("Failed to load response due to" + response.body().toString());
+                    addResponse("Failed to load " + response.body().string());
                 }
             }
         });
