@@ -45,7 +45,7 @@ public class MedicineButton {
 
     public String getMedicineInfo(){return this.medicineInfo;}
 
-    public ArrayList<String> getMedicineType(){return this.medicineType;}
+     public ArrayList<String> getMedicineType(){return this.medicineType;}
 
 }
 

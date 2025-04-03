@@ -143,33 +143,33 @@
             android:orientation="vertical"
             app:layout_constraintTop_toBottomOf="@+id/medicineAllInfo"
             >
-            <androidx.appcompat.widget.AppCompatButton
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/addSchedule"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/rounded"
                 android:layout_marginHorizontal="30dp"
                 android:textAllCaps="false"
                 android:text="@string/add_to_schedule"
                 android:textColor="@color/white"
                 android:textSize="20sp"
                 android:backgroundTint="@color/primary_orange"
+                app:cornerRadius="50dp"
                 android:layout_marginVertical="10dp"
                 >
-            </androidx.appcompat.widget.AppCompatButton>
-            <androidx.appcompat.widget.AppCompatButton
+            </com.google.android.material.button.MaterialButton>
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/removeSchedule"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/rounded"
                 android:layout_marginHorizontal="30dp"
                 android:textAllCaps="false"
                 android:text="@string/remove_from_schedule"
                 android:textColor="@color/white"
                 android:textSize="20sp"
+                app:cornerRadius="50dp"
                 android:backgroundTint="@color/lightgray"
                 >
-            </androidx.appcompat.widget.AppCompatButton>
+            </com.google.android.material.button.MaterialButton>
 
 
 

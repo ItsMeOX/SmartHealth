@@ -9,6 +9,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.fragment.app.FragmentManager;
+
 import com.example.smarthealth.R;
 import java.util.ArrayList;
 
@@ -53,7 +58,6 @@ public class MedicineInfoPage {
             mediTags.addView(textView);
         }
 
-
         // Display popup window
         PopupWindow popupWindow = new PopupWindow(popupView,
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -66,6 +70,24 @@ public class MedicineInfoPage {
             @Override
             public void onClick(View v) {
                 popupWindow.dismiss();
+            }
+        });
+
+        AppCompatButton addToSchedule = popupView.findViewById(R.id.addSchedule);
+        addToSchedule.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fragmentManager = ((AppCompatActivity) context).getSupportFragmentManager();
+                AddScheduleFragment scheduleFragment = new AddScheduleFragment();
+                scheduleFragment.show(fragmentManager, "Add To Schedule");
+            }
+        });
+
+        AppCompatButton removeFromSchedule = popupView.findViewById(R.id.removeSchedule);
+        removeFromSchedule.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // remove from database using model data.
             }
         });
     }

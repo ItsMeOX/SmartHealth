@@ -24,6 +24,8 @@
     <string name="remaining">remaining</string>
     <string name="detailed_info">Detailed Info</string>
     <string name="back_arrow">Back Arrow</string>
+    <string name="key_in_amount">Key in Amount</string>
+    <string name="fill_with_history">Fill With History</string>
 
     <string-array name="formMediCategory">
         <item>Pills</item>

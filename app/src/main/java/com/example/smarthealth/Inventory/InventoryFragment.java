@@ -19,6 +19,8 @@ import androidx.fragment.app.FragmentResultListener;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Optional;
 import com.example.smarthealth.R;
@@ -76,9 +78,9 @@ public class InventoryFragment extends Fragment {
         othersLayout.setAdapter(othersAdapter);
 
         // Placeholder button
-        ImageButton pillsButton = view.findViewById(R.id.fillByScan);
+        ImageButton smartScan = view.findViewById(R.id.fillByScan);
         ImageButton fillFormButton = view.findViewById(R.id.fillForm);
-        ImageButton othersButton = view.findViewById(R.id.fillFormByHistory);
+        ImageButton formHistory = view.findViewById(R.id.fillFormByHistory);
 
         popup_window = view.findViewById(R.id.inventory_medicine);
 
@@ -136,7 +138,7 @@ public class InventoryFragment extends Fragment {
         });
 
         // Set button click for respective buttons
-        pillsButton.setOnClickListener(new View.OnClickListener() {
+        smartScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Add placeholder medicine to pills category
@@ -156,15 +158,11 @@ public class InventoryFragment extends Fragment {
             }
         });
 
-        othersButton.setOnClickListener(new View.OnClickListener() {
+        formHistory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Add placeholder medicine to others category
-                ArrayList<String> list = new ArrayList<>();
-                list.add("Cough");
-                addMedicineToLayout("Others","PlaceHolder", "Fever", 100,
-                        ContextCompat.getDrawable(requireContext(), R.drawable.app_logo), "info", list);
-                Toast.makeText(requireContext(), "New Other Medicine Added", Toast.LENGTH_SHORT).show();
+                FormHistoryFragment historyDialog = new FormHistoryFragment();
+                historyDialog.show(getParentFragmentManager(), "History fill");
             }
         });
         return view;

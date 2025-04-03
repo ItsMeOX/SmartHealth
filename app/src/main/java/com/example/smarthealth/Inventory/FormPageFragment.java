@@ -242,7 +242,7 @@ public class FormPageFragment extends DialogFragment {
         ContentValues values = new ContentValues();
         values.put(MediaStore.Images.Media.TITLE, "New Medicine");
         values.put(MediaStore.Images.Media.DESCRIPTION, "Camera");
-        Uri camUri = requireContext().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        camUri = requireContext().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT,camUri);
         cameraLauncher.launch(cameraIntent);
     }

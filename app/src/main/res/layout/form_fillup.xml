@@ -28,7 +28,7 @@
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginTop="50dp"
         />
-    <androidx.appcompat.widget.AppCompatButton
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/upload_image"
         android:layout_width="match_parent"
         android:layout_marginHorizontal="70dp"
@@ -39,11 +39,13 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:text="@string/upload_image"
         android:textColor="@color/white"
+        app:cornerRadius="50dp"
         android:textSize="20sp"
-        android:background="@drawable/rounded">
-    </androidx.appcompat.widget.AppCompatButton>
+        android:backgroundTint="@color/primary_orange"
+        >
+    </com.google.android.material.button.MaterialButton>
 
-    <androidx.appcompat.widget.AppCompatButton
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/open_camera"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -55,8 +57,10 @@
         android:textSize="20sp"
         android:layout_marginBottom="620dp"
         android:layout_marginHorizontal="70dp"
-        android:background="@drawable/rounded">
-    </androidx.appcompat.widget.AppCompatButton>
+        app:cornerRadius="50dp"
+        android:backgroundTint="@color/primary_orange"
+        >
+    </com.google.android.material.button.MaterialButton>
 
     <RelativeLayout
         android:id="@+id/whitelayout"
@@ -74,115 +78,153 @@
             android:orientation="horizontal"
             android:layout_alignParentTop="true"
             android:layout_marginTop="-200dp"
+            android:weightSum="2"
             >
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/formMediName"
-                android:inputType="text"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:hint="@string/enter_name"
-                android:focusableInTouchMode="true"
-                android:clickable="true"
-                android:focusable="true"
-                android:textColor="@color/lightgray"
-                android:layout_marginHorizontal="20dp"
-                android:textColorHint="@color/lightgray"
-                android:backgroundTint="@color/black"
-                />
-
-            <EditText
-                android:id="@+id/formMediAmount"
-                android:inputType="number"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/lay1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:hint="@string/enter_amount"
-                android:backgroundTint="@color/black"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_weight="1">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/formMediName"
+                    android:inputType="text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/enter_name"
+                    android:focusableInTouchMode="true"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:textColor="@color/lightgray"
+                    android:layout_marginHorizontal="20dp"
+                    android:textColorHint="@color/lightgray"
+                    android:backgroundTint="@color/black"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:layout_marginHorizontal="20dp"
-                android:focusableInTouchMode="true"
-                android:clickable="true"
-                android:focusable="true"
-                android:textColor="@color/black"
-                android:textColorHint="@color/lightgray"
-                />
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                >
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/formMediAmount"
+                    android:layout_weight="1"
+                    android:inputType="number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/enter_amount"
+                    android:backgroundTint="@color/black"
+                    android:layout_marginHorizontal="20dp"
+                    android:focusableInTouchMode="true"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/lightgray"
+                    >
+                </com.google.android.material.textfield.TextInputEditText>
+            </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
-
-
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="-150dp"
-            android:gravity="center_horizontal"
+            android:weightSum="2"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="-130dp"
+
             >
-            <EditText
-                android:id="@+id/formMediDesc"
-                android:layout_width="0dp"
-                android:layout_weight="0.6"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:focusable="true"
-                android:layout_marginHorizontal="20dp"
-                android:focusableInTouchMode="true"
-                android:hint="@string/enter_description"
-                android:backgroundTint="@color/black"
-                android:inputType="text"
-                android:textColor="@color/black"
-                android:textColorHint="@color/lightgray" />
-
-            <TextView
-                android:layout_width="20dp"
-                android:layout_height="wrap_content"
-                android:text="@string/type"
-                android:layout_weight="0.1"
-                android:layout_marginStart="10dp"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                android:layout_gravity="center_vertical"
-                >
-            </TextView>
-
-            <Spinner
-                android:id="@+id/category"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.5"
-                android:entries="@array/formMediCategory"
-                android:layout_marginTop="10dp"
-                android:backgroundTint="@color/black"
+                android:layout_weight="1"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 >
-            </Spinner>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/formMediDesc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:hint="@string/enter_description"
+                    android:backgroundTint="@color/black"
+                    android:inputType="text"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/lightgray"
+                    >
+                </com.google.android.material.textfield.TextInputEditText>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:paddingHorizontal="20dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/type"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:layout_gravity="center_vertical"
+                    >
+                </TextView>
+                <Spinner
+                    android:id="@+id/category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30sp"
+                    android:entries="@array/formMediCategory"
+                    android:backgroundTint="@color/black"
+                    android:layout_gravity="center_vertical"
+                    android:scrollbarSize="20sp"
+                    >
+                </Spinner>
+
+            </LinearLayout>
         </LinearLayout>
 
-
-        <EditText
-            android:id="@+id/formMediInfo"
-            android:inputType="textMultiLine"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="10dp"
-            android:focusableInTouchMode="true"
-            android:layout_marginTop="-100dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:hint="@string/enter_information"
-            android:textColor="@color/black"
-            android:backgroundTint="@color/black"
-            android:textColorHint="@color/lightgray"
-            />
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="-60dp"
+            >
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/formMediInfo"
+                android:inputType="textMultiLine"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"
+                android:focusableInTouchMode="true"
+                android:layout_marginTop="-100dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:hint="@string/enter_information"
+                android:textColor="@color/black"
+                android:textColorHint="@color/lightgray"
+                >
+
+            </com.google.android.material.textfield.TextInputEditText>
+        </com.google.android.material.textfield.TextInputLayout>
+
+
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="-50dp"
             android:orientation="horizontal"
+            android:layout_marginTop="10dp"
             >
             <TextView
                 android:layout_width="wrap_content"
@@ -208,7 +250,7 @@
     <LinearLayout
         android:id="@+id/tagChosen"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="590dp"
+        android:layout_marginTop="630dp"
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:layout_marginHorizontal="20dp"
@@ -217,7 +259,7 @@
     </LinearLayout>
 
 
-    <androidx.appcompat.widget.AppCompatButton
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/confirm"
         android:layout_width="match_parent"
         android:layout_marginHorizontal="30dp"
@@ -227,10 +269,11 @@
         android:layout_marginBottom="40dp"
         android:text="@string/confirm"
         android:textColor="@color/white"
-        android:background="@drawable/rounded"
         android:gravity="center"
+        app:cornerRadius="50dp"
+        android:backgroundTint="@color/primary_orange"
         >
-    </androidx.appcompat.widget.AppCompatButton>
+    </com.google.android.material.button.MaterialButton>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
