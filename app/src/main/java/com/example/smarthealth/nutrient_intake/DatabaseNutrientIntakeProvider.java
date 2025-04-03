@@ -23,7 +23,7 @@ public class DatabaseNutrientIntakeProvider implements NutrientIntakeProvider {
     @Override
     public List<NutrientIntake> getNutrientIntakes(long userId, OnDataLoadedCallback callback) {
         // TODO: to be connected to database by Tristan + AI by Haile.
-        List<NutrientIntake> res = new ArrayList<>();
+        List<NutrientIntake> nutrientIntakes = new ArrayList<>();
 
         Call<List<NutrientIntakeDto>> call = nutrientIntakeService.getUserDailyEvents(16);
 
@@ -37,10 +37,10 @@ public class DatabaseNutrientIntakeProvider implements NutrientIntakeProvider {
                                 nutrientIntakeDto.getCurrentNutrient(),
                                 nutrientIntakeDto.getTotalNutrient(),
                                 new MassUnit(nutrientIntakeDto.getIntakeUnit()));
-                        res.add(nutrientIntake);
+                        nutrientIntakes.add(nutrientIntake);
                     }
                 }
-                callback.onDataLoaded(res);
+                callback.onDataLoaded(nutrientIntakes);
             }
 
             @Override
@@ -54,7 +54,7 @@ public class DatabaseNutrientIntakeProvider implements NutrientIntakeProvider {
 //        res.add(new NutrientIntake("Fibre", R.drawable.nutrient_fibre, 15.0, 30.0, MassUnit.GRAM));
 //        res.add(new NutrientIntake("Sugars", R.drawable.nutrient_sugar, 12.5, 25.0, MassUnit.GRAM));
 //        res.add(new NutrientIntake("Sodium", R.drawable.nutrient_sodium, 0.9, 1.5, MassUnit.GRAM));
-        return res;
+        return nutrientIntakes;
     }
 
     public interface OnDataLoadedCallback {

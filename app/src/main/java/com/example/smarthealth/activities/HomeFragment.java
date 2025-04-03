@@ -68,7 +68,7 @@ public class HomeFragment extends Fragment implements
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.home_fragment, container, false);
 
-        calendarEventProvider = new DatabaseCalendarEventProvider(requireContext());
+        calendarEventProvider = new DatabaseCalendarEventProvider();
         nutrientIntakeProvider = new DatabaseNutrientIntakeProvider();
         upcomingScheduleProvider = new DatabaseUpcomingScheduleProvider();
         botSuggestionProvider = new DatabaseBotSuggestionProvider();
@@ -317,9 +317,7 @@ public class HomeFragment extends Fragment implements
             calendarEventDialog.getWindow().setAttributes(params);
         }
 
-        List<CalendarEvent> calendarEvents = calendarEventProvider.getEventsForDay((Calendar) Calendar.getInstance().clone());
         LinearLayout eventListContainer = calendarEventDialog.findViewById(R.id.calendarPopupItemContainer);
-
         TextView dateTextView = calendarEventDialog.findViewById(R.id.calendarPopupDate);
 
         SimpleDateFormat titleDateFormat = new SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH);
@@ -328,21 +326,26 @@ public class HomeFragment extends Fragment implements
 
         LayoutInflater inflater = LayoutInflater.from(requireContext());
         SimpleDateFormat eventTimeFormat = new SimpleDateFormat("hh:mm aa", Locale.ENGLISH);
-        for (CalendarEvent calendarEvent : calendarEvents) {
-            View eventView = inflater.inflate(R.layout.calendar_event_popup_item, eventListContainer, false);
-            TextView eventTitleView = eventView.findViewById(R.id.calendarPopupEventTitle);
-            TextView eventTimeView = eventView.findViewById(R.id.calendarPopupEventTime);
-            TextView eventDescView = eventView.findViewById(R.id.calendarPopupEventDesc);
 
-            eventTitleView.setText(calendarEvent.getEventTitle());
-            eventTimeView.setText(eventTimeFormat.format(calendarEvent.getEventDateCalendar().first.getTime()));
-            eventDescView.setText(calendarEvent.getEventDescription());
-            eventListContainer.addView(eventView);
-        }
+        calendarEventProvider.getEventsForDay((Calendar) Calendar.getInstance().clone(), new DatabaseCalendarEventProvider.OnDataLoadedCallback() {
+            @Override
+            public void onDataLoaded(List<CalendarEvent> calendarEvents) {
+                for (CalendarEvent calendarEvent : calendarEvents) {
+                    View eventView = inflater.inflate(R.layout.calendar_event_popup_item, eventListContainer, false);
+                    TextView eventTitleView = eventView.findViewById(R.id.calendarPopupEventTitle);
+                    TextView eventTimeView = eventView.findViewById(R.id.calendarPopupEventTime);
+                    TextView eventDescView = eventView.findViewById(R.id.calendarPopupEventDesc);
+
+                    eventTitleView.setText(calendarEvent.getEventTitle());
+                    eventTimeView.setText(eventTimeFormat.format(calendarEvent.getEventDateCalendar().first.getTime()));
+                    eventDescView.setText(calendarEvent.getEventDescription());
+                    eventListContainer.addView(eventView);
+                }
+            }
+        });
 
         CardView eventAdder = (CardView) inflater.inflate(R.layout.calendar_event_popup_add, eventListContainer, false);
         eventListContainer.addView(eventAdder);
-
         eventAdder.setOnClickListener(v -> {
             CalendarFormFragment dialog = new CalendarFormFragment(eventListContainer);
             dialog.setOnCalendarEventCreated(this);

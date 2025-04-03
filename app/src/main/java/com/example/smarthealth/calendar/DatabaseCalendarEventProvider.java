@@ -6,6 +6,7 @@ import android.util.Log;
 import com.example.smarthealth.api_service.EventDto;
 import com.example.smarthealth.api_service.EventService;
 import com.example.smarthealth.api_service.RetrofitClient;
+import com.example.smarthealth.nutrient_intake.NutrientIntake;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -16,25 +17,18 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class DatabaseCalendarEventProvider implements CalendarEventProvider {
-    private final Context context;
-    private EventService eventService;
+    private final EventService eventService;
 
-    public DatabaseCalendarEventProvider(Context context) {
-        this.context = context;
+    public DatabaseCalendarEventProvider() {
         eventService = RetrofitClient.getInstance().create(EventService.class);
     }
 
     @Override
-    public boolean hasEvent(Calendar date) {
-        return !getEventsForDay(date).isEmpty();
+    public List<CalendarEvent> getEventsForDay(Calendar date, OnDataLoadedCallback callback) {
+        return queryDatabaseCalendar(date, callback);
     }
 
-    @Override
-    public List<CalendarEvent> getEventsForDay(Calendar date) {
-        return queryDatabaseCalendar(date);
-    }
-
-    private List<CalendarEvent> queryDatabaseCalendar(Calendar date) {
+    private List<CalendarEvent> queryDatabaseCalendar(Calendar date, OnDataLoadedCallback callback) {
         List<CalendarEvent> calendarEvents = new ArrayList<>();
         Call<List<EventDto>> call = eventService.getUserEvents(16);
         call.enqueue(new Callback<List<EventDto>>() {
@@ -49,13 +43,19 @@ public class DatabaseCalendarEventProvider implements CalendarEventProvider {
                         calendarEvents.add(calendarEvent);
                     }
                 }
+                callback.onDataLoaded(calendarEvents);
             }
             @Override
             public void onFailure(Call<List<EventDto>> call, Throwable t) {
+                Log.d("debug", "failed!" + " " + t.getMessage());
             }
         });
 
         return calendarEvents;
+    }
+
+    public interface OnDataLoadedCallback {
+        void onDataLoaded(List<CalendarEvent> calendarEvents);
     }
 
 }

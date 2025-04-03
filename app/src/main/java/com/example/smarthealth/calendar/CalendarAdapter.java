@@ -1,6 +1,7 @@
 package com.example.smarthealth.calendar;
 
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,9 +65,15 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
                 // Transition Y up to show only current week
                 holder.itemView.setTranslationY(-holder.itemView.getHeight() * (float)(currentDatePosition/7)));
 
-        if (!calendarEventProvider.hasEvent(currentDayCalendar)) {
-            holder.hasEventMarker.setVisibility(View.INVISIBLE);
-        }
+        calendarEventProvider.getEventsForDay(currentDayCalendar, new DatabaseCalendarEventProvider.OnDataLoadedCallback() {
+            @Override
+            public void onDataLoaded(List<CalendarEvent> calendarEvents) {
+                Log.d("Debug", String.valueOf(calendarEvents));
+                if (calendarEvents.isEmpty()) {
+                    holder.hasEventMarker.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
 
         if (position != currentDatePosition) {
             holder.currentDayMarker.setVisibility(View.INVISIBLE);

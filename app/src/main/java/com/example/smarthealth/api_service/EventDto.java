@@ -3,13 +3,21 @@ package com.example.smarthealth.api_service;
 
 import android.util.Log;
 
+import com.google.gson.annotations.JsonAdapter;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 public class EventDto {
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
     private Long id;
     private String eventTitle;
     private String eventDescription;
+    @JsonAdapter(CalendarDeserializer.class)
     private Calendar eventStartCalendar;
+    @JsonAdapter(CalendarDeserializer.class)
     private Calendar eventEndCalendar;
     private Long userId;
 
