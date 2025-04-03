@@ -10,7 +10,7 @@ public class CalendarEvent {
     private Calendar eventStartCalendar;
     private Calendar eventEndCalendar;
 
-    CalendarEvent(String eventTitle, String eventDescription, Calendar eventStartCalendar, Calendar eventEndCalendar) {
+    public CalendarEvent(String eventTitle, String eventDescription, Calendar eventStartCalendar, Calendar eventEndCalendar) {
         this.eventTitle = eventTitle;
         this.eventDescription = eventDescription;
         this.eventStartCalendar = (Calendar) eventStartCalendar.clone();
