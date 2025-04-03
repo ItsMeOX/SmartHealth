@@ -38,15 +38,6 @@ public class Fragment_Transit extends Fragment {
 
         searchResults = new ArrayList<>();
 
-        HashMap<String, String> test = new HashMap<>();
-        test.put("ededed","ededed");
-        searchResults.add(test);
-        searchResults.add(test);
-        searchResults.add(test);
-        searchResults.add(test);
-        searchResults.add(test);
-        searchResults.add(test);
-
         adapter = new DirectionsRecyclerViewAdapter(requireContext(), searchResults);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
@@ -55,8 +46,6 @@ public class Fragment_Transit extends Fragment {
 
     public void updateResults(List<HashMap<String, String>> instructions)
     {
-        Log.d("searchresults", searchResults.toString());
-        Log.d("searchresults", instructions.toString());
         searchResults.clear();
         searchResults.addAll(instructions);
         adapter.notifyDataSetChanged();

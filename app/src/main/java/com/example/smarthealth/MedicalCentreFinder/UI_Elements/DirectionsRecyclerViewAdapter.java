@@ -21,7 +21,7 @@ public class DirectionsRecyclerViewAdapter extends RecyclerView.Adapter<Directio
 
     private final List<HashMap<String, String>> mData;
 
-    public List<HashMap<String,String>> getmData()
+    public List<HashMap<String, String>> getmData()
     {
         return mData;
     }
@@ -51,7 +51,7 @@ public class DirectionsRecyclerViewAdapter extends RecyclerView.Adapter<Directio
         //position refers to the particular index position of the list of hashmap data which is mData,
         //or in this case the list of all hashmap direction instructions.
         //So, we get one instruction by passing in position as an index argument.
-        HashMap<String, String> aSingleInstruction = mData.get(position);
+        HashMap<String, String> aSingleInstruction = (HashMap<String, String>) mData.get(position);
         Log.d("aSingleOne",aSingleInstruction.toString());
         //String instructionType = aSingleInstruction.get("Instruction Type: ");
         String direction = aSingleInstruction.get("Directions: ");
@@ -92,11 +92,6 @@ public class DirectionsRecyclerViewAdapter extends RecyclerView.Adapter<Directio
         public void onClick(View view) {
             if (mClickListener != null) mClickListener.onItemClick(view, getAdapterPosition());
         }
-    }
-
-    // convenience method for getting data at click position
-    HashMap<String, String> getItem(int id) {
-        return mData.get(id);
     }
 
     // allows clicks events to be caught

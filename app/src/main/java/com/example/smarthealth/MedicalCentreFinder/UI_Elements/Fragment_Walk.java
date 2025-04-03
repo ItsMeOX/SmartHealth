@@ -37,17 +37,6 @@ public class Fragment_Walk extends Fragment {
         // Setup your drive-specific RecyclerView
         searchResults = new ArrayList<>();
 
-        HashMap<String, String> test = new HashMap<>();
-        test.put("ededed","ededed");
-        searchResults.add(test);
-        searchResults.add(test);
-        searchResults.add(test);
-        searchResults.add(test);
-        searchResults.add(test);
-        searchResults.add(test);
-
-        Log.d("sseed",searchResults.toString());
-
         adapter = new DirectionsRecyclerViewAdapter(requireContext(), searchResults);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);

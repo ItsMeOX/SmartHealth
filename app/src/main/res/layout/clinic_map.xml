@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
@@ -11,17 +12,27 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <!--Searchbar component -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="10dp">
+        android:padding="2dp">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:padding="2dp">
+
+            <Button
+                android:id="@+id/find_nearby_med_ctrs_btn"
+                android:layout_height="60dp"
+                android:layout_width ="60dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginEnd="2dp"
+                android:onClick="onClick"
+                android:background="@drawable/hospital_icon" />
 
             <androidx.appcompat.widget.SearchView
 
@@ -30,32 +41,9 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/maps_search_bar_bg"
                 app:iconifiedByDefault="false"
-                app:queryHint="Find a clinic near you.."
-                android:layout_weight="1"/>
-<!--            <com.google.android.material.textfield.TextInputLayout-->
-<!--                android:id="@+id/outlinedTextField"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:hint="Search for nearby clinics"-->
-<!--                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">-->
+                app:queryHint="Find a clinic near you.." />
 
-<!--                <com.google.android.material.textfield.TextInputEditText-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    />-->
-
-                <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/find_nearby_med_ctrs_btn"
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:layout_gravity="end"
-                    android:layout_weight="1"
-                    android:onClick="onClick"
-                    android:src="@drawable/medical_centre_button_icon" />
-
-<!--            </com.google.android.material.textfield.TextInputLayout>-->
-
-        </LinearLayout>
+        </RelativeLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/searchResultsList"
@@ -69,6 +57,25 @@
 
     </LinearLayout>
 
+    <RelativeLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <Button
+            android:id="@+id/get_current_location_btn"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/compass_512" />
+
+    </RelativeLayout>
+
+
+    <!--Bottom Sheet Component -->
     <LinearLayout
         android:id="@+id/bottomsheet"
         android:layout_width="match_parent"
@@ -78,7 +85,8 @@
         android:elevation="25dp"
         android:padding="25dp"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
-        app:behavior_hideable = "true">
+        app:behavior_hideable = "true"
+        android:visibility="visible">
 
         <Button
             android:id="@+id/closeBottomsheetButton"
@@ -121,7 +129,7 @@
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/view_pager"
                 android:layout_width="match_parent"
-                android:layout_height="500dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1">
 
             </androidx.viewpager2.widget.ViewPager2>
@@ -130,6 +138,4 @@
 
 
     </LinearLayout>
-
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

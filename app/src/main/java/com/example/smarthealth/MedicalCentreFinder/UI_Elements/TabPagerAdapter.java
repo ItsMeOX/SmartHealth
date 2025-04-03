@@ -1,15 +1,18 @@
 package com.example.smarthealth.MedicalCentreFinder.UI_Elements;
 
+import android.app.Activity;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 public class TabPagerAdapter extends FragmentStateAdapter {
     Fragment_Walk fragmentWalk;
     Fragment_drive fragmentDrive;
     Fragment_Transit fragmentTransit;
-    public TabPagerAdapter(@NonNull Fragment fragment) {
-        super(fragment);
+    public TabPagerAdapter(@NonNull Activity activity) {
+        super((FragmentActivity) activity);
     }
 
     @NonNull

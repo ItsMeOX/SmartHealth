@@ -29,6 +29,12 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name="com.example.smarthealth.MedicalCentreFinder.MapPageNavigation.MapClinicFinder"
+            android:exported="true"
+            android:label="Smart Health">
+        </activity>
+
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

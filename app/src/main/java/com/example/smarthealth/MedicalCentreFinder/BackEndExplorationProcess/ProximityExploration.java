@@ -52,7 +52,7 @@ public class ProximityExploration extends MapExploration{
     @Override
     public String getURL()
     {
-        String apiKey = mapClinicFinder.requireActivity().getString(R.string.my_gmap_api_key);
+        String apiKey = mapClinicFinder.getString(R.string.my_gmap_api_key);
         return "https://places.googleapis.com/v1/places:searchNearby?key="+ apiKey;
     }
 

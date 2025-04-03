@@ -63,7 +63,7 @@ public class SearchBarExploration extends MapExploration{
     @Override
     public String getURL()
     {
-        String apiKey = mapClinicFinder.requireActivity().getString(R.string.my_gmap_api_key);
+        String apiKey = mapClinicFinder.getString(R.string.my_gmap_api_key);
         //For text autocomplete predictions
         //return "https://places.googleapis.com/v1/places:autocomplete?key=";
         return "https://places.googleapis.com/v1/places:searchText?key=" + apiKey;

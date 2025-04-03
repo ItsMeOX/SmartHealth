@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+
 import android.widget.Toast;
 import android.Manifest;
 
@@ -63,7 +64,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 
-public class MapClinicFinder extends Fragment implements OnMapReadyCallback, SearchListRecyclerViewAdapter.ItemClickListener{
+public class MapClinicFinder extends AppCompatActivity implements OnMapReadyCallback, SearchListRecyclerViewAdapter.ItemClickListener{
 
     //Definitions
     private View view;
@@ -141,20 +142,19 @@ public class MapClinicFinder extends Fragment implements OnMapReadyCallback, Sea
 
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
 
-
-        view = inflater.inflate(R.layout.clinic_map, container, false);
+        super.onCreate(savedInstanceState);
+        // Set the layout file as the content view.
+        setContentView(R.layout.clinic_map);
 
         //Initialising Classes that reference this main class
         InitializeUserLocation initializeUserLocation = new InitializeUserLocation(this);
         searchBarExploration = new SearchBarExploration("places.displayName,places.formattedAddress,places.location", 5000, this);
         proximityExploration = new ProximityExploration("places.displayName,places.formattedAddress,places.location", 5000,this);
-
-        super.onCreate(savedInstanceState);
         // Set the layout file as the content view.
 
-        SupportMapFragment mapFragment = (SupportMapFragment) this.requireActivity().getSupportFragmentManager().findFragmentById(R.id.map);
+        SupportMapFragment mapFragment = (SupportMapFragment) this.getSupportFragmentManager().findFragmentById(R.id.map);
         if (mapFragment != null)
         {
             mapFragment.getMapAsync(this);
@@ -169,15 +169,15 @@ public class MapClinicFinder extends Fragment implements OnMapReadyCallback, Sea
         // data to populate the RecyclerView with
         searchResults = new ArrayList<>();
         // set up the RecyclerView
-        recyclerView = view.findViewById(R.id.searchResultsList);
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        adapter = new SearchListRecyclerViewAdapter(requireContext(), searchResults);
+        recyclerView = findViewById(R.id.searchResultsList);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new SearchListRecyclerViewAdapter(this, searchResults);
         adapter.setClickListener(this);
         recyclerView.setAdapter(adapter);
 
         //SearchView Initialisation and Input Query
         //Set up the search view
-        SearchView searchView = view.findViewById(R.id.mapSearch);
+        SearchView searchView = findViewById(R.id.mapSearch);
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -192,19 +192,24 @@ public class MapClinicFinder extends Fragment implements OnMapReadyCallback, Sea
             }
         });
 
-        View findNearbyMedCtrsButton = view.findViewById(R.id.find_nearby_med_ctrs_btn);
+        View findNearbyMedCtrsButton = findViewById(R.id.find_nearby_med_ctrs_btn);
 
         //Button to find nearby medical centres
         findNearbyMedCtrsButton.setOnClickListener(view -> {
             IconButtonInputAsyncProcess iconButtonInputAsyncProcess = new IconButtonInputAsyncProcess(MapClinicFinder.this, 20);
             iconButtonInputAsyncProcess.createAsynchronousRunnerProcess("hospital", null);
 
-            Toast.makeText(requireContext(), "Finding Nearby Hospitals", Toast.LENGTH_SHORT).show();
-            Toast.makeText(requireContext(), "Showing Nearby Hospitals", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Finding Nearby Hospitals", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Showing Nearby Hospitals", Toast.LENGTH_SHORT).show();
+        });
+
+        View initializeCurrentLocationButton = findViewById(R.id.get_current_location_btn);
+        initializeCurrentLocationButton.setOnClickListener(view->{
+            initializeUserLocation.getLastLocation();
         });
 
 
-        LinearLayout bottomSheet = view.findViewById(R.id.bottomsheet);
+        LinearLayout bottomSheet = findViewById(R.id.bottomsheet);
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
 
         // Set initial state
@@ -213,7 +218,7 @@ public class MapClinicFinder extends Fragment implements OnMapReadyCallback, Sea
         bottomSheetBehavior.setPeekHeight(BottomSheetBehavior.PEEK_HEIGHT_AUTO);
 
         // Close Bottom Sheet
-        Button closeBottomSheetButton = view.findViewById(R.id.closeBottomsheetButton);
+        Button closeBottomSheetButton = findViewById(R.id.closeBottomsheetButton);
         closeBottomSheetButton.setOnClickListener(v -> {
             Log.d("Closing", "Closing!");
             if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED)
@@ -223,8 +228,8 @@ public class MapClinicFinder extends Fragment implements OnMapReadyCallback, Sea
         });
 
 
-        TabLayout tabLayout = view.findViewById(R.id.tab_layout);
-        viewPager2 = view.findViewById(R.id.view_pager);
+        TabLayout tabLayout = findViewById(R.id.tab_layout);
+        viewPager2 = findViewById(R.id.view_pager);
 
         tabPagerAdapter = new TabPagerAdapter(this);
         // Set up adapter with tab fragments
@@ -245,7 +250,6 @@ public class MapClinicFinder extends Fragment implements OnMapReadyCallback, Sea
                     break;
             }
         }).attach();
-        return view;
     }
 
 
@@ -281,25 +285,23 @@ public class MapClinicFinder extends Fragment implements OnMapReadyCallback, Sea
         LatLng userLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
         myMap.addMarker(new MarkerOptions().position(userLocation).title("You"));
         myMap.moveCamera(CameraUpdateFactory.newLatLng(userLocation));
-
-
+        
         //On selecting a specific map marker, the following is done:
         myMap.setOnMarkerClickListener(marker -> {
+            //routeFinderAsyncProcess.getRoutesExploration().clearDestinationData();
+            destination = marker.getPosition();
+
+            if(destination.equals(getLatLng()))
+            {
+                return false;
+            }
+
+            RouteFinderAsyncProcess routeFinderAsyncProcess = new RouteFinderAsyncProcess(MapClinicFinder.this, getResources().getColor(R.color.polyLine_blue));
 
             viewPager2.setCurrentItem(0);
-
-            String id = marker.getId();
-            String title = marker.getTitle();
-            LatLng destination = marker.getPosition();
-            if (!destination.equals(getLatLng()))
-            {
-                Log.d("Marker!", "id: "+id+"title: "+title+"latlng: "+destination);
-                RouteFinderAsyncProcess routeFinderAsyncProcess = new RouteFinderAsyncProcess(MapClinicFinder.this, getResources().getColor(R.color.polyLine_blue));
-                routeFinderAsyncProcess.setTravelModes(TravelModes.DRIVE);
-
-                routeFinderAsyncProcess.setFragmentDrive(tabPagerAdapter.getPositionalFragment(0));
-                routeFinderAsyncProcess.createAsynchronousRunnerProcess("routes", destination);
-            }
+            routeFinderAsyncProcess.setTravelModes(TravelModes.DRIVE);
+            routeFinderAsyncProcess.setFragmentDrive(tabPagerAdapter.getPositionalFragment(0));
+            routeFinderAsyncProcess.createAsynchronousRunnerProcess("routes", destination);
 
             //show the bottom sheet
             if (bottomSheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED)
@@ -308,31 +310,33 @@ public class MapClinicFinder extends Fragment implements OnMapReadyCallback, Sea
             }
 
             viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-                RouteFinderAsyncProcess routeFinderAsyncProcess = new RouteFinderAsyncProcess(MapClinicFinder.this,getResources().getColor(R.color.polyLine_blue));
                 @Override
                 public void onPageSelected(int position) {
+
+                    //routeFinderAsyncProcess.getRoutesExploration().clearDestinationData();
                     super.onPageSelected(position);
                     switch(position)
                     {
                         case 0:
-                                routeFinderAsyncProcess.setTravelModes(TravelModes.DRIVE);
-                                routeFinderAsyncProcess.setFragmentDrive(tabPagerAdapter.getPositionalFragment(0));
-                        break;
+                            routeFinderAsyncProcess.setTravelModes(TravelModes.DRIVE);
+                            routeFinderAsyncProcess.setFragmentDrive(tabPagerAdapter.getPositionalFragment(0));
+                            routeFinderAsyncProcess.createAsynchronousRunnerProcess("routes", destination);
+                            break;
                         case 1:
-                                routeFinderAsyncProcess.setTravelModes(TravelModes.WALK);
-                                routeFinderAsyncProcess.setFragmentWalk(tabPagerAdapter.getPositionalFragment(1));
-                        break;
+                            routeFinderAsyncProcess.setTravelModes(TravelModes.WALK);
+                            routeFinderAsyncProcess.setFragmentWalk(tabPagerAdapter.getPositionalFragment(1));
+                            routeFinderAsyncProcess.createAsynchronousRunnerProcess("routes", destination);
+                            break;
                         case 2:
-                                routeFinderAsyncProcess.setTravelModes(TravelModes.TRANSIT);
-                                routeFinderAsyncProcess.setFragmentTransit(tabPagerAdapter.getPositionalFragment(2));
+                            routeFinderAsyncProcess.setTravelModes(TravelModes.TRANSIT);
+                            routeFinderAsyncProcess.setFragmentTransit(tabPagerAdapter.getPositionalFragment(2));
+                            routeFinderAsyncProcess.createAsynchronousRunnerProcess("routes", destination);
 
-                        break;
+                            break;
                     }
-                    routeFinderAsyncProcess.createAsynchronousRunnerProcess("routes", destination);
                     //So, onMapReady, we also check if the bottomsheet is up and hence is for any changes tabs detected by the viewpager.
                 }
             });
-
             return false;
         });
     }
@@ -365,7 +369,7 @@ class InitializeUserLocation {
     InitializeUserLocation(MapClinicFinder mapClinicFinder)
     {
         this.mapReadyCallback = mapClinicFinder;
-        this.context = mapClinicFinder.getActivity();
+        this.context = mapClinicFinder;
         assert this.context != null;
         this.fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this.context);
         this.mapClinicFinder = mapClinicFinder;
@@ -417,7 +421,7 @@ class InitializeUserLocation {
         task.addOnSuccessListener(location -> {
             if (location != null) {
                 mapClinicFinder.setLocation(location);
-                SupportMapFragment mapFragment = (SupportMapFragment) mapClinicFinder.getChildFragmentManager().findFragmentById(R.id.map);
+                SupportMapFragment mapFragment = (SupportMapFragment) mapClinicFinder.getSupportFragmentManager().findFragmentById(R.id.map);
                 if (mapFragment != null) {
                     mapFragment.getMapAsync(mapReadyCallback);
                 }

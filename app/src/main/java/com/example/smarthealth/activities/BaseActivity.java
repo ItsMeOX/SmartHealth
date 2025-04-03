@@ -1,6 +1,7 @@
 package com.example.smarthealth.activities;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -51,7 +52,8 @@ public class BaseActivity extends AppCompatActivity {
                     Toast.makeText(this, "Please Enable Location Services First", Toast.LENGTH_SHORT).show();
 
                 } else {
-                    loadFragment(new MapClinicFinder());
+                    Intent startMapClinicFinder = new Intent(BaseActivity.this, MapClinicFinder.class);
+                    startActivity(startMapClinicFinder);
                 }
             }
         });

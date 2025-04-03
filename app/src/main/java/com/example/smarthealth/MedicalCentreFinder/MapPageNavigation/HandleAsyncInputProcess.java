@@ -25,10 +25,15 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.PolyUtil;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 abstract class HandleAsyncInputProcess{
 
@@ -49,17 +54,25 @@ abstract class HandleAsyncInputProcess{
     public abstract void exitFunction();
 
     public void createAsynchronousRunnerProcess(String newText, LatLng destination) {
+        ExecutorService executorService = Executors.newSingleThreadExecutor(); //Execute a single thread
+        Future<?> future = executorService.submit(()->backgroundThreadFunction(newText, destination));
+
         Handler handler = new Handler();
         // Create a new Runnable for the search operation
         Runnable searchRunnable = () -> {
             if (!newText.isEmpty()) {
                 outerFunction();
                 // Perform the search on a background thread
-                new Thread(() -> {
-                    backgroundThreadFunction(newText, destination);
-                    // Update the UI on the main thread
-                    activity.runOnUiThread(this::mainThreadFunction);
-                }).start();
+                executorService.submit(()->{
+                    try {
+                        future.get();
+                        // Update the UI on the main thread
+                        activity.runOnUiThread(this::mainThreadFunction);
+                    } catch (ExecutionException | InterruptedException e) {
+                        e.printStackTrace();
+                        throw new RuntimeException("Runtime exception");
+                    }
+                });
             } else {
                 // Clear the results if the query is empty
                 activity.runOnUiThread(this::exitFunction);
@@ -85,7 +98,7 @@ class TextInputAsyncProcess extends HandleAsyncInputProcess {
 
     TextInputAsyncProcess(MapClinicFinder mapClinicFinder, String newText)
     {
-        super(mapClinicFinder.requireActivity(),100);
+        super(mapClinicFinder,100);
         this.mapClinicFinder = mapClinicFinder;
         this.adapter = mapClinicFinder.getAdapter();
         this.recyclerView = mapClinicFinder.getRecyclerView();
@@ -141,7 +154,7 @@ class IconButtonInputAsyncProcess extends HandleAsyncInputProcess{
 
     IconButtonInputAsyncProcess(MapClinicFinder mapClinicFinder, int zoomFactor)
     {
-        super(mapClinicFinder.requireActivity(),100);
+        super(mapClinicFinder,100);
         this.mapClinicFinder = mapClinicFinder;
         this.zoomFactor = zoomFactor;
 
@@ -206,14 +219,11 @@ class RouteFinderAsyncProcess extends HandleAsyncInputProcess{
 
     RouteFinderAsyncProcess(MapClinicFinder mapClinicFinder, int routeColor)
     {
-        super(mapClinicFinder.requireActivity(), 100);
+        super(mapClinicFinder, 500);
         this.mapClinicFinder = mapClinicFinder;
         this.routeColor = routeColor;
-    }
-
-    public void setFragmentDrive(Fragment fragmentDrive)
-    {
-        this.fragmentDrive = (Fragment_drive) fragmentDrive;
+        routesData = new ArrayList<>();
+        routesLegInstructions = new ArrayList<>();
     }
 
     public void setTravelModes(TravelModes travelModes)
@@ -231,6 +241,11 @@ class RouteFinderAsyncProcess extends HandleAsyncInputProcess{
         this.fragmentTransit = (Fragment_Transit) fragmentTransit;
     }
 
+    public void setFragmentDrive(Fragment fragmentDrive)
+    {
+        this.fragmentDrive = (Fragment_drive) fragmentDrive;
+    }
+
     @Override
     public void outerFunction() {
         Log.d("Outer", "Getting routes");
@@ -245,18 +260,18 @@ class RouteFinderAsyncProcess extends HandleAsyncInputProcess{
         routesExploration.search();
         if (routesExploration == null)
         {
-            Toast.makeText(mapClinicFinder.requireContext(), "No available Routes", Toast.LENGTH_SHORT);
+            Toast.makeText(mapClinicFinder, "No available Routes", Toast.LENGTH_SHORT);
             return;
         }
         routesData = routesExploration.getRoutesData();
         routesLegInstructions = routesExploration.getAllpossibleRouteInstructions(); //got all possible instructions
-        Log.d("Routes!!!!", routesLegInstructions.toString());
     }
 
     @Override
     public void mainThreadFunction() {
-        if (routesData == null)
+        if (routesData.isEmpty() || routesLegInstructions.isEmpty())
         {
+            Toast.makeText(mapClinicFinder,"No available Routes for chosen method. Showing latest", Toast.LENGTH_LONG).show();
             return;
         }
         //Now, convert the encoded polyline route data to the set of latitudes and longitude stop-points.

@@ -5,6 +5,8 @@ import static android.provider.Settings.System.getString;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+
 import com.example.smarthealth.MedicalCentreFinder.MapPageNavigation.MapClinicFinder;
 import com.example.smarthealth.R;
 import com.google.android.gms.maps.model.LatLng;
@@ -56,6 +58,12 @@ public class RoutesExploration extends MapExploration{
 
         destinationLatitude = destination.latitude;
         destinationLongitude = destination.longitude;
+    }
+
+    public void clearDestinationData()
+    {
+        this.destinationLongitude = 0;
+        this.destinationLatitude = 0;
     }
 
     public void setTravelMode(TravelModes travelMode)
@@ -162,7 +170,7 @@ public class RoutesExploration extends MapExploration{
 
     @Override
     public String getURL() {
-        String apiKey = mapClinicFinder.requireActivity().getString(R.string.my_gmap_api_key);
+        String apiKey = mapClinicFinder.getString(R.string.my_gmap_api_key);
         return "https://routes.googleapis.com/directions/v2:computeRoutes?key=" + apiKey;
     }
 
@@ -170,7 +178,7 @@ public class RoutesExploration extends MapExploration{
     public List<? extends Object> getExplorationResults() throws JSONException {
         if (jsonArray == null)
         {
-            Toast.makeText(mapClinicFinder.requireContext(), "No available routes", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mapClinicFinder, "No available routes", Toast.LENGTH_SHORT).show();
             return null;
         }
 
@@ -186,24 +194,32 @@ public class RoutesExploration extends MapExploration{
             singleRouteData.put("Duration", duration);
             singleRouteData.put("Distance  Meters", distanceMeters);
 
+            routesData.add(singleRouteData);
+
             //get the instructions
             List<HashMap<String ,String>> allinstructionsSingleRoute = new ArrayList<>();
             JSONArray legs = routeData.getJSONArray("legs");
             //This "legs" JSON array actually contains many many steps. Because no intermediate waypoints have been set,
             //1 leg is essentially representative of the entire journey from start to end, and it has many steps.
             JSONArray steps = legs.getJSONObject(0).getJSONArray("steps");
-            for (int j = 0; j < steps.length(); j++)
-            {
-                Log.d("Result",steps.getJSONObject(j).toString());
-                HashMap<String, String> instructions = new HashMap<>();
-//                instructions.put("Instruction Type: ", steps.getJSONObject(j).getJSONObject("navigationInstruction").getString("maneuver"));
-                instructions.put("Directions: ", steps.getJSONObject(j).getJSONObject("navigationInstruction").getString("instructions"));
-                allinstructionsSingleRoute.add(instructions);
+            if (steps != null) {
+                for (int j = 0; j < steps.length(); j++) {
+                    Log.d("Result", steps.getJSONObject(j).toString());
+                    HashMap<String, String> instructions = new HashMap<>();
+
+                    try{
+                        JSONObject instruction = steps.getJSONObject(j).optJSONObject("navigationInstruction");
+                        String direction = instruction.optString("instructions");
+                        instructions.put("Directions: ", direction);
+                        allinstructionsSingleRoute.add(instructions);
+                        allpossibleRouteInstructions = allinstructionsSingleRoute;
+
+                    }catch (NullPointerException e)
+                    {
+                        Toast.makeText(mapClinicFinder, "Fetching results", Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
-
-
-            routesData.add(singleRouteData);
-            allpossibleRouteInstructions = allinstructionsSingleRoute;
         }
         return routesData;
     }
