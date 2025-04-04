@@ -15,9 +15,19 @@ public interface EventService {
     @POST("events/{userId}")
     Call<EventDto> createEvent(@Path("userId") long userId, EventDto eventDto);
 
-    @GET("events/{userId}")
-    Call<List<EventDto>> getUserEvents(
-            @Path("userId") long userId
+    @GET("events/{userId}/day/{year}/{month}/{day}")
+    Call<List<EventDto>> getUserEventsByDay(
+            @Path("userId") long userId,
+            @Path("year") int year,
+            @Path("month") int month,
+            @Path("day") int day
+    );
+
+    @GET("events/{userId}/month/{year}/{month}")
+    Call<List<EventDto>> getUsersEventsByMonth(
+            @Path("userId") long userId,
+            @Path("year") int year,
+            @Path("month") int month
     );
 
     @GET("events/{eventId}")

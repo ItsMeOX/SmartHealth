@@ -2,6 +2,7 @@ package com.example.smarthealth.activities;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -27,6 +28,7 @@ import com.example.smarthealth.bot_suggestions.BotSuggestion;
 import com.example.smarthealth.bot_suggestions.BotSuggestionAdapter;
 import com.example.smarthealth.bot_suggestions.BotSuggestionProvider;
 import com.example.smarthealth.bot_suggestions.DatabaseBotSuggestionProvider;
+import com.example.smarthealth.calendar.CalendarEventCache;
 import com.example.smarthealth.calendar.DatabaseCalendarEventProvider;
 import com.example.smarthealth.calendar.CalendarEvent;
 import com.example.smarthealth.calendar.CalendarEventProvider;
@@ -62,6 +64,7 @@ public class HomeFragment extends Fragment implements
     private NutrientIntakeProvider nutrientIntakeProvider;
     private UpcomingScheduleProvider upcomingScheduleProvider;
     private BotSuggestionProvider botSuggestionProvider;
+    private CalendarEventCache calendarEventCache;
     private View view; // main view for this fragment
 
     @Override
@@ -72,6 +75,7 @@ public class HomeFragment extends Fragment implements
         nutrientIntakeProvider = new DatabaseNutrientIntakeProvider();
         upcomingScheduleProvider = new DatabaseUpcomingScheduleProvider();
         botSuggestionProvider = new DatabaseBotSuggestionProvider();
+        calendarEventCache = new CalendarEventCache();
 
         initCalendarWidgets();
         setUpMainContentSlider();
@@ -79,7 +83,7 @@ public class HomeFragment extends Fragment implements
         initUpcomingScheduleWidgets();
         initBotSuggestionWidgets();
 
-        selectedDate = Calendar.getInstance();
+        selectedDate = (Calendar) Calendar.getInstance().clone();
         setMonthView();
         setNutrientIntakeView();
         setUpcomingSchedules();
@@ -98,6 +102,7 @@ public class HomeFragment extends Fragment implements
     }
 
     private void setMonthView() {
+
         SimpleDateFormat dateFormat = new SimpleDateFormat("MMM yyyy", Locale.ENGLISH);
         String selectedDateText = dateFormat.format(selectedDate.getTime());
         monthYearText.setText(selectedDateText);
@@ -106,10 +111,12 @@ public class HomeFragment extends Fragment implements
         ArrayList<Calendar> daysInMonth = results.first;
         int currentDatePosition = results.second;
 
-        CalendarAdapter calendarAdapter = new CalendarAdapter(daysInMonth, calendarEventProvider, currentDatePosition, this);
+        CalendarAdapter calendarAdapter = new CalendarAdapter(daysInMonth, calendarEventCache, currentDatePosition, this);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(requireContext(), 7);
         calendarRecyclerView.setLayoutManager(layoutManager);
         calendarRecyclerView.setAdapter(calendarAdapter);
+
+        calendarEventCache.loadEventsForMonth(selectedDate, calendarEventProvider, calendarAdapter::notifyDataSetChanged);
     }
 
     private Pair<ArrayList<Calendar>, Integer> daysInMonthArray(Calendar selectedDate) {
@@ -126,7 +133,7 @@ public class HomeFragment extends Fragment implements
         prevMonth.add(Calendar.MONTH, -1);
         int totalDaysPrevMonth = prevMonth.getActualMaximum(Calendar.DAY_OF_MONTH);
         for (int i = 1; i < dayOfWeek; i++) {
-            Calendar day = (Calendar) selectedDate.clone();
+            Calendar day = (Calendar) prevMonth.clone();
             day.set(Calendar.DAY_OF_MONTH, totalDaysPrevMonth - (6 - i));
             daysInMonth.add(day);
         }
@@ -327,22 +334,19 @@ public class HomeFragment extends Fragment implements
         LayoutInflater inflater = LayoutInflater.from(requireContext());
         SimpleDateFormat eventTimeFormat = new SimpleDateFormat("hh:mm aa", Locale.ENGLISH);
 
-        calendarEventProvider.getEventsForDay((Calendar) Calendar.getInstance().clone(), new DatabaseCalendarEventProvider.OnDataLoadedCallback() {
-            @Override
-            public void onDataLoaded(List<CalendarEvent> calendarEvents) {
-                for (CalendarEvent calendarEvent : calendarEvents) {
-                    View eventView = inflater.inflate(R.layout.calendar_event_popup_item, eventListContainer, false);
-                    TextView eventTitleView = eventView.findViewById(R.id.calendarPopupEventTitle);
-                    TextView eventTimeView = eventView.findViewById(R.id.calendarPopupEventTime);
-                    TextView eventDescView = eventView.findViewById(R.id.calendarPopupEventDesc);
+        Calendar currCalendar = (Calendar) daysOfMonth.get(position).clone();
+        List<CalendarEvent> calendarEvents = calendarEventCache.getEventsForDay(currCalendar);
+        for (CalendarEvent calendarEvent : calendarEvents) {
+            View eventView = inflater.inflate(R.layout.calendar_event_popup_item, eventListContainer, false);
+            TextView eventTitleView = eventView.findViewById(R.id.calendarPopupEventTitle);
+            TextView eventTimeView = eventView.findViewById(R.id.calendarPopupEventTime);
+            TextView eventDescView = eventView.findViewById(R.id.calendarPopupEventDesc);
 
-                    eventTitleView.setText(calendarEvent.getEventTitle());
-                    eventTimeView.setText(eventTimeFormat.format(calendarEvent.getEventDateCalendar().first.getTime()));
-                    eventDescView.setText(calendarEvent.getEventDescription());
-                    eventListContainer.addView(eventView);
-                }
-            }
-        });
+            eventTitleView.setText(calendarEvent.getEventTitle());
+            eventTimeView.setText(eventTimeFormat.format(calendarEvent.getEventDateCalendar().first.getTime()));
+            eventDescView.setText(calendarEvent.getEventDescription());
+            eventListContainer.addView(eventView);
+        }
 
         CardView eventAdder = (CardView) inflater.inflate(R.layout.calendar_event_popup_add, eventListContainer, false);
         eventListContainer.addView(eventAdder);
@@ -374,6 +378,9 @@ public class HomeFragment extends Fragment implements
 
             eventListContainer.addView(eventView, eventListContainer.getChildCount()-1); // Add before "Add Event" button
         }
+
+        // Update cache after adding new calendar event
+        calendarEventCache.loadEventForDay(event.getEventDateCalendar().first, calendarEventProvider);
     }
 
     private void initBotSuggestionWidgets() {

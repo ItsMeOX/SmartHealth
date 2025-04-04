@@ -20,14 +20,14 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
     private final OnItemListener onItemListener;
     private final int currentDatePosition;
     private final Calendar selectedDate;
-    private final CalendarEventProvider calendarEventProvider;
+    private final CalendarEventCache calendarEventCache;
 
-    public CalendarAdapter(ArrayList<Calendar> daysOfMonth, CalendarEventProvider calendarEventProvider, int currentDatePosition, OnItemListener onItemListener) {
+    public CalendarAdapter(ArrayList<Calendar> daysOfMonth, CalendarEventCache calendarEventCache, int currentDatePosition, OnItemListener onItemListener) {
         this.daysOfMonth = daysOfMonth;
         this.currentDatePosition = currentDatePosition;
         this.onItemListener = onItemListener;
-        this.calendarEventProvider = calendarEventProvider;
-        selectedDate = Calendar.getInstance();
+        this.calendarEventCache = calendarEventCache;
+        selectedDate = (Calendar) Calendar.getInstance().clone();
     }
 
     private int getFirstDayIndex() {
@@ -57,23 +57,21 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
         holder.dayOfMonth.setText(currentDay);
 
         // Set text to gray for days of previous and next month
-        if (position < getFirstDayIndex()-1 || position > getLastDayIndex()) {
+        if (currentDayCalendar.get(Calendar.MONTH) != selectedDate.get(Calendar.MONTH)) {
             holder.dayOfMonth.setTextColor(Color.parseColor("#8C8C8C"));
+        } else {
+            holder.dayOfMonth.setTextColor(Color.parseColor("#FFFFFF"));
         }
 
         holder.itemView.post(() ->
                 // Transition Y up to show only current week
                 holder.itemView.setTranslationY(-holder.itemView.getHeight() * (float)(currentDatePosition/7)));
 
-        calendarEventProvider.getEventsForDay(currentDayCalendar, new DatabaseCalendarEventProvider.OnDataLoadedCallback() {
-            @Override
-            public void onDataLoaded(List<CalendarEvent> calendarEvents) {
-                Log.d("Debug", String.valueOf(calendarEvents));
-                if (calendarEvents.isEmpty()) {
-                    holder.hasEventMarker.setVisibility(View.INVISIBLE);
-                }
-            }
-        });
+        if (!calendarEventCache.hasEvent(currentDayCalendar)) {
+            holder.hasEventMarker.setVisibility(View.INVISIBLE);
+        } else {
+            holder.hasEventMarker.setVisibility(View.VISIBLE);
+        }
 
         if (position != currentDatePosition) {
             holder.currentDayMarker.setVisibility(View.INVISIBLE);

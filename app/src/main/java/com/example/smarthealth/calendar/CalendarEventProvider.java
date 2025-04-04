@@ -5,4 +5,5 @@ import java.util.List;
 
 public interface CalendarEventProvider {
     List<CalendarEvent> getEventsForDay(Calendar date, DatabaseCalendarEventProvider.OnDataLoadedCallback callback);
+    List<CalendarEvent> getEventsForMonth(Calendar date, DatabaseCalendarEventProvider.OnDataLoadedCallback callback);
 }

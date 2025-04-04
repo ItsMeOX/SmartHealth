@@ -28,9 +28,35 @@ public class DatabaseCalendarEventProvider implements CalendarEventProvider {
         return queryDatabaseCalendar(date, callback);
     }
 
+    @Override
+    public List<CalendarEvent> getEventsForMonth(Calendar date, OnDataLoadedCallback callback) {
+        List<CalendarEvent> calendarEvents = new ArrayList<>();
+        Call<List<EventDto>> call = eventService.getUsersEventsByMonth(16, 2025, 4);
+        call.enqueue(new Callback<List<EventDto>>() {
+            @Override
+            public void onResponse(Call<List<EventDto>> call, Response<List<EventDto>> response) {
+                if(response.body() != null){
+                    for(EventDto event : response.body()){
+                        CalendarEvent calendarEvent = new CalendarEvent(
+                                event.getEventTitle(),
+                                event.getEventDescription(),
+                                event.getEventStartCalendar(), (Calendar) event.getEventEndCalendar());
+                        calendarEvents.add(calendarEvent);
+                    }
+                }
+                callback.onDataLoaded(calendarEvents);
+            }
+            @Override
+            public void onFailure(Call<List<EventDto>> call, Throwable t) {
+            }
+        });
+
+        return calendarEvents;
+    }
+
     private List<CalendarEvent> queryDatabaseCalendar(Calendar date, OnDataLoadedCallback callback) {
         List<CalendarEvent> calendarEvents = new ArrayList<>();
-        Call<List<EventDto>> call = eventService.getUserEvents(16);
+        Call<List<EventDto>> call = eventService.getUserEventsByDay(16, 2025, 4, 3);
         call.enqueue(new Callback<List<EventDto>>() {
             @Override
             public void onResponse(Call<List<EventDto>> call, Response<List<EventDto>> response) {
