@@ -68,6 +68,7 @@ public class CameraPage3 extends AppCompatActivity {
                                 );
 
                                 Bitmap bm = result_1.get();
+                                // bitmap save to gallery
                                 String imagePath = saveImageToGallery(bm);
 
                                 if (imagePath != null) {
