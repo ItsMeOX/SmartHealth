@@ -20,4 +20,9 @@ public class CalendarUtil {
         calendar.setTime(date);
         return calendar;
     }
+
+    public static String calendarToDateString(Calendar calendar) {
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        return dateFormatter.format(calendar.getTime());
+    }
 }
