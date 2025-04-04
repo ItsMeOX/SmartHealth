@@ -26,9 +26,18 @@
 
         android:layout_height="wrap_content"
 
-        android:text="Snap a picture of your food!"
+        android:text="Snap a picture of your medicine!"
 
         />
+
+    <TextView
+        android:id="@+id/result_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Results will appear here"
+        android:textSize="18sp"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center" />
 
 
 
