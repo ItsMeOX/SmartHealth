@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.OvershootInterpolator;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -348,7 +349,7 @@ public class HomeFragment extends Fragment implements
             eventListContainer.addView(eventView);
         }
 
-        CardView eventAdder = (CardView) inflater.inflate(R.layout.calendar_event_popup_add, eventListContainer, false);
+        Button eventAdder = (Button) inflater.inflate(R.layout.calendar_event_popup_add, eventListContainer, false);
         eventListContainer.addView(eventAdder);
         eventAdder.setOnClickListener(v -> {
             CalendarFormFragment dialog = new CalendarFormFragment(eventListContainer);
