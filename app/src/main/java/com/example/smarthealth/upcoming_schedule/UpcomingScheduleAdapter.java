@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.smarthealth.R;
+import com.example.smarthealth.nutrient_intake.NutrientIntake;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -16,9 +17,11 @@ import java.util.Locale;
 
 public class UpcomingScheduleAdapter extends RecyclerView.Adapter<UpcomingScheduleViewHolder> {
     private final List<UpcomingSchedule> upcomingSchedules;
+    private final OnItemListener onItemListener;
 
-    public UpcomingScheduleAdapter(List<UpcomingSchedule> upcomingSchedules) {
+    public UpcomingScheduleAdapter(List<UpcomingSchedule> upcomingSchedules, OnItemListener onItemListener) {
         this.upcomingSchedules = upcomingSchedules;
+        this.onItemListener = onItemListener;
     }
 
     @NonNull
@@ -27,7 +30,7 @@ public class UpcomingScheduleAdapter extends RecyclerView.Adapter<UpcomingSchedu
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.upcoming_schedule_view, parent, false);
 
-        return new UpcomingScheduleViewHolder(view);
+        return new UpcomingScheduleViewHolder(view, onItemListener, upcomingSchedules);
     }
 
     @Override
@@ -45,5 +48,9 @@ public class UpcomingScheduleAdapter extends RecyclerView.Adapter<UpcomingSchedu
     @Override
     public int getItemCount() {
         return upcomingSchedules.size();
+    }
+
+    public interface OnItemListener {
+        void onScheduleItemClick(int position, List<UpcomingSchedule> nutrientIntakes);
     }
 }

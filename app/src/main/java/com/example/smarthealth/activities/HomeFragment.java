@@ -13,6 +13,7 @@ import android.view.animation.OvershootInterpolator;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -52,6 +53,7 @@ import java.util.Locale;
 public class HomeFragment extends Fragment implements
         CalendarAdapter.OnItemListener,
         BotSuggestionAdapter.OnItemListener,
+        UpcomingScheduleAdapter.OnItemListener,
         CalendarFormFragment.NewEventCreatedListener
 {
 
@@ -405,7 +407,7 @@ public class HomeFragment extends Fragment implements
     public void setUpcomingSchedules() {
         List<UpcomingSchedule> upcomingSchedules = upcomingScheduleProvider.getTodaySchedules();
 
-        UpcomingScheduleAdapter upcomingScheduleAdapter = new UpcomingScheduleAdapter(upcomingSchedules);
+        UpcomingScheduleAdapter upcomingScheduleAdapter = new UpcomingScheduleAdapter(upcomingSchedules, HomeFragment.this);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
         scheduleRecyclerView.setLayoutManager(layoutManager);
         scheduleRecyclerView.setAdapter(upcomingScheduleAdapter);
@@ -430,5 +432,22 @@ public class HomeFragment extends Fragment implements
         botSuggestionDialog.show();
     }
 
+    @Override
+    public void onScheduleItemClick(int position, List<UpcomingSchedule> upcomingSchedules) {
+        UpcomingSchedule schedule = upcomingSchedules.get(position);
 
+        Toast.makeText(requireContext(), upcomingSchedules.get(position).getScheduleTitle(), Toast.LENGTH_SHORT).show();
+        Dialog dialog = new Dialog(requireActivity());
+        dialog.setContentView(R.layout.upcoming_schedule_popup);
+        if (dialog.getWindow() != null) {
+            WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
+            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            dialog.getWindow().setAttributes(params);
+        }
+
+        TextView titleView = dialog.findViewById(R.id.upcomingSchedulePopupTitle);
+        titleView.setText(schedule.getScheduleTitle());
+        dialog.show();
+    }
 }
