@@ -335,7 +335,8 @@ public class HomeFragment extends Fragment implements
         dateTextView.setText(selectedDateText);
 
         LayoutInflater inflater = LayoutInflater.from(requireContext());
-        SimpleDateFormat eventTimeFormat = new SimpleDateFormat("hh:mm aa", Locale.ENGLISH);
+        SimpleDateFormat eventTimeFormat = new SimpleDateFormat("hh:mm", Locale.ENGLISH);
+        SimpleDateFormat amPmFormat = new SimpleDateFormat("aa", Locale.ENGLISH);
 
         Calendar currCalendar = (Calendar) daysOfMonth.get(position).clone();
         List<CalendarEvent> calendarEvents = calendarEventCache.getEventsForDay(currCalendar);
@@ -343,12 +344,13 @@ public class HomeFragment extends Fragment implements
             View eventView = inflater.inflate(R.layout.calendar_event_popup_item, eventListContainer, false);
             TextView eventTitleView = eventView.findViewById(R.id.calendarPopupEventTitle);
             TextView eventTimeView = eventView.findViewById(R.id.calendarPopupEventTime);
+            TextView eventTimeAmPmView = eventView.findViewById(R.id.calendarPopupEventTimeAmPm);
             TextView eventDescView = eventView.findViewById(R.id.calendarPopupEventDesc);
-
-            eventTitleView.setText(calendarEvent.getEventTitle());
+            eventTitleView.setText("Bergen Internation Film Festival"); // Change back to calendarEvent.getEventTitle()
             eventTimeView.setText(eventTimeFormat.format(calendarEvent.getEventDateCalendar().first.getTime()));
-            eventDescView.setText(calendarEvent.getEventDescription());
+            eventDescView.setText("Films from all over the world gather all film i dont know."); // Change back to calendarEvent.getEventDescription()
             eventListContainer.addView(eventView);
+            eventTimeAmPmView.setText(amPmFormat.format(calendarEvent.getEventDateCalendar().first.getTime()));
         }
 
         Button eventAdder = (Button) inflater.inflate(R.layout.calendar_event_popup_add, eventListContainer, false);
