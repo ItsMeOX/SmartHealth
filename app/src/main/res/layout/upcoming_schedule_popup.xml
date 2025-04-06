@@ -40,6 +40,7 @@
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginHorizontal="20dp"
         android:layout_marginTop="5dp"
+        android:lineHeight="23dp"
         />
 
     <com.google.android.material.button.MaterialButton

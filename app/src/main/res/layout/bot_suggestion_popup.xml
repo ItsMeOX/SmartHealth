@@ -55,6 +55,7 @@
                 android:textAlignment="textStart"
                 android:textColor="@color/lightgray"
                 android:layout_marginTop="5dp"
+                android:lineHeight="23dp"
                 />
         </LinearLayout>
     </ScrollView>
