@@ -5,6 +5,8 @@ import android.util.Log;
 import com.example.smarthealth.api_service.EventDto;
 import com.example.smarthealth.api_service.EventService;
 import com.example.smarthealth.api_service.RetrofitClient;
+import com.example.smarthealth.api_service.UpcomingScheduleDto;
+import com.example.smarthealth.api_service.UpcomingScheduleService;
 import com.example.smarthealth.calendar.CalendarEvent;
 import com.example.smarthealth.calendar.DatabaseCalendarEventProvider;
 import com.example.smarthealth.upcoming_schedule.schedule_types.MealSchedule;
@@ -21,10 +23,10 @@ import retrofit2.Response;
 
 public class DatabaseUpcomingScheduleProvider implements UpcomingScheduleProvider {
 
-    private final EventService eventService;
+    private final UpcomingScheduleService upcomingScheduleService;
 
     public DatabaseUpcomingScheduleProvider(){
-        eventService = RetrofitClient.getInstance().create(EventService.class);
+        upcomingScheduleService = RetrofitClient.getInstance().create(UpcomingScheduleService.class);
     }
 
     @Override
@@ -36,18 +38,19 @@ public class DatabaseUpcomingScheduleProvider implements UpcomingScheduleProvide
         int month = today.get(Calendar.MONTH) + 1;       // Month (0-11), so add 1 for human-readable format
         int year = today.get(Calendar.YEAR);             // Full year (e.g., 2025)
 
-        Call<List<EventDto>> call = eventService.getUserEventsByDay(userId, year, month, day);
+        Call<List<UpcomingScheduleDto>> call = upcomingScheduleService.getUserSchedulesByDay(userId, year, month, day);
 
-        call.enqueue(new Callback<List<EventDto>>() {
+        call.enqueue(new Callback<List<UpcomingScheduleDto>>() {
             @Override
-            public void onResponse(Call<List<EventDto>> call, Response<List<EventDto>> response) {
+            public void onResponse(Call<List<UpcomingScheduleDto>> call, Response<List<UpcomingScheduleDto>> response) {
                 if(response.isSuccessful() && response.body() != null){
-                    for(EventDto event : response.body()){
+                    for(UpcomingScheduleDto schedule : response.body()){
                         UpcomingSchedule upcomingSchedule = new UpcomingSchedule(
-                                event.getEventTitle(),
-                                (Calendar) event.getEventStartCalendar(),
-                                event.getEventType().equals("Meal") ? new MealSchedule() : new MedicineSchedule(),
-                                event.isTaken());
+                                schedule.getScheduleTitle(),
+                                schedule.getScheduleDescription(),
+                                (Calendar) schedule.getScheduleCalender(),
+                                schedule.getScheduleType().equals("Meal") ? new MealSchedule() : new MedicineSchedule(),
+                                schedule.isTaken());
                         schedules.add(upcomingSchedule);
                     }
                 }
@@ -62,8 +65,9 @@ public class DatabaseUpcomingScheduleProvider implements UpcomingScheduleProvide
 
                 callback.onDataLoaded(finalSchedules);
             }
+
             @Override
-            public void onFailure(Call<List<EventDto>> call, Throwable t) {
+            public void onFailure(Call<List<UpcomingScheduleDto>> call, Throwable t) {
                 Log.d("debug upcoming schedule", "failed!" + " " + t.getMessage());
             }
         });
