@@ -20,23 +20,12 @@ public class EventDto {
     @JsonAdapter(CalendarDeserializer.class)
     private Calendar eventEndCalendar;
     private Long userId;
-    private String eventType;
-    private boolean isTaken;
 
-    public String getEventType() {
-        return eventType;
-    }
-
-    public void setEventType(String eventType) {
-        this.eventType = eventType;
-    }
-
-    public boolean isTaken() {
-        return isTaken;
-    }
-
-    public void setTaken(boolean taken) {
-        isTaken = taken;
+    public EventDto(String eventTitle, String eventDescription, Calendar eventStartCalendar, Calendar eventEndCalendar) {
+        this.eventTitle = eventTitle;
+        this.eventDescription = eventDescription;
+        this.eventStartCalendar = (Calendar) eventStartCalendar.clone();
+        this.eventEndCalendar = (Calendar) eventEndCalendar.clone();
     }
 
     public Long getId() {

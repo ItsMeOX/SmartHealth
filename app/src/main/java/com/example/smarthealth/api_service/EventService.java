@@ -3,6 +3,7 @@ package com.example.smarthealth.api_service;
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.PATCH;
@@ -13,7 +14,10 @@ import retrofit2.http.Query;
 
 public interface EventService {
     @POST("events/{userId}")
-    Call<EventDto> createEvent(@Path("userId") long userId, EventDto eventDto);
+    Call<EventDto> createEvent(
+            @Path("userId") long userId,
+            @Body EventDto eventDto
+    );
 
     @GET("events/{userId}/day/{year}/{month}/{day}")
     Call<List<EventDto>> getUserEventsByDay(
@@ -39,7 +43,7 @@ public interface EventService {
     @PUT("events/{eventId}")
     Call<EventDto> updateEvent(
             @Path("eventId") long eventId,
-            EventDto eventDto
+            @Body EventDto eventDto
     );
 
     @DELETE("events/{eventId}")
