@@ -452,12 +452,19 @@ public class HomeFragment extends Fragment implements
     }
 
     public void setUpcomingSchedules() {
-        List<UpcomingSchedule> upcomingSchedules = upcomingScheduleProvider.getTodaySchedules();
-
-        UpcomingScheduleAdapter upcomingScheduleAdapter = new UpcomingScheduleAdapter(upcomingSchedules, HomeFragment.this);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
-        scheduleRecyclerView.setLayoutManager(layoutManager);
-        scheduleRecyclerView.setAdapter(upcomingScheduleAdapter);
+        upcomingScheduleProvider.getTodaySchedules(userId, new DatabaseUpcomingScheduleProvider.OnDataLoadedCallback() {
+            @Override
+            public void onDataLoaded(List<UpcomingSchedule> upcomingScheduleList) {
+                if(getActivity() != null) {
+                    getActivity().runOnUiThread(() -> {
+                        UpcomingScheduleAdapter upcomingScheduleAdapter = new UpcomingScheduleAdapter(upcomingScheduleList, HomeFragment.this);
+                        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
+                        scheduleRecyclerView.setLayoutManager(layoutManager);
+                        scheduleRecyclerView.setAdapter(upcomingScheduleAdapter);
+                    });
+                }
+            }
+        });
     }
 
     public void onBotSuggestionClick(int position, List<BotSuggestion> botSuggestions) {

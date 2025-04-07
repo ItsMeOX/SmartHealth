@@ -9,12 +9,22 @@ public class CalendarEvent {
     private String eventDescription;
     private Calendar eventStartCalendar;
     private Calendar eventEndCalendar;
+    private String type;
+    private boolean isTaken;
 
     public CalendarEvent(String eventTitle, String eventDescription, Calendar eventStartCalendar, Calendar eventEndCalendar) {
         this.eventTitle = eventTitle;
         this.eventDescription = eventDescription;
         this.eventStartCalendar = (Calendar) eventStartCalendar.clone();
         this.eventEndCalendar = (Calendar) eventEndCalendar.clone();
+    }
+
+    public Calendar getEventEndCalendar() {
+        return eventEndCalendar;
+    }
+
+    public Calendar getEventStartCalendar() {
+        return eventStartCalendar;
     }
 
     public String getEventTitle() {

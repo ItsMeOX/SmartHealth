@@ -20,6 +20,24 @@ public class EventDto {
     @JsonAdapter(CalendarDeserializer.class)
     private Calendar eventEndCalendar;
     private Long userId;
+    private String eventType;
+    private boolean isTaken;
+
+    public String getEventType() {
+        return eventType;
+    }
+
+    public void setEventType(String eventType) {
+        this.eventType = eventType;
+    }
+
+    public boolean isTaken() {
+        return isTaken;
+    }
+
+    public void setTaken(boolean taken) {
+        isTaken = taken;
+    }
 
     public Long getId() {
         return id;

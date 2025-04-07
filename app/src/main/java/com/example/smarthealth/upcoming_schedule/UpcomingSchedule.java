@@ -9,11 +9,17 @@ public class UpcomingSchedule {
     private final String scheduleTitle;
     private final Calendar scheduleCalender;
     private final ScheduleType scheduleType;
+    private final boolean isTaken;
 
-    public UpcomingSchedule(String scheduleTitle, Calendar scheduleCalendar, ScheduleType scheduleType) {
+    public UpcomingSchedule(String scheduleTitle, Calendar scheduleCalendar, ScheduleType scheduleType, boolean isTaken) {
         this.scheduleTitle = scheduleTitle;
         this.scheduleCalender = (Calendar) scheduleCalendar.clone();
         this.scheduleType = scheduleType;
+        this.isTaken = isTaken;
+    }
+
+    public boolean isTaken() {
+        return isTaken;
     }
 
     public String getScheduleTitle() {

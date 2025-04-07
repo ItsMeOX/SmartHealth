@@ -1,5 +1,12 @@
 package com.example.smarthealth.upcoming_schedule;
 
+import android.util.Log;
+
+import com.example.smarthealth.api_service.EventDto;
+import com.example.smarthealth.api_service.EventService;
+import com.example.smarthealth.api_service.RetrofitClient;
+import com.example.smarthealth.calendar.CalendarEvent;
+import com.example.smarthealth.calendar.DatabaseCalendarEventProvider;
 import com.example.smarthealth.upcoming_schedule.schedule_types.MealSchedule;
 import com.example.smarthealth.upcoming_schedule.schedule_types.MedicineSchedule;
 import com.example.smarthealth.upcoming_schedule.schedule_types.ScheduleType;
@@ -8,20 +15,63 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class DatabaseUpcomingScheduleProvider implements UpcomingScheduleProvider {
 
+    private final EventService eventService;
+
+    public DatabaseUpcomingScheduleProvider(){
+        eventService = RetrofitClient.getInstance().create(EventService.class);
+    }
+
     @Override
-    public List<UpcomingSchedule> getTodaySchedules() {
-        List<UpcomingSchedule> res = new ArrayList<>();
-        // TODO: to be connected to db by Tristan
-        UpcomingSchedule medicineSchedule1 = new UpcomingSchedule("Aspirin", (Calendar) Calendar.getInstance().clone(), new MedicineSchedule());
-        UpcomingSchedule mealSchedule1 = new UpcomingSchedule("Lunch", (Calendar) Calendar.getInstance().clone(), new MealSchedule());
-        UpcomingSchedule medicineSchedule2 = new UpcomingSchedule("No Spirit", (Calendar) Calendar.getInstance().clone(), new MedicineSchedule());
+    public List<UpcomingSchedule> getTodaySchedules(long userId, OnDataLoadedCallback callback) {
+        List<UpcomingSchedule> schedules = new ArrayList<>();
 
-        res.add(medicineSchedule1);
-        res.add(mealSchedule1);
-        res.add(medicineSchedule2);
+        Calendar today = (Calendar) Calendar.getInstance().clone();
+        int day = today.get(Calendar.DAY_OF_MONTH);     // Day of month (1-31)
+        int month = today.get(Calendar.MONTH) + 1;       // Month (0-11), so add 1 for human-readable format
+        int year = today.get(Calendar.YEAR);             // Full year (e.g., 2025)
 
-        return res;
+        Call<List<EventDto>> call = eventService.getUserEventsByDay(userId, year, month, day);
+
+        call.enqueue(new Callback<List<EventDto>>() {
+            @Override
+            public void onResponse(Call<List<EventDto>> call, Response<List<EventDto>> response) {
+                if(response.isSuccessful() && response.body() != null){
+                    for(EventDto event : response.body()){
+                        UpcomingSchedule upcomingSchedule = new UpcomingSchedule(
+                                event.getEventTitle(),
+                                (Calendar) event.getEventStartCalendar(),
+                                event.getEventType().equals("Meal") ? new MealSchedule() : new MedicineSchedule(),
+                                event.isTaken());
+                        schedules.add(upcomingSchedule);
+                    }
+                }
+
+                List<UpcomingSchedule> finalSchedules = new ArrayList<>();
+
+                for(UpcomingSchedule schedule : schedules){
+                    if(!schedule.isTaken()){
+                        finalSchedules.add(schedule);
+                    }
+                }
+
+                callback.onDataLoaded(finalSchedules);
+            }
+            @Override
+            public void onFailure(Call<List<EventDto>> call, Throwable t) {
+                Log.d("debug upcoming schedule", "failed!" + " " + t.getMessage());
+            }
+        });
+
+        return schedules;
+    }
+
+    public interface OnDataLoadedCallback {
+        void onDataLoaded(List<UpcomingSchedule> upcomingScheduleList);
     }
 }

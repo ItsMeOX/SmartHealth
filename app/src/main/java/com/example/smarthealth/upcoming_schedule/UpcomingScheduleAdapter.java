@@ -1,5 +1,7 @@
 package com.example.smarthealth.upcoming_schedule;
 
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +14,7 @@ import com.example.smarthealth.R;
 import com.example.smarthealth.nutrient_intake.NutrientIntake;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -35,14 +38,15 @@ public class UpcomingScheduleAdapter extends RecyclerView.Adapter<UpcomingSchedu
 
     @Override
     public void onBindViewHolder(@NonNull UpcomingScheduleViewHolder holder, int position) {
-        UpcomingSchedule schedule = upcomingSchedules.get(position);
-        holder.scheduleTypeImage.setImageDrawable(
+        UpcomingSchedule schedule = upcomingSchedules.get(position);    holder.scheduleTypeImage.setImageDrawable(
                 ContextCompat.getDrawable(holder.itemView.getContext(), schedule.getScheduleType().getIconResId())
         );
-        holder.scheduleTitle.setText(schedule.getScheduleTitle());
-        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.getDefault());
-        String formattedTime = sdf.format(schedule.getScheduleCalender().getTime());
-        holder.scheduleTime.setText(formattedTime);
+        if (schedule.getScheduleCalender().before(Calendar.getInstance())) {
+            holder.scheduleTime.setTextColor(Color.parseColor("#F88383"));
+            holder.scheduleTime.setTypeface(holder.scheduleTime.getTypeface(), Typeface.BOLD);
+        }
+        holder.scheduleTitle.setText(schedule.getScheduleTitle());    SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+        String formattedTime = sdf.format(schedule.getScheduleCalender().getTime());    holder.scheduleTime.setText(formattedTime);
     }
 
     @Override
