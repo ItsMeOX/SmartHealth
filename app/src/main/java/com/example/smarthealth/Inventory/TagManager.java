@@ -16,6 +16,8 @@ import java.util.ArrayList;
 public class TagManager {
     public static int getMedicineTagColor(String name, Context context) {
         switch (name.toLowerCase()) { // Convert to lowercase for case insensitivity
+            case "antibiotics":
+                return  ContextCompat.getColor(context, R.color.AntiBiotic);
             case "cough":
                 return ContextCompat.getColor(context, R.color.Cough);
             case "fever":

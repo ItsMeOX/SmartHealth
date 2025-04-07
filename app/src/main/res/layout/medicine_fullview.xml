@@ -106,7 +106,8 @@
             app:layout_constraintTop_toBottomOf="@id/header"
             app:layout_constraintStart_toStartOf="@id/header"
             android:orientation="horizontal"
-            android:layout_marginStart="20dp">
+            android:layout_marginStart="15dp"
+            >
         </LinearLayout>
 
         <LinearLayout
@@ -121,19 +122,11 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/description"
-                android:textSize="20sp"
-                android:textColor="@color/black"
-                >
-            </TextView>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:textSize="18sp"
                 android:textColor="@color/black"
                 android:text="Recommended Dosage:"
+                android:fontFamily="@font/inter_semibold"
                 >
             </TextView>
 
@@ -153,6 +146,8 @@
                 android:textSize="18sp"
                 android:textColor="@color/black"
                 android:text="Contains:"
+                android:fontFamily="@font/inter_semibold"
+
                 >
             </TextView>
 
@@ -172,6 +167,8 @@
                 android:textSize="18sp"
                 android:textColor="@color/black"
                 android:text="Side Effect:"
+                android:fontFamily="@font/inter_semibold"
+
                 >
             </TextView>
 

@@ -15,16 +15,19 @@
     <color name="green">#68E539</color>
     <color name="red">#F4502C</color>
 
-    <color name="Cough">#F44336</color>
-    <color name="Fever">#FF9800</color>
-    <color name="Cold">#9C27B0</color>
-    <color name="Diarrhoea">#3F51B5</color>
-    <color name="Phlegm">#EB34BD</color>
-    <color name="Painkiller">#03A9F4</color>
-    <color name="Diabetes">#3B34B8</color>
-    <color name="HighCholesterol">#009688</color>
-    <color name="DryEyes">#4CAF50</color>
-    <color name="High_BloodPressure">#D3A372</color>
-    <color name="Others">#CDDC39</color>
+    <color name="AntiBiotic">#F44336</color>
+    <color name="Cough">#FF9800</color>
+    <color name="Cold">#CDDC39</color>
+    <color name="Diarrhoea">#4CAF50</color>
+    <color name="Diabetes">#009688</color>
+    <color name="DryEyes">#8FD7B5</color>
+    <color name="Fever">#D3A372</color>
+    <color name="HighCholesterol">#3B34B8</color>
+    <color name="High_BloodPressure">#3F51B5</color>
+    <color name="Phlegm">#03A9F4</color>
+    <color name="Painkiller">#EB34BD</color>
+    <color name="Others">#9C27B0</color>
+
+
 
 </resources>

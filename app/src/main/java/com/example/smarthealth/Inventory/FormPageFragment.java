@@ -241,42 +241,9 @@ public class FormPageFragment extends DialogFragment {
 
                 return popupView;
     }
-    private void pickCamera(){
-        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        ContentValues values = new ContentValues();
-        values.put(MediaStore.Images.Media.TITLE, "New Medicine");
-        values.put(MediaStore.Images.Media.DESCRIPTION, "Camera");
-        camUri = requireContext().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT,camUri);
-        cameraLauncher.launch(cameraIntent);
-    }
-    private void pickImage() {
-        // Intent to pick an image from the gallery
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        galleryLauncher.launch(intent);
-    }
-    private byte[] drawableToByteArray(Drawable drawable) {
-        if (drawable == null) return null;
-
-        Bitmap bitmap;
-        if (drawable instanceof BitmapDrawable) {
-            bitmap = ((BitmapDrawable) drawable).getBitmap();
-        } else {
-            bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
-                    drawable.getIntrinsicHeight(),
-                    Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(bitmap);
-            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-            drawable.draw(canvas);
-        }
-
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        return stream.toByteArray();
-    }
     private void showMultiSelectDialog(LinearLayout tagView, String[] items, boolean[] selectedItems, ArrayList<String> selectedTags) {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        builder.setTitle("Select Tags");
+        builder.setTitle("Select Medicine Tags");
 
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.tag_multiselect, null);
@@ -301,10 +268,6 @@ public class FormPageFragment extends DialogFragment {
                 // Set background tint color dynamically
                 ColorStateList colorStateList = ColorStateList.valueOf(TagManager.getMedicineTagColor(items[position], requireContext()));
                 textView.setBackgroundTintList(colorStateList);  // Apply background tint
-
-                // TextView design
-                textView.setPadding(20, 5, 20, 5);
-                textView.setTextColor(Color.WHITE); // Set text color to white for contrast
 
                 // Selected Items stored in selectedItems
                 checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -352,17 +315,7 @@ public class FormPageFragment extends DialogFragment {
                 // Remove all views before adding to keep the latest selection
                 tagView.removeAllViews();
                 if(!selectedTags.isEmpty()){
-                    for(int i=0; i < selectedTags.size(); i++) {
-                        TextView textView = new TextView(requireContext());
-                        textView.setText(selectedTags.get(i));
-                        textView.setTextSize(18);
-                        textView.setBackgroundResource(R.drawable.rounded);
-                        textView.setPadding(20, 5, 20, 5);
-                        ColorStateList colorStateList = ColorStateList.valueOf(TagManager.getMedicineTagColor(selectedTags.get(i), requireContext()));
-                        textView.setBackgroundTintList(colorStateList);
-                        textView.setLayoutParams(layoutParams);
-                        tagView.addView(textView);
-                    }
+                    TagManager.addTags(requireContext(),selectedTags,tagView);
                 }
             }
         });
@@ -376,5 +329,37 @@ public class FormPageFragment extends DialogFragment {
         });
         builder.show();
     }
+    private void pickCamera(){
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.TITLE, "New Medicine");
+        values.put(MediaStore.Images.Media.DESCRIPTION, "Camera");
+        camUri = requireContext().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT,camUri);
+        cameraLauncher.launch(cameraIntent);
+    }
+    private void pickImage() {
+        // Intent to pick an image from the gallery
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        galleryLauncher.launch(intent);
+    }
+    private byte[] drawableToByteArray(Drawable drawable) {
+        if (drawable == null) return null;
 
+        Bitmap bitmap;
+        if (drawable instanceof BitmapDrawable) {
+            bitmap = ((BitmapDrawable) drawable).getBitmap();
+        } else {
+            bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
+                    drawable.getIntrinsicHeight(),
+                    Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(bitmap);
+            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+            drawable.draw(canvas);
+        }
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        return stream.toByteArray();
+    }
 }

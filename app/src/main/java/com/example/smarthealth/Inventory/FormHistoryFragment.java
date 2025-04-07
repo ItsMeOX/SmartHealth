@@ -3,6 +3,7 @@ package com.example.smarthealth.Inventory;
 import static android.content.Context.INPUT_METHOD_SERVICE;
 import static androidx.core.content.ContextCompat.getSystemService;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -233,20 +234,23 @@ public class FormHistoryFragment extends DialogFragment {
 
 
         searchBar = popupView.findViewById(R.id.searchBar);
-        inputMethodManager = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+//        inputMethodManager = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
 
         MedicineSearchBarAdapter adapter = new MedicineSearchBarAdapter(requireContext(), medicineList);
         searchBar.setAdapter(adapter);
         searchBar.setThreshold(1);
-        searchBar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Show the dropdown without opening the keyboard
-                searchBar.showDropDown();
 
-                // Explicitly hide the keyboard when clicking on the search bar
-                inputMethodManager = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+        searchBar.setOnTouchListener(new View.OnTouchListener() {
+            @SuppressLint("ClickableViewAccessibility")
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    if (!searchBar.isPopupShowing()) {
+                        searchBar.showDropDown();
+                    }
+                    searchBar.performClick();
+                }
+                return false;
             }
         });
 
@@ -334,6 +338,7 @@ public class FormHistoryFragment extends DialogFragment {
         });
         return popupView;
     }
+
 
     private byte[] drawableToByteArray(Drawable drawable) {
         if (drawable == null) return null;

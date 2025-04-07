@@ -25,7 +25,6 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.ViewHo
     private List<MedicineButton> medicineSubList;
     private boolean isExpanded = true;
     private final int MAX_BUTTON_SHOWN = 4;
-    ConstraintLayout popup_window;
 
     public MedicineAdapter(Context context, ArrayList<MedicineButton> medicineContainersList) {
         this.context = context;

@@ -68,7 +68,7 @@ public class AddScheduleFragment extends DialogFragment{
             }
         });
 
-
+        // Add to schedule
         AppCompatButton confirmButton = popupView.findViewById(R.id.confirm);
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
