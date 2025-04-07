@@ -38,17 +38,19 @@ public class DatabaseUpcomingScheduleProvider implements UpcomingScheduleProvide
         int month = today.get(Calendar.MONTH) + 1;       // Month (0-11), so add 1 for human-readable format
         int year = today.get(Calendar.YEAR);             // Full year (e.g., 2025)
 
-        Call<List<UpcomingScheduleDto>> call = upcomingScheduleService.getUserSchedulesByDay(userId, year, month, day);
+        Call<List<UpcomingScheduleDto>> call = upcomingScheduleService.getSchedulesByDay(userId, year, month, day);
 
         call.enqueue(new Callback<List<UpcomingScheduleDto>>() {
             @Override
             public void onResponse(Call<List<UpcomingScheduleDto>> call, Response<List<UpcomingScheduleDto>> response) {
                 if(response.isSuccessful() && response.body() != null){
                     for(UpcomingScheduleDto schedule : response.body()){
+                        Log.d("debug", schedule.getScheduleCalendar()+" "+schedule.getScheduleTitle());
+
                         UpcomingSchedule upcomingSchedule = new UpcomingSchedule(
                                 schedule.getScheduleTitle(),
                                 schedule.getScheduleDescription(),
-                                (Calendar) schedule.getScheduleCalender(),
+                                (Calendar) schedule.getScheduleCalendar(),
                                 schedule.getScheduleType().equals("Meal") ? new MealSchedule() : new MedicineSchedule(),
                                 schedule.isTaken());
                         schedules.add(upcomingSchedule);

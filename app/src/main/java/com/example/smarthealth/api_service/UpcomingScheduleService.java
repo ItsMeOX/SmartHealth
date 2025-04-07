@@ -16,7 +16,7 @@ public interface UpcomingScheduleService {
     Call<UpcomingScheduleDto> createSchedule(@Path("userId") long userId, UpcomingScheduleDto upcomingScheduleDto);
 
     @GET("schedules/{userId}/day/{year}/{month}/{day}")
-    Call<List<UpcomingScheduleDto>> getUserSchedulesByDay(
+    Call<List<UpcomingScheduleDto>> getSchedulesByDay(
             @Path("userId") long userId,
             @Path("year") int year,
             @Path("month") int month,
@@ -24,7 +24,7 @@ public interface UpcomingScheduleService {
     );
 
     @GET("schedules/{scheduleId}")
-    Call<EventDto> getScheduleById(
+    Call<UpcomingScheduleDto> getScheduleById(
             @Path("scheduleId") long scheduleId
     );
 

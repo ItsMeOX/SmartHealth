@@ -1,22 +1,33 @@
 package com.example.smarthealth.api_service;
 
 import com.example.smarthealth.upcoming_schedule.schedule_types.ScheduleType;
+import com.google.gson.annotations.JsonAdapter;
 
 import java.util.Calendar;
 
 public class UpcomingScheduleDto {
+    private Long id;
     private String scheduleTitle;
     private String scheduleDescription;
+    @JsonAdapter(CalendarDeserializer.class)
     private Calendar scheduleCalender;
-    private ScheduleType scheduleType;
+    private String scheduleType;
     private boolean isTaken;
 
-    public UpcomingScheduleDto(String scheduleTitle, String scheduleDescription, boolean isTaken, Calendar scheduleCalender, ScheduleType scheduleType) {
+    public UpcomingScheduleDto(String scheduleTitle, String scheduleDescription, boolean isTaken, Calendar scheduleCalendar, String scheduleType) {
         this.scheduleTitle = scheduleTitle;
         this.scheduleDescription = scheduleDescription;
-        this.isTaken = isTaken;
-        this.scheduleCalender = scheduleCalender;
+        this.scheduleCalender = scheduleCalendar;
         this.scheduleType = scheduleType;
+        this.isTaken = isTaken;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getScheduleTitle() {
@@ -27,19 +38,19 @@ public class UpcomingScheduleDto {
         this.scheduleTitle = scheduleTitle;
     }
 
-    public Calendar getScheduleCalender() {
+    public Calendar getScheduleCalendar() {
         return scheduleCalender;
     }
 
-    public void setScheduleCalender(Calendar scheduleCalender) {
-        this.scheduleCalender = scheduleCalender;
+    public void setScheduleCalender(Calendar scheduleCalendar) {
+        this.scheduleCalender = scheduleCalendar;
     }
 
-    public ScheduleType getScheduleType() {
+    public String getScheduleType() {
         return scheduleType;
     }
 
-    public void setScheduleType(ScheduleType scheduleType) {
+    public void setScheduleType(String scheduleType) {
         this.scheduleType = scheduleType;
     }
 

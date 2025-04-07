@@ -7,7 +7,6 @@ import java.util.Calendar;
 public class UpcomingSchedule {
 
     private final String scheduleTitle;
-
     private final String scheduleDescription;
     private final Calendar scheduleCalender;
     private final ScheduleType scheduleType;
