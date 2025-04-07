@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="172dp"
+    android:layout_height="80dp"
+    android:id="@+id/carbsLayout"
+    android:background="@drawable/nutrient_card_bg"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    android:padding="12dp"
+    android:layout_marginVertical="5dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+        <TextView
+            android:id="@+id/nutrientTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Carbs"
+            android:textColor="#727272"
+            android:textSize="18sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/nutrientIcon"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:src="@drawable/nutrient_carb"
+            android:background="@drawable/nutrient_icon_bg"
+            android:padding="7dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/nutrientCurrentText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="50.2g"
+            android:textSize="17sp"
+            android:fontFamily="@font/inter_bold"
+            android:textColor="@color/primary_orange"
+            android:layout_marginTop="5dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/nutrientTitle"
+        />
+
+        <TextView
+            android:id="@+id/nutrientTextSeparator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="/ "
+            android:textSize="17sp"
+            android:textColor="#727272"
+            android:layout_marginHorizontal="6dp"
+            app:layout_constraintLeft_toRightOf="@id/nutrientCurrentText"
+            app:layout_constraintTop_toTopOf="@id/nutrientCurrentText"
+            app:layout_constraintBottom_toBottomOf="@id/nutrientCurrentText"
+            app:layout_constraintRight_toLeftOf="@id/nutrientTotalText" />
+
+        <TextView
+            android:id="@+id/nutrientTotalText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="216g"
+            android:textColor="#727272"
+            android:textSize="17sp"
+            app:layout_constraintLeft_toRightOf="@id/nutrientTextSeparator"
+            app:layout_constraintTop_toTopOf="@id/nutrientCurrentText"
+            app:layout_constraintBottom_toBottomOf="@id/nutrientCurrentText"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
