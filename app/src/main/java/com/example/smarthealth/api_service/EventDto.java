@@ -15,9 +15,10 @@ public class EventDto {
     private Long id;
     private String eventTitle;
     private String eventDescription;
-    @JsonAdapter(CalendarDeserializer.class)
+    @JsonAdapter(CalendarSerializer.class)  // for serialization
     private Calendar eventStartCalendar;
-    @JsonAdapter(CalendarDeserializer.class)
+
+    @JsonAdapter(CalendarSerializer.class)  // for serialization
     private Calendar eventEndCalendar;
     private Long userId;
 

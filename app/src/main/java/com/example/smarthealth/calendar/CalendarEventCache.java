@@ -17,7 +17,6 @@ public class CalendarEventCache {
     }
 
     public void loadEventsForMonth(long userId, Calendar month, CalendarEventProvider provider, OnMonthLoadedCallback callback) {
-        Log.d("debug", "loadEventFOrMonths" + isLoaded);
         if (isLoaded)
             return;
 

@@ -15,7 +15,6 @@ public class RetrofitClient {
     public static Retrofit getInstance() {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(Calendar.class, new CalendarSerializer())
-                .registerTypeAdapter(Calendar.class, new CalendarDeserializer())
                 .create();
 
         if (retrofit == null) {

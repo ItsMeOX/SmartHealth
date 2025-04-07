@@ -10,7 +10,7 @@ public class UpcomingScheduleDto {
     private String scheduleTitle;
     private String scheduleDescription;
 
-    @JsonAdapter(CalendarDeserializer.class)
+    @JsonAdapter(CalendarSerializer.class)
     private Calendar scheduleCalendar;
     private String scheduleType;
     private boolean isTaken;

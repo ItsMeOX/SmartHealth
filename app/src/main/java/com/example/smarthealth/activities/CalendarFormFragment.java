@@ -4,7 +4,6 @@ import static android.content.Context.MODE_PRIVATE;
 
 import android.app.Dialog;
 import android.content.SharedPreferences;
-import android.media.metrics.Event;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,10 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.TextClock;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,8 +19,6 @@ import androidx.core.util.Pair;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.smarthealth.R;
-import com.example.smarthealth.api_service.AuthService;
-import com.example.smarthealth.api_service.CalendarSerializer;
 import com.example.smarthealth.api_service.EventDto;
 import com.example.smarthealth.api_service.EventService;
 import com.example.smarthealth.api_service.RetrofitClient;
@@ -35,13 +29,10 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.android.material.timepicker.MaterialTimePicker;
 import com.google.android.material.timepicker.TimeFormat;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 
 import retrofit2.Call;
@@ -254,8 +245,6 @@ public class CalendarFormFragment extends DialogFragment {
     }
 
     private void addToDatabase(CalendarEvent calendarEvent) {
-        Log.d("debug", "calling add to database");
-
         EventDto eventDto = new EventDto(
                 calendarEvent.getEventTitle(),
                 calendarEvent.getEventDescription(),
@@ -268,17 +257,12 @@ public class CalendarFormFragment extends DialogFragment {
             @Override
             public void onResponse(Call<EventDto> call, Response<EventDto> response) {
                 if(response.isSuccessful() && response.body() != null){
-                    Log.d("debug", "Add calendaer event successfully");
-                    Toast.makeText(getActivity(), "Add Calendar Event Successful!", Toast.LENGTH_SHORT).show();
+                    Log.d("debug", "Add calendar event successfully");
                 }
-                Log.d("debug", "one thing below" + response.body() + response.code());
-                // Toast.makeText(getActivity(), "Add Calendar Event Successful!", Toast.LENGTH_SHORT).show();
             }
-
             @Override
             public void onFailure(Call<EventDto> call, Throwable t) {
-                Log.d("debug", t.getMessage());
-                //Toast.makeText(getActivity(), "Network error: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                Log.d("debug", "error: " + t.getMessage());
             }
         });
     }

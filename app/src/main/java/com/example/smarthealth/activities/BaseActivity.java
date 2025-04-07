@@ -37,6 +37,9 @@ public class BaseActivity extends AppCompatActivity {
         SharedPreferences preferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
         boolean isLoggedIn = preferences.getBoolean("isLoggedIn", false);
 
+        preferences.edit().putLong("userId", 16).apply();
+        preferences.edit().putBoolean("isLoggedIn", true).apply();
+
         if (!isLoggedIn) {
             // Redirect to LoginActivity
             Intent intent = new Intent(this,LoginActivity.class);

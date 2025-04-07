@@ -41,11 +41,12 @@ public class DatabaseCalendarEventProvider implements CalendarEventProvider {
                         CalendarEvent calendarEvent = new CalendarEvent(
                                 event.getEventTitle(),
                                 event.getEventDescription(),
-                                event.getEventStartCalendar(), (Calendar) event.getEventEndCalendar());
+                                event.getEventStartCalendar(),
+                                event.getEventEndCalendar()
+                        );
                         calendarEvents.add(calendarEvent);
                     }
                 }
-                Log.d("debug", calendarEvents+"");
                 callback.onDataLoaded(calendarEvents);
             }
             @Override
@@ -68,7 +69,9 @@ public class DatabaseCalendarEventProvider implements CalendarEventProvider {
                         CalendarEvent calendarEvent = new CalendarEvent(
                                 event.getEventTitle(),
                                 event.getEventDescription(),
-                                event.getEventStartCalendar(), (Calendar) event.getEventEndCalendar());
+                                event.getEventStartCalendar(),
+                                event.getEventEndCalendar()
+                        );
                         calendarEvents.add(calendarEvent);
                     }
                 }

@@ -390,9 +390,9 @@ public class HomeFragment extends Fragment implements
             TextView eventTimeView = eventView.findViewById(R.id.calendarPopupEventTime);
             TextView eventTimeAmPmView = eventView.findViewById(R.id.calendarPopupEventTimeAmPm);
             TextView eventDescView = eventView.findViewById(R.id.calendarPopupEventDesc);
-            eventTitleView.setText("Bergen Internation Film Festival"); // Change back to calendarEvent.getEventTitle()
+            eventTitleView.setText(calendarEvent.getEventTitle());
             eventTimeView.setText(eventTimeFormat.format(calendarEvent.getEventDateCalendar().first.getTime()));
-            eventDescView.setText("Films from all over the world gather all film i dont know."); // Change back to calendarEvent.getEventDescription()
+            eventDescView.setText(calendarEvent.getEventDescription());
             eventListContainer.addView(eventView);
             eventTimeAmPmView.setText(amPmFormat.format(calendarEvent.getEventDateCalendar().first.getTime()));
         }
