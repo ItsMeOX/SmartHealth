@@ -2,4 +2,48 @@
     <string name="app_name">Smart Health</string>
     <string name="app_title">SMART HEALTH</string>
     <string name="my_gmap_api_key">AIzaSyC5eDKXidF6dZRHbelzMi4op5VKKIVedDg</string>
+    <string name="slide_view_inventory">Medicine Inventory</string>
+    <string name="inventory_pills">Pills</string>
+    <string name="inventory_liquids">Liquids</string>
+    <string name="inventory_others">Others</string>
+    <string name="fillByScan">Smart Scan</string>
+    <string name="fillByForm">Fill By Form</string>
+    <string name="fillByHistory">Fill By History</string>
+    <string name="enter_information">Enter Information</string>
+    <string name="type">Type</string>
+    <string name="enter_description">Enter Description</string>
+    <string name="enter_amount">Enter Amount</string>
+    <string name="enter_name">Enter Name</string>
+    <string name="open_camera">Open Camera</string>
+    <string name="upload_image">Upload Image</string>
+    <string name="x">X</string>
+    <string name="confirm">Confirm</string>
+    <string name="medicine_image">Medicine Image</string>
+    <string name="remove_from_schedule">Remove From Schedule</string>
+    <string name="add_to_schedule">Add To Schedule</string>
+    <string name="description">Description</string>
+    <string name="remaining">remaining</string>
+    <string name="detailed_info">Detailed Info</string>
+    <string name="back_arrow">Back Arrow</string>
+    <string name="key_in_amount">Key in Amount</string>
+    <string name="fill_with_history">Fill With History</string>
+    <string-array name="formMediCategory">
+        <item>Pills</item>
+        <item>Liquids</item>
+        <item>Others</item>
+    </string-array>
+    <string-array name="formMediTag">
+        <item>AntiBiotics</item>
+        <item>Cough</item>
+        <item>Cold</item>
+        <item>Diarrhoea</item>
+        <item>Diabetes</item>
+        <item>Dry Eyes</item>
+        <item>Fever</item>
+        <item>High Cholesterol</item>
+        <item>High-Blood Pressure</item>
+        <item>Phlegm</item>
+        <item>Painkiller</item>
+        <item>Others</item>
+    </string-array>
 </resources>

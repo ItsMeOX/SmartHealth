@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.smarthealth.Inventory.InventoryFragment;
 import com.example.smarthealth.MedicalCentreFinder.MapPageNavigation.MapClinicFinder;
 import com.example.smarthealth.R;
 
@@ -37,16 +38,13 @@ public class BaseActivity extends AppCompatActivity {
         SharedPreferences preferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
         boolean isLoggedIn = preferences.getBoolean("isLoggedIn", false);
 
-        preferences.edit().putLong("userId", 16).apply();
-        preferences.edit().putBoolean("isLoggedIn", true).apply();
-
-        if (!isLoggedIn) {
-            // Redirect to LoginActivity
-            Intent intent = new Intent(this,LoginActivity.class);
-            startActivity(intent);
-            finish();
-            return;
-        }
+//        if (!isLoggedIn) {
+//            // Redirect to LoginActivity
+//            Intent intent = new Intent(this,LoginActivity.class);
+//            startActivity(intent);
+//            finish();
+//            return;
+//        }
 
         setContentView(R.layout.base_activity);
         if (getSupportActionBar() != null) {
@@ -102,7 +100,7 @@ public class BaseActivity extends AppCompatActivity {
         unselectedIcons.put(navbarUserLayout, R.drawable.navbar_user);
 
         navbarHomeLayout.setOnClickListener(v -> handleNavbarClick(navbarHomeLayout, new HomeFragment()));
-        navbarInventoryLayout.setOnClickListener(v -> handleNavbarClick(navbarInventoryLayout, new HomeFragment()));
+        navbarInventoryLayout.setOnClickListener(v -> handleNavbarClick(navbarInventoryLayout, new InventoryFragment()));
         navbarMedbotLayout.setOnClickListener(v -> handleNavbarClick(navbarMedbotLayout, new HomeFragment()));
         navbarUserLayout.setOnClickListener(v -> handleNavbarClick(navbarUserLayout, new UserFragment()));
         navbarHospitalButton.setOnClickListener(view -> {

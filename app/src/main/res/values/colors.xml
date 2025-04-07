@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
@@ -9,26 +8,38 @@
     <color name="white">#FFFFFFFF</color>
     <color name="lightgray">#727272</color>
     <color name="darkgray">#5D5D5D</color>
+    <color name="medicine_gray">#ECECEC</color>
     <color name="gray">#898989</color>
     <color name="white_gray">#F5F5F5</color>
     <color name="background">#023B96</color>
     <color name="primary_orange">#FFB011</color>
     <color name="transparent">#00000000</color>
     <color name="warning_red">#FF4111</color>
-
     <color name="whiteTextColor">#fff</color>
     <color name="primaryTextColor">#2661FA</color>
     <color name="loginBkColor">#f0f0f0</color>
-
     <color name="whiteCardColor">#fff</color>
-
     <color name="blackTextColor">#000</color>
     <color name="colorLoginPrimaryDark">#FDFFFF</color>
-
-    <color name="blue">#2196F3</color> <!-- Underweight -->
-    <color name="green">#4CAF50</color> <!-- Normal weight -->
-    <color name="orange">#FF9800</color> <!-- Overweight -->
-    <color name="red">#F44336</color> <!-- Obese -->
-
+    <color name="blue">#2196F3</color>
+    <!--  Underweight  -->
+    <color name="green">#4CAF50</color>
+    <!--  Normal weight  -->
+    <color name="orange">#FF9800</color>
+    <!--  Overweight  -->
+    <color name="red">#F44336</color>
+    <!--  Obese  -->
     <color name="polyLine_blue">#C19500FF</color>
+    <color name="AntiBiotic">#F44336</color>
+    <color name="Cough">#FF9800</color>
+    <color name="Cold">#CDDC39</color>
+    <color name="Diarrhoea">#4CAF50</color>
+    <color name="Diabetes">#009688</color>
+    <color name="DryEyes">#8FD7B5</color>
+    <color name="Fever">#D3A372</color>
+    <color name="HighCholesterol">#3B34B8</color>
+    <color name="High_BloodPressure">#3F51B5</color>
+    <color name="Phlegm">#03A9F4</color>
+    <color name="Painkiller">#EB34BD</color>
+    <color name="Others">#9C27B0</color>
 </resources>

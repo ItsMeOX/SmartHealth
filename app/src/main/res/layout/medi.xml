@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="400dp"
+    android:layout_margin="10dp"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="5dp"
+    app:cardBackgroundColor="@color/white"
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/whiteBg"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            app:cardBackgroundColor="@color/medicine_gray"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            app:cardElevation="0dp">
+
+            <ImageView
+                android:id="@+id/mediImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitCenter"
+                android:src="@drawable/meal"
+                android:layout_alignParentTop="true"/>
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:id="@+id/mediName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="100dp"
+            android:fontFamily="@font/inter_bold"
+            android:text="Paracetamol"
+            android:textColor="@android:color/black"
+            android:layout_marginStart="10dp"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/mediDesc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:fontFamily="@font/inter_regular"
+            android:text="Fever"
+            android:textColor="@android:color/black"
+            android:layout_marginBottom="80dp"
+            android:textSize="15sp" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/amountCard"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="20dp"
+            app:cardCornerRadius="10dp"
+            app:cardBackgroundColor="@color/primary_orange">
+
+            <TextView
+                android:id="@+id/amountText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="50"
+                android:textSize="20sp"
+                android:textColor="@android:color/white"/>
+        </androidx.cardview.widget.CardView>
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>
