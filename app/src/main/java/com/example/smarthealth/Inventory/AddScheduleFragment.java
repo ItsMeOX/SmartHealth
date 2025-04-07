@@ -1,9 +1,13 @@
 package com.example.smarthealth.Inventory;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.app.DatePickerDialog;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,9 +21,16 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.smarthealth.R;
+import com.example.smarthealth.api_service.RetrofitClient;
+import com.example.smarthealth.api_service.UpcomingScheduleDto;
+import com.example.smarthealth.api_service.UpcomingScheduleService;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.Calendar;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class AddScheduleFragment extends DialogFragment{
     private DatePickerDialog startDatePickerDialog;
@@ -28,6 +39,9 @@ public class AddScheduleFragment extends DialogFragment{
     private Calendar endDateCalendar = Calendar.getInstance();
     private MaterialButton startDate;
     private MaterialButton endDate;
+    private SharedPreferences sharedPreferences;
+    private long userId;
+    private UpcomingScheduleService upcomingScheduleService;
 
     @Override
     public void onStart(){
@@ -45,6 +59,9 @@ public class AddScheduleFragment extends DialogFragment{
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View popupView = inflater.inflate(R.layout.add_to_schedule, null);
+        sharedPreferences = getActivity().getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        userId = sharedPreferences.getLong("userId", -1);
+        upcomingScheduleService = RetrofitClient.getInstance().create(UpcomingScheduleService.class);
 
         startDate = popupView.findViewById(R.id.dateSelect1);
         endDate = popupView.findViewById(R.id.dateSelect2);
@@ -125,12 +142,20 @@ public class AddScheduleFragment extends DialogFragment{
                     }
                 }
                 if(checkValidTime(time1Value) && checkValidTime(time2Value) && checkValidTime(time3Value)){
-                    Bundle result = new Bundle();
-                    // Add to database //
-                    result.putString("Intake", intake.toString().trim());
-                    result.putString("Time 1", time1Value);
-                    result.putString("Time 2", time2Value);
-                    result.putString("Time 3", time3Value);
+                    Call<UpcomingScheduleDto> call = upcomingScheduleService.createSchedule(userId, new UpcomingScheduleDto(
+
+                    ));
+                    call.enqueue(new Callback<UpcomingScheduleDto>() {
+                        @Override
+                        public void onResponse(Call<UpcomingScheduleDto> call, Response<UpcomingScheduleDto> response) {
+
+                        }
+
+                        @Override
+                        public void onFailure(Call<UpcomingScheduleDto> call, Throwable t) {
+
+                        }
+                    });
 
                     getParentFragmentManager().setFragmentResult("Schedule", result);
                     dismiss();

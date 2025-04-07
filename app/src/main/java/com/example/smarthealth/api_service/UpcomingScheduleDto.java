@@ -15,6 +15,20 @@ public class UpcomingScheduleDto {
     private String scheduleType;
     private boolean isTaken;
 
+    public MedicineDto getMedicineDto() {
+        return medicineDto;
+    }
+
+    public void setMedicineDto(MedicineDto medicineDto) {
+        this.medicineDto = medicineDto;
+    }
+
+    public void setScheduleCalendar(Calendar scheduleCalendar) {
+        this.scheduleCalendar = scheduleCalendar;
+    }
+
+    private MedicineDto medicineDto;
+
     public Long getId() {
         return id;
     }
