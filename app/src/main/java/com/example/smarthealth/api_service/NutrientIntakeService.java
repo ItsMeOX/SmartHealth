@@ -3,6 +3,7 @@ package com.example.smarthealth.api_service;
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
@@ -13,7 +14,7 @@ public interface NutrientIntakeService {
     @POST("nutrient-intake/{userId}")
     Call<NutrientIntakeDto> addNutrientIntake(
             @Path("userId") long userId,
-            NutrientIntakeDto nutrientIntakeDto
+            @Body NutrientIntakeDto nutrientIntakeDto
     );
 
     @GET("nutrient-intake/{userId}")
@@ -23,4 +24,9 @@ public interface NutrientIntakeService {
 
     @POST("nutrient-intake/reset")
     Call<String> resetDailyNutrientIntakes();
+
+    @GET("nutrient-intake/{userId}/exists")
+    Call<Boolean> checkIfUserHasIntakes(
+            @Path("userId") long userId
+    );
 }

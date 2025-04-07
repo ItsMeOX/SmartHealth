@@ -231,7 +231,7 @@ public class CalendarFormFragment extends DialogFragment {
     }
 
     private void addToDatabase(CalendarEvent calendarEvent) {
-        // TODO: move this function out of this class, and to be continued by Tristan.
+        // TODO: to be continued by Tristan.
     }
 
     public void setOnCalendarEventCreated(NewEventCreatedListener listener) {

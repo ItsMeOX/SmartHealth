@@ -33,7 +33,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toLeftOf="@id/calendarPopupDate"
-        />
+            />
 
         <TextView
             android:id="@+id/calendarPopupDate"
@@ -61,7 +61,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-             />
+            />
     </ScrollView>
 </LinearLayout>
-

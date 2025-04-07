@@ -24,14 +24,15 @@ public class DatabaseCalendarEventProvider implements CalendarEventProvider {
     }
 
     @Override
-    public List<CalendarEvent> getEventsForDay(Calendar date, OnDataLoadedCallback callback) {
-        return queryDatabaseCalendar(date, callback);
+    public List<CalendarEvent> getEventsForDay(long userId, Calendar date, OnDataLoadedCallback callback) {
+        return queryDatabaseCalendar(userId, date, callback);
     }
 
     @Override
-    public List<CalendarEvent> getEventsForMonth(Calendar date, OnDataLoadedCallback callback) {
+    public List<CalendarEvent> getEventsForMonth(long userId, Calendar date, OnDataLoadedCallback callback) {
+        Log.d("debug", "geEventsForMonth");
         List<CalendarEvent> calendarEvents = new ArrayList<>();
-        Call<List<EventDto>> call = eventService.getUsersEventsByMonth(16, 2025, 4);
+        Call<List<EventDto>> call = eventService.getUsersEventsByMonth(userId, 2025, 4);
         call.enqueue(new Callback<List<EventDto>>() {
             @Override
             public void onResponse(Call<List<EventDto>> call, Response<List<EventDto>> response) {
@@ -44,19 +45,21 @@ public class DatabaseCalendarEventProvider implements CalendarEventProvider {
                         calendarEvents.add(calendarEvent);
                     }
                 }
+                Log.d("debug", calendarEvents+"");
                 callback.onDataLoaded(calendarEvents);
             }
             @Override
             public void onFailure(Call<List<EventDto>> call, Throwable t) {
+                Log.d("debug", t.getMessage());
             }
         });
 
         return calendarEvents;
     }
 
-    private List<CalendarEvent> queryDatabaseCalendar(Calendar date, OnDataLoadedCallback callback) {
+    private List<CalendarEvent> queryDatabaseCalendar(long userId, Calendar date, OnDataLoadedCallback callback) {
         List<CalendarEvent> calendarEvents = new ArrayList<>();
-        Call<List<EventDto>> call = eventService.getUserEventsByDay(16, 2025, 4, 3);
+        Call<List<EventDto>> call = eventService.getUserEventsByDay(userId, 2025, 4, 3);
         call.enqueue(new Callback<List<EventDto>>() {
             @Override
             public void onResponse(Call<List<EventDto>> call, Response<List<EventDto>> response) {

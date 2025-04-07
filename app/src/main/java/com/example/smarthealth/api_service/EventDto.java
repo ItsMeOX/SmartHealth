@@ -69,4 +69,3 @@ public class EventDto {
         this.eventEndCalendar = eventEndCalendar;
     }
 }
-

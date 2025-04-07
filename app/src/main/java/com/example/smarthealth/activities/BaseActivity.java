@@ -1,11 +1,16 @@
 package com.example.smarthealth.activities;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,6 +18,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.smarthealth.MedicalCentreFinder.MapPageNavigation.MapClinicFinder;
 import com.example.smarthealth.R;
 
 import java.util.HashMap;
@@ -26,6 +32,19 @@ public class BaseActivity extends AppCompatActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Check if the user is logged in
+        SharedPreferences preferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        boolean isLoggedIn = preferences.getBoolean("isLoggedIn", false);
+
+        if (!isLoggedIn) {
+            // Redirect to LoginActivity
+            Intent intent = new Intent(this,LoginActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
+
         setContentView(R.layout.base_activity);
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
@@ -53,6 +72,7 @@ public class BaseActivity extends AppCompatActivity {
         TextView navbarInventoryText = findViewById(R.id.navbarInventoryText);
         TextView navbarMedbotText = findViewById(R.id.navbarMedBotText);
         TextView navbarUserText = findViewById(R.id.navbarUserText);
+        View navbarHospitalButton = findViewById(R.id.navbarHospitalBtn);
 
         iconViews = new HashMap<>();
         iconViews.put(navbarHomeLayout, navbarHomeIcon);
@@ -81,7 +101,19 @@ public class BaseActivity extends AppCompatActivity {
         navbarHomeLayout.setOnClickListener(v -> handleNavbarClick(navbarHomeLayout, new HomeFragment()));
         navbarInventoryLayout.setOnClickListener(v -> handleNavbarClick(navbarInventoryLayout, new HomeFragment()));
         navbarMedbotLayout.setOnClickListener(v -> handleNavbarClick(navbarMedbotLayout, new HomeFragment()));
-        navbarUserLayout.setOnClickListener(v -> handleNavbarClick(navbarUserLayout, new HomeFragment()));
+        navbarUserLayout.setOnClickListener(v -> handleNavbarClick(navbarUserLayout, new UserFragment()));
+        navbarHospitalButton.setOnClickListener(view -> {
+            // This is new method provided in API 28
+            LocationManager lm = (LocationManager) getSystemService(Activity.LOCATION_SERVICE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                if (!lm.isLocationEnabled()) {
+                    Toast.makeText(this, "Please Enable Location Services First", Toast.LENGTH_SHORT).show();
+                } else {
+                    Intent startMapClinicFinder = new Intent(BaseActivity.this, MapClinicFinder.class);
+                    startActivity(startMapClinicFinder);
+                }
+            }
+        });
     }
 
     private void handleNavbarClick(View selectedLayout, Fragment fragment) {

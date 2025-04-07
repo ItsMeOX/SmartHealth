@@ -1,6 +1,9 @@
 package com.example.smarthealth.activities;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.app.Dialog;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Pair;
@@ -17,15 +20,23 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.smarthealth.R;
+import com.example.smarthealth.api_service.AuthService;
+import com.example.smarthealth.api_service.NutrientIntakeDto;
+import com.example.smarthealth.api_service.ProfileService;
+import com.example.smarthealth.api_service.RetrofitClient;
+import com.example.smarthealth.api_service.UserDto;
 import com.example.smarthealth.bot_suggestions.BotSuggestion;
 import com.example.smarthealth.bot_suggestions.BotSuggestionAdapter;
 import com.example.smarthealth.bot_suggestions.BotSuggestionProvider;
@@ -50,6 +61,10 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class HomeFragment extends Fragment implements
         CalendarAdapter.OnItemListener,
         BotSuggestionAdapter.OnItemListener,
@@ -69,13 +84,22 @@ public class HomeFragment extends Fragment implements
     private BotSuggestionProvider botSuggestionProvider;
     private CalendarEventCache calendarEventCache;
     private View view; // main view for this fragment
+    private SharedPreferences sharedPreferences;
+    private long userId;
+    private ProfileService profileService;
+
+    private AppCompatButton userBtn;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.home_fragment, container, false);
 
+        sharedPreferences = getActivity().getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        userId = sharedPreferences.getLong("userId", -1);
+        profileService = RetrofitClient.getInstance().create(ProfileService.class);
+
         calendarEventProvider = new DatabaseCalendarEventProvider();
-        nutrientIntakeProvider = new DatabaseNutrientIntakeProvider();
+        nutrientIntakeProvider = new DatabaseNutrientIntakeProvider(requireContext());
         upcomingScheduleProvider = new DatabaseUpcomingScheduleProvider();
         botSuggestionProvider = new DatabaseBotSuggestionProvider();
         calendarEventCache = new CalendarEventCache();
@@ -91,6 +115,7 @@ public class HomeFragment extends Fragment implements
         setNutrientIntakeView();
         setUpcomingSchedules();
         setBotSuggestionsView();
+        //setUserBtnView();
 
         return view;
     }
@@ -105,7 +130,7 @@ public class HomeFragment extends Fragment implements
     }
 
     private void setMonthView() {
-
+        Log.d("debug", "setMonthVIew");
         SimpleDateFormat dateFormat = new SimpleDateFormat("MMM yyyy", Locale.ENGLISH);
         String selectedDateText = dateFormat.format(selectedDate.getTime());
         monthYearText.setText(selectedDateText);
@@ -119,7 +144,7 @@ public class HomeFragment extends Fragment implements
         calendarRecyclerView.setLayoutManager(layoutManager);
         calendarRecyclerView.setAdapter(calendarAdapter);
 
-        calendarEventCache.loadEventsForMonth(selectedDate, calendarEventProvider, calendarAdapter::notifyDataSetChanged);
+        calendarEventCache.loadEventsForMonth(userId, selectedDate, calendarEventProvider, calendarAdapter::notifyDataSetChanged);
     }
 
     private Pair<ArrayList<Calendar>, Integer> daysInMonthArray(Calendar selectedDate) {
@@ -302,16 +327,35 @@ public class HomeFragment extends Fragment implements
     }
 
     private void setNutrientIntakeView() {
-        nutrientIntakeProvider.getNutrientIntakes(16, new DatabaseNutrientIntakeProvider.OnDataLoadedCallback() {
+        nutrientIntakeProvider.getNutrientIntakes(userId, new DatabaseNutrientIntakeProvider.OnDataLoadedCallback() {
             @Override
             public void onDataLoaded(List<NutrientIntake> nutrientIntakeList) {
-                getActivity().runOnUiThread(() -> {
-                    NutrientIntakeAdapter nutrientIntakeAdapter = new NutrientIntakeAdapter(nutrientIntakeList);
-                    RecyclerView.LayoutManager layoutManager = new GridLayoutManager(requireContext(), 2);
-                    nutrientRecyclerView.setLayoutManager(layoutManager);
-                    nutrientRecyclerView.setAdapter(nutrientIntakeAdapter);
-                    nutrientRecyclerView.setNestedScrollingEnabled(false);
-                });
+                if(getActivity() != null) {
+                    getActivity().runOnUiThread(() -> {
+                        NutrientIntakeAdapter nutrientIntakeAdapter = new NutrientIntakeAdapter(nutrientIntakeList);
+                        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(requireContext(), 2);
+                        nutrientRecyclerView.setLayoutManager(layoutManager);
+                        nutrientRecyclerView.setAdapter(nutrientIntakeAdapter);
+                        nutrientRecyclerView.setNestedScrollingEnabled(false);
+                    });
+                }
+            }
+        });
+    }
+
+    private void loadNutrientIntakes() {
+        nutrientIntakeProvider.getNutrientIntakes(userId, new DatabaseNutrientIntakeProvider.OnDataLoadedCallback() {
+            @Override
+            public void onDataLoaded(List<NutrientIntake> nutrientIntakeList) {
+                if(getActivity() != null) {
+                    getActivity().runOnUiThread(() -> {
+                        NutrientIntakeAdapter nutrientIntakeAdapter = new NutrientIntakeAdapter(nutrientIntakeList);
+                        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(requireContext(), 2);
+                        nutrientRecyclerView.setLayoutManager(layoutManager);
+                        nutrientRecyclerView.setAdapter(nutrientIntakeAdapter);
+                        nutrientRecyclerView.setNestedScrollingEnabled(false);
+                    });
+                }
             }
         });
     }
@@ -339,7 +383,7 @@ public class HomeFragment extends Fragment implements
         SimpleDateFormat amPmFormat = new SimpleDateFormat("aa", Locale.ENGLISH);
 
         Calendar currCalendar = (Calendar) daysOfMonth.get(position).clone();
-        List<CalendarEvent> calendarEvents = calendarEventCache.getEventsForDay(currCalendar);
+        List<CalendarEvent> calendarEvents = calendarEventCache.getEventsForDay(userId, currCalendar);
         for (CalendarEvent calendarEvent : calendarEvents) {
             View eventView = inflater.inflate(R.layout.calendar_event_popup_item, eventListContainer, false);
             TextView eventTitleView = eventView.findViewById(R.id.calendarPopupEventTitle);
@@ -363,6 +407,7 @@ public class HomeFragment extends Fragment implements
 
         calendarEventDialog.show();
     }
+
     @Override
     public void onNewCalendarEventCreated(CalendarEvent event, LinearLayout eventListContainer) {
         FragmentManager fragmentManager = getParentFragmentManager();
@@ -385,7 +430,7 @@ public class HomeFragment extends Fragment implements
         }
 
         // Update cache after adding new calendar event
-        calendarEventCache.loadEventForDay(event.getEventDateCalendar().first, calendarEventProvider);
+        calendarEventCache.loadEventForDay(userId, event.getEventDateCalendar().first, calendarEventProvider);
     }
 
     private void initBotSuggestionWidgets() {
@@ -452,4 +497,27 @@ public class HomeFragment extends Fragment implements
         titleView.setText(schedule.getScheduleTitle());
         dialog.show();
     }
+//    public void setUserBtnView(){
+//        userBtn = view.findViewById(R.id.userBtn);
+//
+//        Call<UserDto> call = profileService.getUserById(userId);
+//
+//        call.enqueue(new Callback<UserDto>() {
+//            @Override
+//            public void onResponse(Call<UserDto> call, Response<UserDto> response) {
+//                if(response.isSuccessful() && response.body() != null){
+//                    UserDto user = response.body();
+//                    userBtn.setText(Character.toUpperCase(user.getFullName().charAt(0)));
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<UserDto> call, Throwable t) {
+//                Log.d("UserCall", t.getMessage());
+//                if (isAdded() && getActivity() != null) {
+//                    Toast.makeText(getActivity(), "Failed to load user", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        });
+//    }
 }

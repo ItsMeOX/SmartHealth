@@ -11,6 +11,7 @@ public class UserDto {
     private double weight;
     private double height;
     private boolean isGoogleAuth;
+    private String profilePictureUrl;
 
     public Long getId() {
         return id;
@@ -90,5 +91,13 @@ public class UserDto {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getProfilePictureUrl() {
+        return profilePictureUrl;
+    }
+
+    public void setProfilePictureUrl(String profilePictureUrl) {
+        this.profilePictureUrl = profilePictureUrl;
     }
 }

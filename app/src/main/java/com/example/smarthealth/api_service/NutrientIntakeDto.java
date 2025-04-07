@@ -8,8 +8,15 @@ public class NutrientIntakeDto {
     private double currentNutrient;
     private double totalNutrient;
     private String intakeUnit;
-    private String intakeDate;
     private Long userId;
+
+    public NutrientIntakeDto(String intakeUnit, double totalNutrient, double currentNutrient, String nutrientName, Long userId) {
+        this.intakeUnit = intakeUnit;
+        this.totalNutrient = totalNutrient;
+        this.currentNutrient = currentNutrient;
+        this.nutrientName = nutrientName;
+        this.userId = userId;
+    }
 
     public Long getId() {
         return id;
@@ -57,13 +64,5 @@ public class NutrientIntakeDto {
 
     public void setUserId(Long userId) {
         this.userId = userId;
-    }
-
-    public String getIntakeDate() {
-        return intakeDate;
-    }
-
-    public void setIntakeDate(String intakeDate) {
-        this.intakeDate = intakeDate;
     }
 }

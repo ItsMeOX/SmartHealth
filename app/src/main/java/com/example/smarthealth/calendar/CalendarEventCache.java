@@ -16,11 +16,12 @@ public class CalendarEventCache {
         void onMonthlyEventsLoaded();
     }
 
-    public void loadEventsForMonth(Calendar month, CalendarEventProvider provider, OnMonthLoadedCallback callback) {
+    public void loadEventsForMonth(long userId, Calendar month, CalendarEventProvider provider, OnMonthLoadedCallback callback) {
+        Log.d("debug", "loadEventFOrMonths" + isLoaded);
         if (isLoaded)
             return;
 
-        provider.getEventsForMonth(month, calendarEvents -> {
+        provider.getEventsForMonth(userId, month, calendarEvents -> {
             for (CalendarEvent event : calendarEvents) {
                 String key = CalendarUtil.calendarToDateString(event.getEventDateCalendar().first);
                 eventsByDate.computeIfAbsent(key, k -> new ArrayList<>()).add(event);
@@ -31,19 +32,19 @@ public class CalendarEventCache {
 
     }
 
-    public void loadEventForDay(Calendar day, CalendarEventProvider provider) {
+    public void loadEventForDay(long userId, Calendar day, CalendarEventProvider provider) {
         String key = CalendarUtil.calendarToDateString(day);
         if (eventsByDate.containsKey(key)) {
             eventsByDate.get(key).clear();
         }
-        provider.getEventsForDay(day, calendarEvents -> {
+        provider.getEventsForDay(userId, day, calendarEvents -> {
             for (CalendarEvent event : calendarEvents) {
                 eventsByDate.computeIfAbsent(key, k -> new ArrayList<>()).add(event);
             }
         });
     }
 
-    public List<CalendarEvent> getEventsForDay(Calendar calendar) {
+    public List<CalendarEvent> getEventsForDay(long userId, Calendar calendar) {
         String key = CalendarUtil.calendarToDateString(calendar);
         return eventsByDate.getOrDefault(key, new ArrayList<>());
     }
