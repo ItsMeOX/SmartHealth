@@ -9,8 +9,6 @@ public class CalendarEvent {
     private String eventDescription;
     private Calendar eventStartCalendar;
     private Calendar eventEndCalendar;
-    private String type;
-    private boolean isTaken;
 
     public CalendarEvent(String eventTitle, String eventDescription, Calendar eventStartCalendar, Calendar eventEndCalendar) {
         this.eventTitle = eventTitle;

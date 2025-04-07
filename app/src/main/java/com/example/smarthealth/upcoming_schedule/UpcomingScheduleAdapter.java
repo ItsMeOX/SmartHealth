@@ -41,12 +41,12 @@ public class UpcomingScheduleAdapter extends RecyclerView.Adapter<UpcomingSchedu
         UpcomingSchedule schedule = upcomingSchedules.get(position);    holder.scheduleTypeImage.setImageDrawable(
                 ContextCompat.getDrawable(holder.itemView.getContext(), schedule.getScheduleType().getIconResId())
         );
-        if (schedule.getScheduleCalender().before(Calendar.getInstance())) {
+        if (schedule.getScheduleCalendar().before(Calendar.getInstance())) {
             holder.scheduleTime.setTextColor(Color.parseColor("#F88383"));
             holder.scheduleTime.setTypeface(holder.scheduleTime.getTypeface(), Typeface.BOLD);
         }
         holder.scheduleTitle.setText(schedule.getScheduleTitle());    SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.getDefault());
-        String formattedTime = sdf.format(schedule.getScheduleCalender().getTime());    holder.scheduleTime.setText(formattedTime);
+        String formattedTime = sdf.format(schedule.getScheduleCalendar().getTime());    holder.scheduleTime.setText(formattedTime);
     }
 
     @Override

@@ -8,14 +8,14 @@ public class UpcomingSchedule {
 
     private final String scheduleTitle;
     private final String scheduleDescription;
-    private final Calendar scheduleCalender;
+    private final Calendar scheduleCalendar;
     private final ScheduleType scheduleType;
     private final boolean isTaken;
 
-    public UpcomingSchedule(String scheduleTitle, String scheduleDescription, Calendar scheduleCalendar, ScheduleType scheduleType, boolean isTaken) {
+    public UpcomingSchedule(String scheduleTitle, String scheduleDescription, boolean isTaken, Calendar scheduleCalendar, ScheduleType scheduleType) {
         this.scheduleTitle = scheduleTitle;
         this.scheduleDescription = scheduleDescription;
-        this.scheduleCalender = (Calendar) scheduleCalendar.clone();
+        this.scheduleCalendar = (Calendar) scheduleCalendar.clone();
         this.scheduleType = scheduleType;
         this.isTaken = isTaken;
     }
@@ -28,8 +28,8 @@ public class UpcomingSchedule {
         return scheduleTitle;
     }
 
-    public Calendar getScheduleCalender() {
-        return (Calendar) scheduleCalender.clone();
+    public Calendar getScheduleCalendar() {
+        return (Calendar) scheduleCalendar.clone();
     }
 
     public ScheduleType getScheduleType() {

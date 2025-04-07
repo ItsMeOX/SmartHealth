@@ -45,14 +45,14 @@ public class DatabaseUpcomingScheduleProvider implements UpcomingScheduleProvide
             public void onResponse(Call<List<UpcomingScheduleDto>> call, Response<List<UpcomingScheduleDto>> response) {
                 if(response.isSuccessful() && response.body() != null){
                     for(UpcomingScheduleDto schedule : response.body()){
-                        Log.d("debug", schedule.getScheduleCalendar()+" "+schedule.getScheduleTitle());
+                        Log.d("debug", schedule.getScheduleCalendar()+" "+schedule.getScheduleTitle() + schedule.getScheduleType());
 
                         UpcomingSchedule upcomingSchedule = new UpcomingSchedule(
                                 schedule.getScheduleTitle(),
                                 schedule.getScheduleDescription(),
+                                schedule.isTaken(),
                                 (Calendar) schedule.getScheduleCalendar(),
-                                schedule.getScheduleType().equals("Meal") ? new MealSchedule() : new MedicineSchedule(),
-                                schedule.isTaken());
+                                schedule.getScheduleType().equals("Meal") ? new MealSchedule() : new MedicineSchedule());
                         schedules.add(upcomingSchedule);
                     }
                 }

@@ -9,18 +9,11 @@ public class UpcomingScheduleDto {
     private Long id;
     private String scheduleTitle;
     private String scheduleDescription;
+
     @JsonAdapter(CalendarDeserializer.class)
-    private Calendar scheduleCalender;
+    private Calendar scheduleCalendar;
     private String scheduleType;
     private boolean isTaken;
-
-    public UpcomingScheduleDto(String scheduleTitle, String scheduleDescription, boolean isTaken, Calendar scheduleCalendar, String scheduleType) {
-        this.scheduleTitle = scheduleTitle;
-        this.scheduleDescription = scheduleDescription;
-        this.scheduleCalender = scheduleCalendar;
-        this.scheduleType = scheduleType;
-        this.isTaken = isTaken;
-    }
 
     public Long getId() {
         return id;
@@ -39,11 +32,11 @@ public class UpcomingScheduleDto {
     }
 
     public Calendar getScheduleCalendar() {
-        return scheduleCalender;
+        return scheduleCalendar;
     }
 
     public void setScheduleCalender(Calendar scheduleCalendar) {
-        this.scheduleCalender = scheduleCalendar;
+        this.scheduleCalendar = scheduleCalendar;
     }
 
     public String getScheduleType() {
