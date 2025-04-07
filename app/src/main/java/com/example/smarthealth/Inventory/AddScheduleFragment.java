@@ -1,5 +1,8 @@
 package com.example.smarthealth.Inventory;
 
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -7,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -15,10 +19,19 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.DialogFragment;
 import com.example.smarthealth.R;
+import com.example.smarthealth.calendar.CalendarEvent;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
-public class AddScheduleFragment extends DialogFragment{
+import java.util.Calendar;
 
+public class AddScheduleFragment extends DialogFragment{
+    private DatePickerDialog startDatePickerDialog;
+    private DatePickerDialog endDatePickerDialog;
+    private Calendar startDateCalendar = Calendar.getInstance();
+    private Calendar endDateCalendar = Calendar.getInstance();
+    private MaterialButton startDate;
+    private MaterialButton endDate;
 
     @Override
     public void onStart(){
@@ -36,6 +49,25 @@ public class AddScheduleFragment extends DialogFragment{
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View popupView = inflater.inflate(R.layout.add_to_schedule, null);
+
+        startDate = popupView.findViewById(R.id.dateSelect1);
+        endDate = popupView.findViewById(R.id.dateSelect2);
+        initDatePicker();
+
+        startDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startDatePickerDialog.show();
+            }
+        });
+
+        endDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                endDatePickerDialog.show();
+            }
+        });
+
 
         AppCompatButton confirmButton = popupView.findViewById(R.id.confirm);
         confirmButton.setOnClickListener(new View.OnClickListener() {
@@ -109,9 +141,6 @@ public class AddScheduleFragment extends DialogFragment{
                 }
             }
         });
-
-
-
         return popupView;
     }
 
@@ -121,6 +150,61 @@ public class AddScheduleFragment extends DialogFragment{
         int hour = Integer.parseInt(time1[0]);
         int minutes = Integer.parseInt(time1[1]);
         return hour > 0 && hour < 24 && minutes < 60 && minutes >= 0;
+    }
+
+    private void initDatePicker(){
+        Calendar cal = Calendar.getInstance();
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH);
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+
+        // Start Date Picker
+        startDatePickerDialog = new DatePickerDialog(requireContext(), (datePicker, selectedYear, selectedMonth, selectedDay) -> {
+            startDateCalendar.set(selectedDay, selectedMonth, selectedYear);
+            if(startDateCalendar.after(endDateCalendar)){
+                Toast.makeText(requireContext(), "Start Date must be before End Date", Toast.LENGTH_SHORT).show();
+            }
+            else{
+                selectedMonth += 1;
+                String date = makeDateString(selectedDay, selectedMonth, selectedYear);
+                startDate.setText(date);
+            }
+        }, year, month, day);
+
+        // End Date Picker
+        endDatePickerDialog = new DatePickerDialog(requireContext(), (datePicker, selectedYear, selectedMonth, selectedDay) -> {
+            endDateCalendar.set(selectedDay,selectedMonth, selectedYear);
+            if(endDateCalendar.before(startDateCalendar)){
+                Toast.makeText(requireContext(),"End Date should be after Start Date", Toast.LENGTH_SHORT).show();
+            }
+            else{
+                selectedMonth += 1;
+                String date = makeDateString(selectedDay, selectedMonth, selectedYear);
+                endDate.setText(date);
+            }
+        }, year, month, day);
+    }
+
+    private String makeDateString(int day, int month, int year){
+        return day + " " + getMonthFormat(month) + " " + year;
+    }
+
+    private String getMonthFormat(int month){
+        switch (month){
+            case 1: return "JAN";
+            case 2: return "FEB";
+            case 3: return "MAR";
+            case 4: return "APR";
+            case 5: return "MAY";
+            case 6: return "JUN";
+            case 7: return "JUL";
+            case 8: return "AUG";
+            case 9: return "SEP";
+            case 10: return "OCT";
+            case 11: return "NOV";
+            case 12: return "DEC";
+            default: return null;
+        }
     }
 
 

@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -75,6 +76,9 @@ public class FormHistoryFragment extends DialogFragment {
 
         // Medicine List Setup
         medicineList = new ArrayList<>();
+        ArrayList<String> list = new ArrayList<>();
+        list.add("Cough");
+        list.add("Diarrhoea");
         medicineList.add(new MedicineButton(
                 "Paracetamol",
                 "Pills",
@@ -83,8 +87,7 @@ public class FormHistoryFragment extends DialogFragment {
                 "Info",
                 "Tel",
                 "Side Effect",
-                new ArrayList<>()
-        ));
+                list));
 
         medicineList.add(new MedicineButton(
                 "Fever",
@@ -94,8 +97,7 @@ public class FormHistoryFragment extends DialogFragment {
                 "Info",
                 "Lol",
                 "Side Effect",
-                new ArrayList<>()
-        ));
+                list));
 
         medicineList.add(new MedicineButton(
                 "PainKiller",
@@ -105,7 +107,7 @@ public class FormHistoryFragment extends DialogFragment {
                 "Info",
                 "Lpo",
                 "Side Effect",
-                new ArrayList<>()
+                list
         ));
 
         medicineList.add(new MedicineButton(
@@ -116,7 +118,7 @@ public class FormHistoryFragment extends DialogFragment {
                 "Info",
                 "Lol",
                 "Side Effect",
-                new ArrayList<>()
+                list
         ));
 
         medicineList.add(new MedicineButton(
@@ -127,7 +129,7 @@ public class FormHistoryFragment extends DialogFragment {
                 "Info",
                 "Lol",
                 "Side Effect",
-                new ArrayList<>()
+                list
         ));
 
         medicineList.add(new MedicineButton(
@@ -138,7 +140,7 @@ public class FormHistoryFragment extends DialogFragment {
                 "Info",
                 "Lol",
                 "Side Effect",
-                new ArrayList<>()
+                list
         ));
 
         medicineList.add(new MedicineButton(
@@ -149,7 +151,7 @@ public class FormHistoryFragment extends DialogFragment {
                 "Info",
                 "Lol",
                 "Side Effect",
-                new ArrayList<>()
+                list
         ));
 
         medicineList.add(new MedicineButton(
@@ -160,7 +162,7 @@ public class FormHistoryFragment extends DialogFragment {
                 "Info",
                 "Lol",
                 "Side Effect",
-                new ArrayList<>()
+                list
         ));
 
         medicineList.add(new MedicineButton(
@@ -171,7 +173,7 @@ public class FormHistoryFragment extends DialogFragment {
                 "Info",
                 "Lol",
                 "Side Effect",
-                new ArrayList<>()
+                list
         ));
 
         medicineList.add(new MedicineButton(
@@ -182,7 +184,7 @@ public class FormHistoryFragment extends DialogFragment {
                 "Info",
                 "Lol",
                 "Side Effect",
-                new ArrayList<>()
+                list
         ));
 
         medicineList.add(new MedicineButton(
@@ -193,7 +195,7 @@ public class FormHistoryFragment extends DialogFragment {
                 "Info",
                 "Lol",
                 "Side Effect",
-                new ArrayList<>()
+                list
         ));
 
         medicineList.add(new MedicineButton(
@@ -204,7 +206,7 @@ public class FormHistoryFragment extends DialogFragment {
                 "Info",
                 "Lol",
                 "Side Effect",
-                new ArrayList<>()
+                list
         ));
 
         medicineList.add(new MedicineButton(
@@ -215,7 +217,7 @@ public class FormHistoryFragment extends DialogFragment {
                 "Info",
                 "Lol",
                 "Side Effect",
-                new ArrayList<>()
+                list
         ));
 
         medicineList.add(new MedicineButton(
@@ -226,7 +228,7 @@ public class FormHistoryFragment extends DialogFragment {
                 "Info",
                 "Lol",
                 "Side Effect",
-                new ArrayList<>()
+                list
         ));
 
 
@@ -236,117 +238,99 @@ public class FormHistoryFragment extends DialogFragment {
         MedicineSearchBarAdapter adapter = new MedicineSearchBarAdapter(requireContext(), medicineList);
         searchBar.setAdapter(adapter);
         searchBar.setThreshold(1);
-        searchBar.setOnClickListener(v -> {
-            // Show the dropdown without opening the keyboard
-            searchBar.showDropDown();
+        searchBar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Show the dropdown without opening the keyboard
+                searchBar.showDropDown();
 
-            // Explicitly hide the keyboard when clicking on the search bar
-            inputMethodManager = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                // Explicitly hide the keyboard when clicking on the search bar
+                inputMethodManager = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+            }
         });
 
-        searchBar.setOnItemClickListener((parent, view, position, id) -> {
-            MedicineButton selectedMedicine = (MedicineButton) parent.getItemAtPosition(position);
-            searchBar.setText(selectedMedicine.getMedicineName()); // Set selected text
-            InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(INPUT_METHOD_SERVICE);
-            // Fill UI with selected medicine details
-            ImageView image = popupView.findViewById(R.id.displayImage);
-            TextView name = popupView.findViewById(R.id.displayName);
-            TextView dosage = popupView.findViewById(R.id.displayDosage);
-            TextView contain = popupView.findViewById(R.id.displayContain);
-            TextView sideEffect = popupView.findViewById(R.id.displaySideEffect);
-            LinearLayout tagLayout = popupView.findViewById(R.id.displayTag);
-            String category = selectedMedicine.getMedicineCategory();
-            ArrayList<String> tags = selectedMedicine.getMedicineType();
+        searchBar.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                MedicineButton selectedMedicine = (MedicineButton) parent.getItemAtPosition(position);
+                searchBar.setText(selectedMedicine.getMedicineName()); // Set selected text
+                InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(INPUT_METHOD_SERVICE);
+                // Fill UI with selected medicine details
+                ImageView image = popupView.findViewById(R.id.displayImage);
+                TextView name = popupView.findViewById(R.id.displayName);
+                TextView dosage = popupView.findViewById(R.id.displayDosage);
+                TextView contain = popupView.findViewById(R.id.displayContain);
+                TextView sideEffect = popupView.findViewById(R.id.displaySideEffect);
+                LinearLayout tagLayout = popupView.findViewById(R.id.displayTag);
+                String category = selectedMedicine.getMedicineCategory();
+                ArrayList<String> tags = selectedMedicine.getMedicineType();
 
-            image.setImageDrawable(selectedMedicine.getMedicineImage());
-            name.setText(selectedMedicine.getMedicineName());
-            dosage.setText(selectedMedicine.getMedicineDosage());
-            contain.setText(selectedMedicine.getMedicineContains());
-            sideEffect.setText(selectedMedicine.getMedicineSideEffect());
-            for (String tag : tags) {
-                // Create a new TextView dynamically
-                TextView tagView = new TextView(getContext());
-                tagView.setText(tag);
-                tagView.setTextSize(14);
-                tagView.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
-                tagView.setPadding(16, 8, 16, 8);
-                tagView.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.rounded)); // Custom background
+                image.setImageDrawable(selectedMedicine.getMedicineImage());
+                name.setText(selectedMedicine.getMedicineName());
+                dosage.setText(selectedMedicine.getMedicineDosage());
+                contain.setText(selectedMedicine.getMedicineContains());
+                sideEffect.setText(selectedMedicine.getMedicineSideEffect());
 
-                // Set layout parameters
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT
-                );
-                params.setMargins(8, 8, 8, 8);
-                tagView.setLayoutParams(params);
+                // Add tags
+                TagManager.addTags(requireContext(), tags, tagLayout);
+                // Button to add from history
+                MaterialButton confirm = popupView.findViewById(R.id.addByHistory);
+                confirm.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String mediName = searchBar.getText().toString();
+                        ImageView imageView = popupView.findViewById(R.id.displayImage);
+                        EditText amount = popupView.findViewById(R.id.amountInput);
+                        TextView dosage = popupView.findViewById(R.id.displayDosage);
+                        TextView contain = popupView.findViewById(R.id.displayContain);
+                        TextView sideEffect = popupView.findViewById(R.id.displaySideEffect);
+                        LinearLayout tagChosen = popupView.findViewById(R.id.displayTag);
+                        String mediDosage = dosage.getText().toString();
+                        String mediContains = contain.getText().toString();
+                        String mediSideEffect = sideEffect.getText().toString();
+                        Drawable image = imageView.getDrawable();
 
-                // Add the TextView to the container
-                tagLayout.addView(tagView);
-            }
-            ;
-//            searchBar.setOnFocusChangeListener((view, hasFocus) -> {
-//                if (hasFocus) {
-//                    // Check if the view is an instance of EditText (since AutoCompleteTextView uses EditText internally)
-//                    if (view instanceof EditText) {
-//                        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0); // Hide keyboard explicitly
-//                    }
-//                }
-//            });
+                        ArrayList<String> tagList = new ArrayList<>();
+                        for (int i = 0; i < tagChosen.getChildCount(); i++) {
+                            View child = tagChosen.getChildAt(i);
 
-            MaterialButton confirm = popupView.findViewById(R.id.addByHistory);
-            confirm.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String mediName = searchBar.getText().toString();
-                    ImageView imageView = popupView.findViewById(R.id.displayImage);
-                    EditText amount = popupView.findViewById(R.id.amountInput);
-                    TextView dosage = popupView.findViewById(R.id.displayDosage);
-                    TextView contain = popupView.findViewById(R.id.displayContain);
-                    TextView sideEffect = popupView.findViewById(R.id.displaySideEffect);
-                    LinearLayout tagChosen = popupView.findViewById(R.id.displayTag);
-                    String mediDosage = dosage.getText().toString();
-                    String mediContains = contain.getText().toString();
-                    String mediSideEffect = sideEffect.getText().toString();
-                    Drawable image = imageView.getDrawable();
+                            // Check if the child is a TextView
+                            if (child instanceof TextView) {
+                                TextView tagView = (TextView) child;
+                                String tagText = tagView.getText().toString();
+                                tagList.add(tagText);
+                            }
+                        }
 
-                    ArrayList<String> tagList = new ArrayList<>();
-                    for (int i = 0; i < tagChosen.getChildCount(); i++) {
-                        View child = tagChosen.getChildAt(i);
+                        // Check for empty fields (adjust this logic as needed)
+                        if (amount.getText().toString().isEmpty()) {
+                            Toast.makeText(getContext(), "Please Key in Amount", Toast.LENGTH_SHORT).show();
+                        }
+                        if (Integer.parseInt(amount.getText().toString().trim()) < 0 || Integer.parseInt(amount.getText().toString().trim()) > 999) {
+                            Toast.makeText(getContext(), "Enter number between 0 and 999", Toast.LENGTH_SHORT).show();
+                        } else {
+                            byte[] imageData = drawableToByteArray(image);
+                            int mediAmount = Integer.parseInt(amount.getText().toString().trim());
 
-                        // Check if the child is a TextView
-                        if (child instanceof TextView) {
-                            TextView tagView = (TextView) child;
-                            String tagText = tagView.getText().toString();
-                            tagList.add(tagText);
+                            // Create the Bundle to pass data
+                            Bundle result = new Bundle();
+                            result.putString("Name", mediName);
+                            result.putString("Category", category);
+                            result.putInt("Amount", mediAmount);
+                            result.putByteArray("Image", imageData);
+                            result.putString("Dosage", mediDosage);
+                            result.putString("Contains", mediContains);
+                            result.putString("Side Effect", mediSideEffect);
+                            result.putStringArrayList("Tags", tagList);
+
+                            getParentFragmentManager().setFragmentResult("History Data", result);
+                            dismiss();
                         }
                     }
+                });
 
-                    // Check for empty fields (adjust this logic as needed)
-                    if (mediName.isEmpty() || mediDosage.isEmpty() || mediContains.isEmpty() || mediSideEffect.isEmpty()) {
-                        Toast.makeText(getContext(), "Please fill all fields", Toast.LENGTH_SHORT).show();
-                    } else {
-                        byte[] imageData = drawableToByteArray(image);
-                        int mediAmount = Integer.parseInt(amount.getText().toString().trim());
-
-                        // Create the Bundle to pass data
-                        Bundle result = new Bundle();
-                        result.putString("Name", mediName);
-                        result.putString("Category", category);
-                        result.putInt("Amount", mediAmount);
-                        result.putByteArray("Image", imageData);
-                        result.putString("Dosage", mediDosage);
-                        result.putString("Contains", mediContains);
-                        result.putString("Side Effect", mediSideEffect);
-                        result.putStringArrayList("Tags", tagList);
-
-                        getParentFragmentManager().setFragmentResult("History Data", result);
-                        dismiss();
-                    }
-
-
-                }
-            });
+            }
         });
         return popupView;
     }

@@ -286,7 +286,7 @@ public class FormPageFragment extends DialogFragment {
             @NonNull
             @Override
             public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                if (convertView == null) {
+                if (convertView == null){
                     convertView = LayoutInflater.from(getContext()).inflate(R.layout.spinner_tag, parent, false);
                 }
 
@@ -299,7 +299,7 @@ public class FormPageFragment extends DialogFragment {
                 checkBox.setChecked(selectedItems[position]);
 
                 // Set background tint color dynamically
-                ColorStateList colorStateList = ColorStateList.valueOf(getMedicineTagColor(items[position]));
+                ColorStateList colorStateList = ColorStateList.valueOf(TagManager.getMedicineTagColor(items[position], requireContext()));
                 textView.setBackgroundTintList(colorStateList);  // Apply background tint
 
                 // TextView design
@@ -337,16 +337,16 @@ public class FormPageFragment extends DialogFragment {
                 return convertView;
             }
         };
+        // Set Confirm button for selection of tags
         listView.setAdapter(adapter);
         builder.setView(dialogView);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT
                 );
-
                 layoutParams.leftMargin = 18;
 
                 // Remove all views before adding to keep the latest selection
@@ -358,7 +358,7 @@ public class FormPageFragment extends DialogFragment {
                         textView.setTextSize(18);
                         textView.setBackgroundResource(R.drawable.rounded);
                         textView.setPadding(20, 5, 20, 5);
-                        ColorStateList colorStateList = ColorStateList.valueOf(getMedicineTagColor(selectedTags.get(i)));
+                        ColorStateList colorStateList = ColorStateList.valueOf(TagManager.getMedicineTagColor(selectedTags.get(i), requireContext()));
                         textView.setBackgroundTintList(colorStateList);
                         textView.setLayoutParams(layoutParams);
                         tagView.addView(textView);
@@ -366,6 +366,7 @@ public class FormPageFragment extends DialogFragment {
                 }
             }
         });
+        // Set cancel button to dismiss and clear selection
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -374,32 +375,6 @@ public class FormPageFragment extends DialogFragment {
             }
         });
         builder.show();
-    }
-    public int getMedicineTagColor(String name) {
-        switch (name.toLowerCase()) { // Convert to lowercase for case insensitivity
-            case "cough":
-                return getResources().getColor(R.color.Cough, getContext().getTheme());
-            case "fever":
-                return getResources().getColor(R.color.Fever, getContext().getTheme());
-            case "cold":
-                return getResources().getColor(R.color.Cold, getContext().getTheme());
-            case "diarrhoea":
-                return getResources().getColor(R.color.Diarrhoea, getContext().getTheme());
-            case "phlegm":
-                return getResources().getColor(R.color.Phlegm, getContext().getTheme());
-            case "painkiller":
-                return getResources().getColor(R.color.Painkiller, getContext().getTheme());
-            case "diabetes":
-                return getResources().getColor(R.color.Diabetes, getContext().getTheme());
-            case "high cholesterol":
-                return getResources().getColor(R.color.HighCholesterol, getContext().getTheme());
-            case "dry eyes":
-                return getResources().getColor(R.color.DryEyes, getContext().getTheme());
-            case "high-blood pressure":
-                return getResources().getColor(R.color.High_BloodPressure, getContext().getTheme());
-            default:
-                return getResources().getColor(R.color.Others, getContext().getTheme()); // Default color
-        }
     }
 
 }
