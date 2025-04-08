@@ -34,13 +34,13 @@ public class ChatBotImageFood {
             "> If the value is in milligrams (mg), convert it to grams and use double values (e.g., 120mg = 0.12).\n\n" +
             "**Format the response strictly in JSON**, using lowercase keys and underscores where applicable. Example format:\n" +
             "{\n" +
-            "    \"name\": \"Granola Bar\",\n" +
-            "    \"carbs\": \"23\",\n" +
-            "    \"proteins\": \"5\",\n" +
-            "    \"fats\": \"8\",\n" +
-            "    \"fibre\": \"3\",\n" +
-            "    \"sugars\": \"10\",\n" +
-            "    \"sodium\": \"0.12\"\n" +
+            "    \"Name\": \"Granola Bar\",\n" +
+            "    \"Carbs\": \"23\",\n" +
+            "    \"Proteins\": \"5\",\n" +
+            "    \"Fats\": \"8\",\n" +
+            "    \"Fibre\": \"3\",\n" +
+            "    \"Sugars\": \"10\",\n" +
+            "    \"Sodium\": \"0.12\"\n" +
             "}\n\n" +
             "Do not include any commentary or references. Only return the extracted data in JSON format.";
 

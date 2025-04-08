@@ -69,7 +69,7 @@
             android:id="@+id/get_current_location_btn"
             android:layout_width="70dp"
             android:layout_height="70dp"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentLeft="true"
             android:background="@drawable/compass_512" />
 
     </RelativeLayout>

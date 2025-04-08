@@ -65,7 +65,7 @@ public class ProximityExploration extends MapExploration{
         String reference = "";
 
         if (!googlePlaceJSON.isNull("displayName")) {
-            placeName = googlePlaceJSON.getString("displayName");
+            placeName = googlePlaceJSON.getJSONObject("displayName").getString("text");
         }
         if (!googlePlaceJSON.isNull("formattedAddress")) {
             vicinity = googlePlaceJSON.getString("formattedAddress");
