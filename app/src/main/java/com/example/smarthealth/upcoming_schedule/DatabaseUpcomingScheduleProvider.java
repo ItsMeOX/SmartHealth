@@ -85,7 +85,8 @@ public class DatabaseUpcomingScheduleProvider implements UpcomingScheduleProvide
         List<UpcomingScheduleDto> upcomingScheduleDtosToBeInserted = new ArrayList<>();
 
         Calendar today = (Calendar) Calendar.getInstance().clone();
-        today.set(Calendar.HOUR_OF_DAY, 12);
+        today.set(Calendar.HOUR_OF_DAY, 20);
+        today.set(Calendar.MINUTE, 0);
 
         upcomingScheduleDtosToBeInserted.add(new UpcomingScheduleDto(
                 "Lunch",
@@ -98,7 +99,8 @@ public class DatabaseUpcomingScheduleProvider implements UpcomingScheduleProvide
         ));
 
         Calendar secondToday = (Calendar) Calendar.getInstance().clone();
-        secondToday.set(Calendar.HOUR_OF_DAY, 18);
+        secondToday.set(Calendar.HOUR_OF_DAY, 26);
+        secondToday.set(Calendar.MINUTE, 0);
         upcomingScheduleDtosToBeInserted.add(new UpcomingScheduleDto(
                 "Dinner",
                 "Please have dinner now!",

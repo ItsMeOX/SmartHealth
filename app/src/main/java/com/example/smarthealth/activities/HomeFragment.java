@@ -101,7 +101,7 @@ public class HomeFragment extends Fragment implements
         upcomingScheduleService = RetrofitClient.getInstance().create(UpcomingScheduleService.class);
 
         calendarEventProvider = new DatabaseCalendarEventProvider();
-        nutrientIntakeProvider = new DatabaseNutrientIntakeProvider(requireContext());
+        nutrientIntakeProvider = new DatabaseNutrientIntakeProvider();
         upcomingScheduleProvider = new DatabaseUpcomingScheduleProvider();
         botSuggestionProvider = new DatabaseBotSuggestionProvider();
         calendarEventCache = new CalendarEventCache();
@@ -505,8 +505,10 @@ public class HomeFragment extends Fragment implements
         }
 
         TextView titleView = dialog.findViewById(R.id.upcomingSchedulePopupTitle);
+        TextView descpView = dialog.findViewById(R.id.upcomingSchedulePopupDescription);
 
         titleView.setText(schedule.getScheduleTitle());
+        descpView.setText(schedule.getScheduleDescription());
 
         MaterialButton takenButton = dialog.findViewById(R.id.takenButton);
         takenButton.setOnClickListener(new View.OnClickListener() {

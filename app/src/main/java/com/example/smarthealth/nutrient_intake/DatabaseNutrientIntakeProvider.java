@@ -29,12 +29,9 @@ import retrofit2.Response;
 
 public class DatabaseNutrientIntakeProvider implements NutrientIntakeProvider {
     private NutrientIntakeService nutrientIntakeService ;
-//    private Context context;
-//
-//    public DatabaseNutrientIntakeProvider(Context context) {
-//        this.context = context;
-//        nutrientIntakeService = RetrofitClient.getInstance().create(NutrientIntakeService.class);
-//    }
+    public DatabaseNutrientIntakeProvider() {
+        nutrientIntakeService = RetrofitClient.getInstance().create(NutrientIntakeService.class);
+    }
 
     @Override
     public List<NutrientIntake> getNutrientIntakes(long userId, OnDataLoadedCallback callback) {
