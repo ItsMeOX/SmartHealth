@@ -9,7 +9,7 @@
         android:id="@+id/upcomingSchedulePopupImage"
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        android:src="@drawable/bot_suggestion_image"
+        android:src="@drawable/bot_suggestion_image_2"
         android:scaleType="centerCrop"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -41,7 +41,7 @@
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginHorizontal="20dp"
         android:layout_marginTop="5dp"
-        android:lineHeight="23dp"
+        android:lineSpacingExtra="6dp"
         />
 
     <com.google.android.material.button.MaterialButton
