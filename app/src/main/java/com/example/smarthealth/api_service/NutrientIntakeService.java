@@ -31,9 +31,9 @@ public interface NutrientIntakeService {
             @Path("userId") long userId
     );
 
-    @PATCH("nutrient-intake/{intakeId}")
-    Call<NutrientIntakeDto> updateNutrientIntake(
-            @Path("intakeId") long intakeId,
-            @Body NutrientIntakeDto nutrientIntakeDto
+    @PATCH("nutrient-intake/user/{userId}")
+    Call<List<NutrientIntakeDto>> updateUserNutrientIntakes(
+            @Path("userId") long userId,
+            @Body List<NutrientIntakeDto> updatedDtos
     );
 }

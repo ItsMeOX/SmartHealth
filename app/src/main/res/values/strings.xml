@@ -46,4 +46,5 @@
         <item>Painkiller</item>
         <item>Others</item>
     </string-array>
+    <string name="type_message">Write here ...</string>
 </resources>

@@ -44,7 +44,7 @@ public class CalendarFormFragment extends DialogFragment {
     private TextInputEditText timeEditText;
     private TextInputLayout timeInputLayout;
     private TextInputLayout dateInputLayout;
-    View view;
+    private View view;
     private NewEventCreatedListener listener;
     private final String dateFormat = "yyyy/MM/dd";
     private final LinearLayout eventListContainer;
@@ -234,7 +234,6 @@ public class CalendarFormFragment extends DialogFragment {
                         startDate,
                         endDate
                 );
-                listener.onNewCalendarEventCreated(calendarEvent, eventListContainer);
                 addToDatabase(calendarEvent);
                 dismiss();
             }
@@ -256,13 +255,14 @@ public class CalendarFormFragment extends DialogFragment {
         Call<EventDto> call = eventService.createEvent(userId, eventDto);
         call.enqueue(new Callback<EventDto>() {
             @Override
-            public void onResponse(Call<EventDto> call, Response<EventDto> response) {
+            public void onResponse(@NonNull Call<EventDto> call, @NonNull Response<EventDto> response) {
                 if(response.isSuccessful() && response.body() != null){
+                    listener.onNewCalendarEventCreated(calendarEvent, eventListContainer);
                     Log.d("debug", "Add calendar event successfully");
                 }
             }
             @Override
-            public void onFailure(Call<EventDto> call, Throwable t) {
+            public void onFailure(@NonNull Call<EventDto> call, @NonNull Throwable t) {
                 Log.d("debug", "error: " + t.getMessage());
             }
         });

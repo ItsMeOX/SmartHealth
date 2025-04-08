@@ -35,8 +35,8 @@ public class NutrientIntakeAdapter extends RecyclerView.Adapter<NutrientIntakeVi
         double currentNutrient = currNutrientIntake.getCurrentNutrient();
         double totalNutrient = currNutrientIntake.getTotalNutrient();
 
-        holder.currentNutrientText.setText(String.valueOf(currentNutrient) + currNutrientIntake.getIntakeUnit());
-        holder.totalNutrientText.setText(String.valueOf(totalNutrient) + currNutrientIntake.getIntakeUnit());
+        holder.currentNutrientText.setText(String.format("%.1f", currentNutrient) + currNutrientIntake.getIntakeUnit());
+        holder.totalNutrientText.setText(String.format("%.1f", totalNutrient) + currNutrientIntake.getIntakeUnit());
 
         if (currentNutrient > totalNutrient) {
             holder.currentNutrientText.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.warning_red));

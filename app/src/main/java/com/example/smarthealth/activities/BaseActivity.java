@@ -1,7 +1,5 @@
 package com.example.smarthealth.activities;
 
-import static androidx.core.content.ContentProviderCompat.requireContext;
-
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -32,6 +30,7 @@ import com.example.smarthealth.Inventory.FoodScannerFragment;
 import com.example.smarthealth.Inventory.InventoryFragment;
 import com.example.smarthealth.MedicalCentreFinder.MapPageNavigation.MapClinicFinder;
 import com.example.smarthealth.R;
+import com.example.smarthealth.chatbot.ChatBotFragment;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,6 +40,7 @@ public class BaseActivity extends AppCompatActivity {
     private Map<View, Integer> unselectedIcons;
     private Map<View, View> iconViews;
     private Map<View, TextView> iconTexts;
+
     private Uri camUri;
     private final ActivityResultLauncher<Intent> cameraLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
         @Override
@@ -105,8 +105,8 @@ public class BaseActivity extends AppCompatActivity {
         TextView navbarInventoryText = findViewById(R.id.navbarInventoryText);
         TextView navbarMedbotText = findViewById(R.id.navbarMedBotText);
         TextView navbarUserText = findViewById(R.id.navbarUserText);
-        View navbarHospitalButton = findViewById(R.id.navbarHospitalBtn);
         AppCompatButton navbarCameraButton = findViewById(R.id.navbarCameraBtn);
+        View navbarHospitalButton = findViewById(R.id.navbarHospitalBtn);
 
         iconViews = new HashMap<>();
         iconViews.put(navbarHomeLayout, navbarHomeIcon);
@@ -134,8 +134,9 @@ public class BaseActivity extends AppCompatActivity {
 
         navbarHomeLayout.setOnClickListener(v -> handleNavbarClick(navbarHomeLayout, new HomeFragment()));
         navbarInventoryLayout.setOnClickListener(v -> handleNavbarClick(navbarInventoryLayout, new InventoryFragment()));
-        navbarMedbotLayout.setOnClickListener(v -> handleNavbarClick(navbarMedbotLayout, new HomeFragment()));
+        navbarMedbotLayout.setOnClickListener(v -> handleNavbarClick(navbarMedbotLayout, new ChatBotFragment()));
         navbarUserLayout.setOnClickListener(v -> handleNavbarClick(navbarUserLayout, new UserFragment()));
+
         navbarHospitalButton.setOnClickListener(view -> {
             // This is new method provided in API 28
             LocationManager lm = (LocationManager) getSystemService(Activity.LOCATION_SERVICE);
@@ -148,15 +149,12 @@ public class BaseActivity extends AppCompatActivity {
                 }
             }
         });
-
         navbarCameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 pickCamera();
             }
         });
-
-
     }
 
     private void handleNavbarClick(View selectedLayout, Fragment fragment) {
@@ -176,14 +174,12 @@ public class BaseActivity extends AppCompatActivity {
 
         loadFragment(fragment);
     }
-    // TODO 1: highlight current page icon.
     private void loadFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.fragmentContainer, fragment);
         transaction.commit();
     }
-
     private void pickCamera(){
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         ContentValues values = new ContentValues();
@@ -193,8 +189,4 @@ public class BaseActivity extends AppCompatActivity {
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT,camUri);
         cameraLauncher.launch(cameraIntent);
     }
-
-
-
-
 }
