@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "952655897866",
+    "project_id": "smarthealthvision-aede6",
+    "storage_bucket": "smarthealthvision-aede6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:952655897866:android:07ef8478bd7c11cbfc86f3",
+        "android_client_info": {
+          "package_name": "com.example.smarthealth"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtqvsg_kcQpLPEZSHWolx_yw63a2QSLzE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -29,7 +29,7 @@
 <!--            </intent-filter>-->
 
         <activity
-            android:name="com.example.smarthealth.CameraPage3"
+            android:name="com.example.smarthealth.CameraPage4"
             android:exported="true"
             android:label="Camera Page">
 
