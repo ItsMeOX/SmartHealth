@@ -14,12 +14,14 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.OvershootInterpolator;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.DialogFragment;
@@ -481,8 +483,10 @@ public class HomeFragment extends Fragment implements
 
         TextView popupTitleView = botSuggestionDialog.findViewById(R.id.suggestionPopupTitle);
         TextView popupDescView = botSuggestionDialog.findViewById(R.id.suggestionPopupDesc);
+        ImageView popupImageView = botSuggestionDialog.findViewById(R.id.suggestionPopupImage);
         popupTitleView.setText(botSuggestion.getTitle());
         popupDescView.setText(botSuggestion.getDescription());
+        popupImageView.setImageDrawable(AppCompatResources.getDrawable(requireContext(), botSuggestion.getImageId()));
 
         botSuggestionDialog.show();
     }

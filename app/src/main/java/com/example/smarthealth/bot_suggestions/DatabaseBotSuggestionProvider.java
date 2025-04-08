@@ -8,21 +8,25 @@ import java.util.List;
 public class DatabaseBotSuggestionProvider implements BotSuggestionProvider {
     @Override
     public List<BotSuggestion> getBotSuggestions() {
-        String[] titles = {"Increase Protein Intake", "Choose complex carbohydrates", "Stay hydrated"};
-        String[] descriptions = {"Increase in take of fish, chicken, eggs, tofu, legumes to...",
-                "Choose complex carbohydrates for example whole grains, vegetables to avoid sugar spikes. Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao." +
-                        "Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao."
-                        +"Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao."
-                        +"Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao."
-                        +"Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao."
-                        +"Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao."
-                        +"Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao."
-                        +"Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.",
-                "Drink more water, or herbal teas, soups to stay hydrated, because H2O make you human.",};
+        String[] titles = {
+                "Prioritize Healthy Fats",
+                "Eat More Fiber-Rich Foods",
+                "Balance Your Plate"
+        };
+        String[] descriptions = {
+               "Incorporate sources of healthy fats like avocados, nuts, seeds, and olive oil into your meals. These fats support brain function, hormone production, and help you stay full longer, reducing unhealthy snacking.",
+               "Aim to include plenty of fruits, vegetables, whole grains, and legumes in your daily diet. Fiber supports healthy digestion, keeps blood sugar levels stable, and promotes a feeling of fullness throughout the day.",
+               "Every meal should include a good mix of protein, carbs, healthy fats, and fiber. This balance helps maintain energy levels, improves metabolism, and prevents nutrient deficiencies. Think colorful and diverse when building your plate."
+        };
+        int[] imageIds = {
+                R.drawable.bot_suggestion_image_1,
+                R.drawable.bot_suggestion_image_2,
+                R.drawable.bot_suggestion_image_3
+        };
 
         List<BotSuggestion> botSuggestions = new ArrayList<>();
         for (int i = 0; i < titles.length; i++) {
-            botSuggestions.add(new BotSuggestion(titles[i], descriptions[i], R.drawable.bot_suggestion_image));
+            botSuggestions.add(new BotSuggestion(titles[i], descriptions[i], imageIds[i]));
         }
 
         return botSuggestions;
