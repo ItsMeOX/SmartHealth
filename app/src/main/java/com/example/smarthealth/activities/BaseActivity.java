@@ -21,6 +21,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.smarthealth.Inventory.InventoryFragment;
 import com.example.smarthealth.MedicalCentreFinder.MapPageNavigation.MapClinicFinder;
 import com.example.smarthealth.R;
+import com.example.smarthealth.chatbot.ChatBotFragment;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -101,7 +102,7 @@ public class BaseActivity extends AppCompatActivity {
 
         navbarHomeLayout.setOnClickListener(v -> handleNavbarClick(navbarHomeLayout, new HomeFragment()));
         navbarInventoryLayout.setOnClickListener(v -> handleNavbarClick(navbarInventoryLayout, new InventoryFragment()));
-        navbarMedbotLayout.setOnClickListener(v -> handleNavbarClick(navbarMedbotLayout, new HomeFragment()));
+        navbarMedbotLayout.setOnClickListener(v -> handleNavbarClick(navbarMedbotLayout, new ChatBotFragment()));
         navbarUserLayout.setOnClickListener(v -> handleNavbarClick(navbarUserLayout, new UserFragment()));
         navbarHospitalButton.setOnClickListener(view -> {
             // This is new method provided in API 28
