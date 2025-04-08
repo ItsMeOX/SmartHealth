@@ -1,26 +1,36 @@
 package com.example.smarthealth.activities;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.smarthealth.Inventory.FoodScannerFragment;
 import com.example.smarthealth.Inventory.InventoryFragment;
 import com.example.smarthealth.MedicalCentreFinder.MapPageNavigation.MapClinicFinder;
 import com.example.smarthealth.R;
+import com.example.smarthealth.chatbot.ChatBotFragment;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,6 +40,28 @@ public class BaseActivity extends AppCompatActivity {
     private Map<View, Integer> unselectedIcons;
     private Map<View, View> iconViews;
     private Map<View, TextView> iconTexts;
+
+    private Uri camUri;
+    private final ActivityResultLauncher<Intent> cameraLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        @Override
+        public void onActivityResult(ActivityResult result) {
+            if (result.getResultCode() == Activity.RESULT_OK) {
+                if (camUri != null) {
+                    Bundle res = new Bundle();
+                    res.putString("imageUri", camUri.toString());
+                    Fragment foodScannerFragment = new FoodScannerFragment();
+                    foodScannerFragment.setArguments(res);
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, foodScannerFragment)
+                            .addToBackStack(null).commit();
+
+                }
+                else{
+                    Toast.makeText(BaseActivity.this, "Popup not open!", Toast.LENGTH_SHORT).show();}
+            }
+            else {
+                Toast.makeText(BaseActivity.this, "No Image Selected", Toast.LENGTH_SHORT).show();}
+        }
+    });
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +105,7 @@ public class BaseActivity extends AppCompatActivity {
         TextView navbarInventoryText = findViewById(R.id.navbarInventoryText);
         TextView navbarMedbotText = findViewById(R.id.navbarMedBotText);
         TextView navbarUserText = findViewById(R.id.navbarUserText);
+        AppCompatButton navbarCameraButton = findViewById(R.id.navbarCameraBtn);
         View navbarHospitalButton = findViewById(R.id.navbarHospitalBtn);
 
         iconViews = new HashMap<>();
@@ -101,8 +134,9 @@ public class BaseActivity extends AppCompatActivity {
 
         navbarHomeLayout.setOnClickListener(v -> handleNavbarClick(navbarHomeLayout, new HomeFragment()));
         navbarInventoryLayout.setOnClickListener(v -> handleNavbarClick(navbarInventoryLayout, new InventoryFragment()));
-        navbarMedbotLayout.setOnClickListener(v -> handleNavbarClick(navbarMedbotLayout, new HomeFragment()));
+        navbarMedbotLayout.setOnClickListener(v -> handleNavbarClick(navbarMedbotLayout, new ChatBotFragment()));
         navbarUserLayout.setOnClickListener(v -> handleNavbarClick(navbarUserLayout, new UserFragment()));
+
         navbarHospitalButton.setOnClickListener(view -> {
             // This is new method provided in API 28
             LocationManager lm = (LocationManager) getSystemService(Activity.LOCATION_SERVICE);
@@ -113,6 +147,12 @@ public class BaseActivity extends AppCompatActivity {
                     Intent startMapClinicFinder = new Intent(BaseActivity.this, MapClinicFinder.class);
                     startActivity(startMapClinicFinder);
                 }
+            }
+        });
+        navbarCameraButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                pickCamera();
             }
         });
     }
@@ -134,11 +174,19 @@ public class BaseActivity extends AppCompatActivity {
 
         loadFragment(fragment);
     }
-    // TODO 1: highlight current page icon.
     private void loadFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.fragmentContainer, fragment);
         transaction.commit();
+    }
+    private void pickCamera(){
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.TITLE, "New Medicine");
+        values.put(MediaStore.Images.Media.DESCRIPTION, "Camera");
+        camUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT,camUri);
+        cameraLauncher.launch(cameraIntent);
     }
 }
