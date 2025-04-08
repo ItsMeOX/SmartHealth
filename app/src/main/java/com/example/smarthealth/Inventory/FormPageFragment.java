@@ -139,6 +139,50 @@ public class FormPageFragment extends DialogFragment {
             }
         });
 
+        // Get image uri from smartScan
+
+        Bundle res = getArguments();
+        if (res != null) {
+            String imageUri = res.getString("SmartScan");  // Retrieve the URI from the Bundle
+            if (imageUri != null) {
+                Uri camUri = Uri.parse(imageUri);  // Parse the URI string
+                Log.d("FormPageFragment", "Received image URI: " + camUri.toString());
+
+                // Retrieve Chatbot data
+                // Set the image to the ImageView
+                popupImageView = popupView.findViewById(R.id.image);
+                popupImageView.setImageURI(camUri);
+
+                EditText nameView = popupView.findViewById(R.id.formMediName);
+                String type = "Pills";
+                EditText amountView = popupView.findViewById(R.id.formMediAmount);
+                EditText dosageView = popupView.findViewById(R.id.formMediDosage);
+                EditText sideEffectView = popupView.findViewById(R.id.formMediSideEffect);
+                EditText containsView = popupView.findViewById(R.id.formMediContains);
+
+                nameView.setText(res.getString("Name"));
+                String amount = "555";
+                amountView.setText(amount);
+                String dosage = "3 Times a Day";
+                dosageView.setText(dosage);
+                String sideEffect = "Drowsy";
+                sideEffectView.setText(sideEffect);
+                String contains = "Paracetamol";
+                containsView.setText(contains);
+
+
+                // Hide the upload and camera buttons since the image is already set
+                Button uploadImageButton = popupView.findViewById(R.id.upload_image);
+                Button openCameraButton = popupView.findViewById(R.id.open_camera);
+                uploadImageButton.setVisibility(View.GONE);
+                openCameraButton.setVisibility(View.GONE);
+            } else {
+                Log.d("FormPageFragment", "Image URI is null in the Bundle");
+            }
+        }
+        else {
+            Log.d("FormPageFragment", "No data received in the Bundle");
+        }
 
         Button exitButton = popupView.findViewById(R.id.exit);
         exitButton.setOnClickListener(new View.OnClickListener() {
@@ -206,8 +250,8 @@ public class FormPageFragment extends DialogFragment {
 
                 // Pass corresponding parameters
                 if (mediName.isEmpty() || mediDosage.isEmpty() || amount.isEmpty() || mediSideEffect.isEmpty() ||
-                    mediContains.isEmpty() || imageView.getDrawable() == null || Integer.parseInt(amount) > 999
-                || Integer.parseInt(amount) <= 0) {
+                        mediContains.isEmpty() || imageView.getDrawable() == null || Integer.parseInt(amount) > 999
+                        || Integer.parseInt(amount) <= 0 || tagList.isEmpty()) {
                     if (mediName.isEmpty()) {
                         nameView.setError("Required");
                     }
@@ -231,6 +275,10 @@ public class FormPageFragment extends DialogFragment {
                     }
                     if(Integer.parseInt(amount) <= 0){
                         amountView.setError("Amount greater than 0");
+                    }
+
+                    if(tagList.isEmpty()){
+                        Toast.makeText(requireContext(), "Please select Tags!", Toast.LENGTH_SHORT).show();
                     }
 
                     return;
@@ -271,7 +319,7 @@ public class FormPageFragment extends DialogFragment {
             };
         });
 
-                return popupView;
+        return popupView;
     }
     private void showMultiSelectDialog(LinearLayout tagView, String[] items, boolean[] selectedItems, ArrayList<String> selectedTags) {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
