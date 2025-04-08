@@ -117,34 +117,30 @@ public class DatabaseNutrientIntakeProvider implements NutrientIntakeProvider {
     }
 
     @Override
-    public void updateNutrientIntake(ArrayList<Long> intakeId, ArrayList<Double> nutrientInfo, DatabaseNutrientIntakeProvider.OnIntakeUpdateCallback callback){
+    public void updateNutrientIntake(long userId, List<Double> nutrientInfo, DatabaseNutrientIntakeProvider.OnIntakeUpdateCallback callback){
         List<NutrientIntakeDto> intakeDtosToBeUpdated = new ArrayList<>();
-        intakeDtosToBeUpdated.add(new NutrientIntakeDto("g", 216, nutrientInfo.get(0), null, null));
-        intakeDtosToBeUpdated.add(new NutrientIntakeDto("g", 216, nutrientInfo.get(1), null, null));
-        intakeDtosToBeUpdated.add(new NutrientIntakeDto("g", 82, nutrientInfo.get(2), null, null));
-        intakeDtosToBeUpdated.add(new NutrientIntakeDto("g", 30, nutrientInfo.get(3), null, null));
-        intakeDtosToBeUpdated.add(new NutrientIntakeDto("g", 25, nutrientInfo.get(4), null, null));
-        intakeDtosToBeUpdated.add(new NutrientIntakeDto("g", 1.5, nutrientInfo.get(5), null, null));
+        intakeDtosToBeUpdated.add(new NutrientIntakeDto("g", 216, nutrientInfo.get(0), "Carbs", userId));
+        intakeDtosToBeUpdated.add(new NutrientIntakeDto("g", 216, nutrientInfo.get(1), "Proteins", userId));
+        intakeDtosToBeUpdated.add(new NutrientIntakeDto("g", 82, nutrientInfo.get(2), "Fats", userId));
+        intakeDtosToBeUpdated.add(new NutrientIntakeDto("g", 30, nutrientInfo.get(3), "Fibre", userId));
+        intakeDtosToBeUpdated.add(new NutrientIntakeDto("g", 25, nutrientInfo.get(4), "Sugars", userId));
+        intakeDtosToBeUpdated.add(new NutrientIntakeDto("g", 1.5, nutrientInfo.get(5), "Sodium", userId));
 
-        final int[] successfulUpdates = {0};
-        final int totalInserts = intakeDtosToBeUpdated.size();
+        Call<List<NutrientIntakeDto>> call = nutrientIntakeService.updateUserNutrientIntakes(userId, intakeDtosToBeUpdated);
 
-        for(int i = 0; i < intakeDtosToBeUpdated.size(); i++){
-            Call<NutrientIntakeDto> call = nutrientIntakeService.updateNutrientIntake(intakeId.get(i), intakeDtosToBeUpdated.get(i));
-            call.enqueue(new Callback<NutrientIntakeDto>() {
-                @Override
-                public void onResponse(Call<NutrientIntakeDto> call, Response<NutrientIntakeDto> response) {
-                    successfulUpdates[0]++;
-                    if(successfulUpdates[0] == totalInserts) {
-                        callback.onIntakeUpdate(true);
-                    }
-                }
-                @Override
-                public void onFailure(Call<NutrientIntakeDto> call, Throwable t) {
-                    callback.onIntakeUpdate(false);
-                }
-            });
-        }
+        call.enqueue(new Callback<List<NutrientIntakeDto>>() {
+            @Override
+            public void onResponse(Call<List<NutrientIntakeDto>> call, Response<List<NutrientIntakeDto>> response) {
+                callback.onIntakeUpdate(true);
+                Log.d("debug", "we updated guys!!!");
+            }
+            @Override
+            public void onFailure(Call<List<NutrientIntakeDto>> call, Throwable t) {
+                callback.onIntakeUpdate(false);
+                Log.d("debug", "we died already!");
+            }
+        });
+
     }
 
     public interface OnDataLoadedCallback {

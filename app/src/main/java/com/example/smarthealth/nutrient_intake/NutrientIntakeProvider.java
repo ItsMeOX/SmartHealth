@@ -13,5 +13,5 @@ public interface NutrientIntakeProvider {
     // void hasUserIntake(long userId, DatabaseNutrientIntakeProvider.OnIntakeCheckCallback callback);
     List<NutrientIntake> getNutrientIntakes(long userId, DatabaseNutrientIntakeProvider.OnDataLoadedCallback onDataLoadedCallback);
     void initializeNutrientIntake(long userId, DatabaseNutrientIntakeProvider.OnIntakeAddedCallback callback);
-    void updateNutrientIntake(ArrayList<Long> intakeId, ArrayList<Double> nutrientInfo, DatabaseNutrientIntakeProvider.OnIntakeUpdateCallback callback);
+    void updateNutrientIntake(long userId, List<Double> nutrientInfo, DatabaseNutrientIntakeProvider.OnIntakeUpdateCallback callback);
 }
