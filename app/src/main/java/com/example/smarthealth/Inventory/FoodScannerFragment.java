@@ -1,7 +1,9 @@
 package com.example.smarthealth.Inventory;
 
+import static android.content.Context.MODE_PRIVATE;
 import static com.example.smarthealth.chatbot.ChatBotFragment.JSON;
 
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
@@ -20,6 +22,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.smarthealth.R;
+import com.example.smarthealth.nutrient_intake.DatabaseNutrientIntakeProvider;
 import com.google.android.material.button.MaterialButton;
 
 import org.json.JSONArray;
@@ -28,6 +31,8 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -39,12 +44,17 @@ import okhttp3.Response;
 public class FoodScannerFragment extends DialogFragment {
 
     private ImageView foodImage;
-
+    private long userId;
+    private SharedPreferences sharedPreferences;
     OkHttpClient client = new OkHttpClient();
     @Override
     @Nullable
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
         View popupView = inflater.inflate(R.layout.food_scan, null);
+
+        sharedPreferences = getActivity().getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        userId = sharedPreferences.getLong("userId", -1);
+        Log.d("User_ID", "current User_ID: " + userId);
 
         foodImage = popupView.findViewById(R.id.foodImage);
         Bundle res = getArguments();
@@ -65,8 +75,26 @@ public class FoodScannerFragment extends DialogFragment {
                     // Convert drawable to byte array
                     byte[] foodByteArray = drawableToByteArray(foodImage.getDrawable());
                     String base64String = Base64.encodeToString(foodByteArray, Base64.DEFAULT);
-                    callAPI(base64String);
-                    // Update database
+                    callAPI(base64String, new OnNutrientParsedCallback() {
+                        @Override
+                        public void onParsed(List<Double> nutrientValues) {
+                            if (nutrientValues != null) {
+                                DatabaseNutrientIntakeProvider dbProvider = new DatabaseNutrientIntakeProvider();
+                                dbProvider.updateNutrientIntake(userId, nutrientValues, new DatabaseNutrientIntakeProvider.OnIntakeUpdateCallback() {
+                                    @Override
+                                    public void onIntakeUpdate(boolean success) {
+                                        if(success){
+                                            Log.d("debug", "nutrient intake added!");
+                                        } else {
+                                            Log.d("debug", "nutrient intake failed!");
+                                        }
+                                    }
+                                });
+                            } else {
+                                Log.d("debug", "Die!");
+                            }
+                        }
+                    });
                 }
 
                 dismiss();
@@ -77,10 +105,7 @@ public class FoodScannerFragment extends DialogFragment {
         return popupView;
     }
 
-
-
-
-    void callAPI(String base64Image) {
+    private void callAPI(String base64Image, OnNutrientParsedCallback callback) {
         //okhttp'
 //        String image_result = "";
         ChatBotImageFood chatBotImageFood = new ChatBotImageFood(base64Image);
@@ -106,15 +131,27 @@ public class FoodScannerFragment extends DialogFragment {
                     try {
                         jsonObject = new JSONObject(response.body().string());
                         Log.d("debug", jsonObject.toString());
-
                         JSONArray outputArray = jsonObject.getJSONArray("output");
+                        Log.d("debug", outputArray + "");
                         JSONObject messageObject = outputArray.getJSONObject(0);
+                        Log.d("debug", messageObject + "");
                         JSONArray contentArray = messageObject.getJSONArray("content");
-                        String image_result = contentArray.getJSONObject(0).getString("text");
-                        Log.d("Response", image_result.trim());
+                        Log.d("debug", contentArray + "");
+                        JSONObject image_result = contentArray.getJSONObject(0).getString();
+                        Log.d("debug", image_result + "");
+
+                        List<Double> nutrients = new ArrayList<>();
+                        nutrients.add(Double.parseDouble(jsonObject.getString("Carbs")));
+                        nutrients.add(Double.parseDouble(jsonObject.getString("Proteins")));
+                        nutrients.add(Double.parseDouble(jsonObject.getString("Fats")));
+                        nutrients.add(Double.parseDouble(jsonObject.getString("Fibre")));
+                        nutrients.add(Double.parseDouble(jsonObject.getString("Sugars")));
+                        nutrients.add(Double.parseDouble(jsonObject.getString("Sodium")));
+                        callback.onParsed(nutrients);
                     } catch (JSONException e) {
                         e.printStackTrace();
                         Log.d("debug", "Failed to load Json File due to " + e.getMessage());
+                        callback.onParsed(null);
                     }
                 } else {
                     Log.d("debug", "Failed to load response due to " + response.body().toString());
@@ -145,5 +182,9 @@ public class FoodScannerFragment extends DialogFragment {
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
         return stream.toByteArray();
     }
-
+    public interface OnNutrientParsedCallback {
+        void onParsed(List<Double> nutrientValues);
+    }
 }
+
+
