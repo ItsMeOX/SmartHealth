@@ -19,6 +19,8 @@ import com.example.smarthealth.R;
 import com.google.android.material.button.MaterialButton;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 public class FoodScannerFragment extends DialogFragment {
 
@@ -35,6 +37,11 @@ public class FoodScannerFragment extends DialogFragment {
             if(imageUri != null){
                 // Set image uri in the image view
                 foodImage.setImageURI(Uri.parse(imageUri));
+
+
+                Uri food = Uri.parse(imageUri);
+                byte[] foodByte = uriToByteArray(food);
+
             }
         }
 
@@ -78,5 +85,23 @@ public class FoodScannerFragment extends DialogFragment {
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
         return stream.toByteArray();
     }
+
+    public Drawable uriToDrawable(Uri uri) {
+        try {
+            // Get the InputStream from the Uri
+            InputStream inputStream = getContext().getContentResolver().openInputStream(uri);
+
+            // Decode the InputStream into a Drawable
+            return Drawable.createFromStream(inputStream, uri.toString());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null; // Return null if there's an error
+    }
+    public byte[] uriToByteArray(Uri uri){
+        Drawable draw = uriToDrawable(uri);
+        return drawableToByteArray(draw);
+    }
+
 
 }

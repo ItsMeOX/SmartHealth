@@ -2,12 +2,18 @@ package com.example.smarthealth.Inventory;
 
 import static android.content.Context.MODE_PRIVATE;
 
+import android.app.Activity;
+import android.content.ContentValues;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +22,10 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -31,6 +41,9 @@ import com.example.smarthealth.api_service.MedicineDto;
 import com.example.smarthealth.api_service.MedicineService;
 import com.example.smarthealth.api_service.RetrofitClient;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -56,6 +69,32 @@ public class InventoryFragment extends Fragment {
     private MedicineService medicineService;
     private SharedPreferences sharedPreferences;
     private long userId;
+    private Uri camUri;
+    private final ActivityResultLauncher<Intent> cameraLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        @Override
+        public void onActivityResult(ActivityResult result) {
+            if (result.getResultCode() == Activity.RESULT_OK) {
+                if (camUri != null) {
+//                    byte[] medicineByteArray = uriToByteArray(camUri);
+                    // Send to chatbot;
+                    // Bundle Uri
+                    Bundle res = new Bundle();
+                    res.putString("SmartScan", camUri.toString());
+                    res.putString("Name", "OngXuan");
+
+                    FormPageFragment formDialog = new FormPageFragment();
+                    formDialog.setArguments(res);
+                    formDialog.show(getParentFragmentManager(), "Smart Scan");
+                }
+                else{
+                    Toast.makeText(requireContext(), "Popup not open!", Toast.LENGTH_SHORT).show();}
+            }
+            else {
+                Toast.makeText(requireContext(), "No Image Selected", Toast.LENGTH_SHORT).show();}
+        }
+    });
+
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -165,13 +204,8 @@ public class InventoryFragment extends Fragment {
         smartScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Add placeholder medicine to pills category
-                ArrayList<String> list = new ArrayList<>();
-                list.add("Cough");
-                addMedicineToLayout(100L, "Pills","PlaceHolder", 100,
-                        ContextCompat.getDrawable(requireContext(), R.drawable.app_logo),"1 tab per day",
-                        "Paracetamol","Drowsy",list);
-                Toast.makeText(requireContext(), "New Pill Added", Toast.LENGTH_SHORT).show();
+                pickCamera();
+
             }
         });
 
@@ -282,6 +316,60 @@ public class InventoryFragment extends Fragment {
         }
         return null;
     }
+
+    private void pickCamera(){
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.TITLE, "New Medicine");
+        values.put(MediaStore.Images.Media.DESCRIPTION, "Camera");
+        camUri = requireContext().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT,camUri);
+        cameraLauncher.launch(cameraIntent);
+    }
+
+    public Drawable uriToDrawable(Uri uri) {
+        try {
+            // Get the InputStream from the Uri
+            InputStream inputStream = getContext().getContentResolver().openInputStream(uri);
+
+            // Decode the InputStream into a Drawable
+            return Drawable.createFromStream(inputStream, uri.toString());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null; // Return null if there's an error
+    }
+    public byte[] uriToByteArray(Uri uri){
+        Drawable draw = uriToDrawable(uri);
+        return drawableToByteArray(draw);
+    }
+
+    private byte[] drawableToByteArray(Drawable drawable) {
+        if (drawable == null) return null;
+
+        Bitmap bitmap;
+        if (drawable instanceof BitmapDrawable) {
+            bitmap = ((BitmapDrawable) drawable).getBitmap();
+        } else {
+            bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
+                    drawable.getIntrinsicHeight(),
+                    Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(bitmap);
+            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+            drawable.draw(canvas);
+        }
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        return stream.toByteArray();
+    }
+
+    private void smartScanDialog(boolean data){
+
+
+    }
+
+
 }
 
 
