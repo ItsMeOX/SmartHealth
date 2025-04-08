@@ -1,11 +1,15 @@
 package com.example.smarthealth.Inventory;
 
+import static com.example.smarthealth.chatbot.ChatBotFragment.JSON;
+
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,11 +22,25 @@ import androidx.fragment.app.DialogFragment;
 import com.example.smarthealth.R;
 import com.google.android.material.button.MaterialButton;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class FoodScannerFragment extends DialogFragment {
 
     private ImageView foodImage;
+
+    OkHttpClient client = new OkHttpClient();
     @Override
     @Nullable
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
@@ -46,7 +64,8 @@ public class FoodScannerFragment extends DialogFragment {
                 if(foodImage.getDrawable() != null){
                     // Convert drawable to byte array
                     byte[] foodByteArray = drawableToByteArray(foodImage.getDrawable());
-                    // Pass to chatbot
+                    String base64String = Base64.encodeToString(foodByteArray, Base64.DEFAULT);
+                    callAPI(base64String);
                     // Update database
                 }
 
@@ -56,6 +75,54 @@ public class FoodScannerFragment extends DialogFragment {
 
 
         return popupView;
+    }
+
+
+
+
+    void callAPI(String base64Image) {
+        //okhttp'
+//        String image_result = "";
+        ChatBotImageFood chatBotImageFood = new ChatBotImageFood(base64Image);
+        JSONObject jsonBody = chatBotImageFood.getPrompt();
+        RequestBody body = RequestBody.create(jsonBody.toString(), JSON);
+        Request request = new Request.Builder()
+                .url(chatBotImageFood.getAPI_URL())
+                .header("Authorization", "Bearer " + chatBotImageFood.getAPI_Key())
+                .post(body)
+                .build();
+
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.d("Request Error", "Failed to load response due to " + e.getMessage());
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    JSONObject jsonObject = null;
+                    try {
+                        jsonObject = new JSONObject(response.body().string());
+                        Log.d("debug", jsonObject.toString());
+
+                        JSONArray outputArray = jsonObject.getJSONArray("output");
+                        JSONObject messageObject = outputArray.getJSONObject(0);
+                        JSONArray contentArray = messageObject.getJSONArray("content");
+                        String image_result = contentArray.getJSONObject(0).getString("text");
+                        Log.d("Response", image_result.trim());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Log.d("debug", "Failed to load Json File due to " + e.getMessage());
+                    }
+                } else {
+                    Log.d("debug", "Failed to load response due to " + response.body().toString());
+                    String errorBody = response.body() != null ? response.body().string() : "No response body";
+                    Log.d("Failed to load the Response File ", errorBody);
+                }
+            }
+        });
     }
 
 
