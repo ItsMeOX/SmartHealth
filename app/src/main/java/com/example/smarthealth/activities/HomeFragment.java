@@ -35,6 +35,7 @@ import com.example.smarthealth.R;
 import com.example.smarthealth.api_service.AuthService;
 import com.example.smarthealth.api_service.NutrientIntakeDto;
 import com.example.smarthealth.api_service.ProfileService;
+import com.example.smarthealth.api_service.UpcomingScheduleService;
 import com.example.smarthealth.api_service.RetrofitClient;
 import com.example.smarthealth.api_service.UserDto;
 import com.example.smarthealth.bot_suggestions.BotSuggestion;
@@ -54,6 +55,7 @@ import com.example.smarthealth.upcoming_schedule.DatabaseUpcomingScheduleProvide
 import com.example.smarthealth.upcoming_schedule.UpcomingSchedule;
 import com.example.smarthealth.upcoming_schedule.UpcomingScheduleAdapter;
 import com.example.smarthealth.upcoming_schedule.UpcomingScheduleProvider;
+import com.google.android.material.button.MaterialButton;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -87,8 +89,7 @@ public class HomeFragment extends Fragment implements
     private SharedPreferences sharedPreferences;
     private long userId;
     private ProfileService profileService;
-
-    private AppCompatButton userBtn;
+    private UpcomingScheduleService upcomingScheduleService;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -97,6 +98,7 @@ public class HomeFragment extends Fragment implements
         sharedPreferences = getActivity().getSharedPreferences("MyPrefs", MODE_PRIVATE);
         userId = sharedPreferences.getLong("userId", -1);
         profileService = RetrofitClient.getInstance().create(ProfileService.class);
+        upcomingScheduleService = RetrofitClient.getInstance().create(UpcomingScheduleService.class);
 
         calendarEventProvider = new DatabaseCalendarEventProvider();
         nutrientIntakeProvider = new DatabaseNutrientIntakeProvider(requireContext());
@@ -115,7 +117,6 @@ public class HomeFragment extends Fragment implements
         setNutrientIntakeView();
         setUpcomingSchedules();
         setBotSuggestionsView();
-        //setUserBtnView();
 
         return view;
     }
@@ -501,32 +502,28 @@ public class HomeFragment extends Fragment implements
         }
 
         TextView titleView = dialog.findViewById(R.id.upcomingSchedulePopupTitle);
+
         titleView.setText(schedule.getScheduleTitle());
+
+        MaterialButton takenButton = dialog.findViewById(R.id.takenButton);
+        takenButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Call<String> call = upcomingScheduleService.takeMedicine(schedule.getId());
+                call.enqueue(new Callback<String>() {
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+                        Log.d("debug", "we can take it!!!");
+                    }
+
+                    @Override
+                    public void onFailure(Call<String> call, Throwable t) {
+                        Log.d("debug", "we cannot take it!!! idk why" + t.getMessage());
+                    }
+                });
+            }
+        });
+
         dialog.show();
     }
-//    public void setUserBtnView(){
-//        userBtn = view.findViewById(R.id.userBtn);
-//
-//        Call<UserDto> call = profileService.getUserById(userId);
-//
-//        call.enqueue(new Callback<UserDto>() {
-//            @Override
-//            public void onResponse(Call<UserDto> call, Response<UserDto> response) {
-//                if(response.isSuccessful() && response.body() != null){
-//                    UserDto user = response.body();
-//                    userBtn.setText(Character.toUpperCase(user.getFullName().charAt(0)));
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<UserDto> call, Throwable t) {
-//                Log.d("UserCall", t.getMessage());
-//                if (isAdded() && getActivity() != null) {
-//                    Toast.makeText(getActivity(), "Failed to load user", Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        });
-//    }
-
-
 }

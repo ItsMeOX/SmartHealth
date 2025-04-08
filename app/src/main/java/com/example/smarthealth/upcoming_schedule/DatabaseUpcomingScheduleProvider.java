@@ -45,8 +45,8 @@ public class DatabaseUpcomingScheduleProvider implements UpcomingScheduleProvide
             public void onResponse(Call<List<UpcomingScheduleDto>> call, Response<List<UpcomingScheduleDto>> response) {
                 if(response.isSuccessful() && response.body() != null){
                     for(UpcomingScheduleDto schedule : response.body()){
-
                         UpcomingSchedule upcomingSchedule = new UpcomingSchedule(
+                                schedule.getId(),
                                 schedule.getScheduleTitle(),
                                 schedule.getScheduleDescription(),
                                 schedule.isTaken(),

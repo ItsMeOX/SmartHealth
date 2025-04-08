@@ -38,13 +38,13 @@ public class BaseActivity extends AppCompatActivity {
         SharedPreferences preferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
         boolean isLoggedIn = preferences.getBoolean("isLoggedIn", false);
 
-//        if (!isLoggedIn) {
-//            // Redirect to LoginActivity
-//            Intent intent = new Intent(this,LoginActivity.class);
-//            startActivity(intent);
-//            finish();
-//            return;
-//        }
+        if (!isLoggedIn) {
+            // Redirect to LoginActivity
+            Intent intent = new Intent(this,LoginActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
 
         setContentView(R.layout.base_activity);
         if (getSupportActionBar() != null) {

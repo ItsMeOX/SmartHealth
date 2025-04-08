@@ -33,4 +33,9 @@ public interface UpcomingScheduleService {
     Call<String> deleteSchedule(
             @Path("scheduleId") long scheduleId
     );
+
+    @PUT("schedules/take/{scheduleId}")
+    Call<String> takeMedicine(
+            @Path("scheduleId") long scheduleId
+    );
 }
