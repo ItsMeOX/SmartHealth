@@ -143,7 +143,7 @@ public class FormPageFragment extends DialogFragment {
 
         Bundle res = getArguments();
         if (res != null) {
-            String imageUri = res.getString("SmartScan");  // Retrieve the URI from the Bundle
+            String imageUri = res.getString("ImageString");  // Retrieve the URI from the Bundle
             if (imageUri != null) {
                 Uri camUri = Uri.parse(imageUri);  // Parse the URI string
                 Log.d("FormPageFragment", "Received image URI: " + camUri.toString());
@@ -154,22 +154,32 @@ public class FormPageFragment extends DialogFragment {
                 popupImageView.setImageURI(camUri);
 
                 EditText nameView = popupView.findViewById(R.id.formMediName);
-                String type = "Pills";
                 EditText amountView = popupView.findViewById(R.id.formMediAmount);
                 EditText dosageView = popupView.findViewById(R.id.formMediDosage);
-                EditText sideEffectView = popupView.findViewById(R.id.formMediSideEffect);
                 EditText containsView = popupView.findViewById(R.id.formMediContains);
+                EditText sideEffectView = popupView.findViewById(R.id.formMediSideEffect);
 
                 nameView.setText(res.getString("Name"));
-                String amount = "555";
-                amountView.setText(amount);
-                String dosage = "3 Times a Day";
-                dosageView.setText(dosage);
-                String sideEffect = "Drowsy";
-                sideEffectView.setText(sideEffect);
-                String contains = "Paracetamol";
-                containsView.setText(contains);
+                String category = res.getString("Category");
+                String amountml = res.getString("Amountml");
+                String amountPill = res.getString("Amountpill");
+                if(category.equals("Pills")){
+                    amountView.setText(amountPill);
+                }
+                else if(category.equals("Liquids")){
+                    amountView.setText(amountml);
+                }
+//                ArrayList<String> tags = res.getStringArrayList("Tags");
+                ArrayList<String> contains = res.getStringArrayList("Contains");
+                String joinedString = String.join(", ", contains);
+                containsView.setText(joinedString);
 
+                String dosage = res.getString("Dosage");
+                dosageView.setText(dosage);
+
+                ArrayList<String> sideEffect = res.getStringArrayList("SideEffect");
+                String sideEffectString = String.join(", ", sideEffect);
+                sideEffectView.setText(sideEffectString);
 
                 // Hide the upload and camera buttons since the image is already set
                 Button uploadImageButton = popupView.findViewById(R.id.upload_image);

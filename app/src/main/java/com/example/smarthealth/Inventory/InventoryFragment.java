@@ -80,6 +80,7 @@ public class InventoryFragment extends Fragment {
     private MedicineService medicineService;
     private SharedPreferences sharedPreferences;
     private long userId;
+    private Bundle res;
     private Uri camUri;
     private final ActivityResultLauncher<Intent> cameraLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
 
@@ -90,17 +91,12 @@ public class InventoryFragment extends Fragment {
             if (result.getResultCode() == Activity.RESULT_OK) {
                 if (camUri != null) {
                     byte[] medicineByteArray = uriToByteArray(camUri);
+                    res = new Bundle();
+                    res.putString("ImageString", camUri.toString());
                     String base64String = Base64.encodeToString(medicineByteArray, Base64.DEFAULT);
                     callAPI(base64String);
 
-                    // Bundle Uri
-                    Bundle res = new Bundle();
-                    res.putString("SmartScan", camUri.toString());
-                    res.putString("Name", "OngXuan");
 
-                    FormPageFragment formDialog = new FormPageFragment();
-                    formDialog.setArguments(res);
-                    formDialog.show(getParentFragmentManager(), "Smart Scan");
                 }
                 else{
                     Toast.makeText(requireContext(), "Popup not open!", Toast.LENGTH_SHORT).show();}
@@ -138,18 +134,41 @@ public class InventoryFragment extends Fragment {
                             JSONObject messageObject = outputArray.getJSONObject(0);
                             JSONArray contentArray = messageObject.getJSONArray("content");
                             String image_result = contentArray.getJSONObject(0).getString("text");
-                            Log.d("Response For Medicine Image", image_result);
-//                            {"name":"Metoclopramide","amount":"10mg, 10 tablets","treatment":["Vomiting","Giddiness"],"recommended_dosage":"1 tablet 3 times a day, half an hour before food","contains":["Metoclopramide"],"side_effects":["Drowsiness"]}
-//
-//                            JSONObject object = new JSONObject(image_result);
-//                            List<Double> nutrients = new ArrayList<>();
-//                            nutrients.add(Double.parseDouble(object.getString("Carbs")));
-//                            nutrients.add(Double.parseDouble(object.getString("Proteins")));
-//                            nutrients.add(Double.parseDouble(object.getString("Fats")));
-//                            nutrients.add(Double.parseDouble(object.getString("Fibre")));
-//                            nutrients.add(Double.parseDouble(object.getString("Sugars")));
-//                            nutrients.add(Double.parseDouble(object.getString("Sodium")));
-//                            callback.onParsed(nutrients);
+                            Log.d("GPT Response For Medicine Image", image_result);
+//                            {"name":"Metoclopramide","category":"Pills","amount_pill":"10","amount_ml":"0","treatment":["Vomiting","Giddiness"],"recommended_dosage":"1 tablet 3 times a day","contains":["Metoclopramide"],"side_effects":["Drowsiness"]}//
+                            JSONObject object = new JSONObject(image_result);
+
+                            res.putString("Name",object.getString("name"));
+                            res.putString("Category",object.getString("category"));
+                            res.putString("Amountpill",object.getString("amount_pill"));
+                            res.putString("Amountml",object.getString("amount_ml"));
+                            JSONArray tags = object.getJSONArray("treatment");
+                            ArrayList<String> tagList = new ArrayList<>();
+                            for (int i = 0; i < tags.length(); i++) {
+                                tagList.add(tags.getString(i));
+                            }
+                            res.putStringArrayList("Tags",tagList);
+                            res.putString("Dosage", object.getString("recommended_dosage"));
+
+                            JSONArray contains = object.getJSONArray("contains");
+                            ArrayList<String> containsList = new ArrayList<>();
+                            for (int i = 0; i < contains.length(); i++) {
+                                containsList.add(contains.getString(i));
+                            }
+                            res.putStringArrayList("Contains",containsList);
+
+                            JSONArray sideEffect = object.getJSONArray("side_effects");
+                            ArrayList<String> sideEffectList = new ArrayList<>();
+                            for (int i = 0; i < sideEffect.length(); i++) {
+                                sideEffectList.add(sideEffect.getString(i));
+                            }
+                            res.putStringArrayList("SideEffect",sideEffectList);
+
+                            FormPageFragment formDialog = new FormPageFragment();
+                            formDialog.setArguments(res);
+                            formDialog.show(getParentFragmentManager(), "Smart Scan");
+
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                             Log.d("Debug", "Failed to load Json File due to " + e.getMessage());
@@ -163,6 +182,10 @@ public class InventoryFragment extends Fragment {
             });
         }
     });
+
+    public interface OnMedicineParsedCallBack {
+        void onParsed(List<Double> medicineValues);
+    }
 
 
 

@@ -72,7 +72,6 @@ public class FormHistoryFragment extends DialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         setStyle(DialogFragment.STYLE_NO_TITLE, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
-
         medicineService = RetrofitClient.getInstance().create(MedicineService.class);
         sharedPreferences = getActivity().getSharedPreferences("MyPrefs", MODE_PRIVATE);
         userId = sharedPreferences.getLong("userId", -1);
