@@ -3,7 +3,7 @@ package com.example.smarthealth.api_service;
 import java.util.Calendar;
 
 public class NutrientIntakeDto {
-    private Long id;
+    private Long intakeId;
     private String nutrientName;
     private double currentNutrient;
     private double totalNutrient;
@@ -19,11 +19,11 @@ public class NutrientIntakeDto {
     }
 
     public Long getId() {
-        return id;
+        return intakeId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setId(Long intakeId) {
+        this.intakeId = intakeId;
     }
 
     public String getNutrientName() {

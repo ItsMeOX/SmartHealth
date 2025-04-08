@@ -6,6 +6,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
@@ -28,5 +29,11 @@ public interface NutrientIntakeService {
     @GET("nutrient-intake/{userId}/exists")
     Call<Boolean> checkIfUserHasIntakes(
             @Path("userId") long userId
+    );
+
+    @PATCH("nutrient-intake/{intakeId}")
+    Call<NutrientIntakeDto> updateNutrientIntake(
+            @Path("intakeId") long intakeId,
+            @Body NutrientIntakeDto nutrientIntakeDto
     );
 }

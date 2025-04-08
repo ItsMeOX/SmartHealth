@@ -21,6 +21,7 @@ import com.example.smarthealth.nutrient_intake.units.MassUnit;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Call;
@@ -28,14 +29,13 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class DatabaseNutrientIntakeProvider implements NutrientIntakeProvider {
-    private NutrientIntakeService nutrientIntakeService ;
+    private NutrientIntakeService nutrientIntakeService;
     public DatabaseNutrientIntakeProvider() {
         nutrientIntakeService = RetrofitClient.getInstance().create(NutrientIntakeService.class);
     }
 
     @Override
     public List<NutrientIntake> getNutrientIntakes(long userId, OnDataLoadedCallback callback) {
-        // TODO: to be connected to database by Tristan + AI by Haile.
         List<NutrientIntake> res = new ArrayList<>();
 
         Call<List<NutrientIntakeDto>> call = nutrientIntakeService.getUserDailyEvents(userId);
@@ -59,7 +59,9 @@ public class DatabaseNutrientIntakeProvider implements NutrientIntakeProvider {
                         } else if (nutrientIntakeDto.getNutrientName().equals("Sodium")){
                             nutrientIconId = R.drawable.nutrient_sodium;
                         }
-                        NutrientIntake nutrientIntake = new NutrientIntake(nutrientIntakeDto.getNutrientName(),
+                        NutrientIntake nutrientIntake = new NutrientIntake(
+                                nutrientIntakeDto.getId(),
+                                nutrientIntakeDto.getNutrientName(),
                                 nutrientIconId,
                                 nutrientIntakeDto.getCurrentNutrient(),
                                 nutrientIntakeDto.getTotalNutrient(),
@@ -74,13 +76,6 @@ public class DatabaseNutrientIntakeProvider implements NutrientIntakeProvider {
             public void onFailure(Call<List<NutrientIntakeDto>> call, Throwable t) {
             }
         });
-
-//        res.add(new NutrientIntake("Carbs", R.drawable.nutrient_carb, 50.2, 216.0, MassUnit.GRAM));
-//        res.add(new NutrientIntake("Proteins", R.drawable.nutrient_protein, 46.3, 216.0, MassUnit.GRAM));
-//        res.add(new NutrientIntake("Fats", R.drawable.nutrient_fat, 92.2, 82.0, MassUnit.GRAM));
-//        res.add(new NutrientIntake("Fibre", R.drawable.nutrient_fibre, 15.0, 30.0, MassUnit.GRAM));
-//        res.add(new NutrientIntake("Sugars", R.drawable.nutrient_sugar, 12.5, 25.0, MassUnit.GRAM));
-//        res.add(new NutrientIntake("Sodium", R.drawable.nutrient_sodium, 0.9, 1.5, MassUnit.GRAM));
         return res;
     }
 
@@ -121,15 +116,46 @@ public class DatabaseNutrientIntakeProvider implements NutrientIntakeProvider {
         }
     }
 
+    @Override
+    public void updateNutrientIntake(ArrayList<Long> intakeId, ArrayList<Double> nutrientInfo, DatabaseNutrientIntakeProvider.OnIntakeUpdateCallback callback){
+        List<NutrientIntakeDto> intakeDtosToBeUpdated = new ArrayList<>();
+        intakeDtosToBeUpdated.add(new NutrientIntakeDto("g", 216, nutrientInfo.get(0), null, null));
+        intakeDtosToBeUpdated.add(new NutrientIntakeDto("g", 216, nutrientInfo.get(1), null, null));
+        intakeDtosToBeUpdated.add(new NutrientIntakeDto("g", 82, nutrientInfo.get(2), null, null));
+        intakeDtosToBeUpdated.add(new NutrientIntakeDto("g", 30, nutrientInfo.get(3), null, null));
+        intakeDtosToBeUpdated.add(new NutrientIntakeDto("g", 25, nutrientInfo.get(4), null, null));
+        intakeDtosToBeUpdated.add(new NutrientIntakeDto("g", 1.5, nutrientInfo.get(5), null, null));
+
+        final int[] successfulUpdates = {0};
+        final int totalInserts = intakeDtosToBeUpdated.size();
+
+        for(int i = 0; i < intakeDtosToBeUpdated.size(); i++){
+            Call<NutrientIntakeDto> call = nutrientIntakeService.updateNutrientIntake(intakeId.get(i), intakeDtosToBeUpdated.get(i));
+            call.enqueue(new Callback<NutrientIntakeDto>() {
+                @Override
+                public void onResponse(Call<NutrientIntakeDto> call, Response<NutrientIntakeDto> response) {
+                    successfulUpdates[0]++;
+                    if(successfulUpdates[0] == totalInserts) {
+                        callback.onIntakeUpdate(true);
+                    }
+                }
+                @Override
+                public void onFailure(Call<NutrientIntakeDto> call, Throwable t) {
+                    callback.onIntakeUpdate(false);
+                }
+            });
+        }
+    }
+
     public interface OnDataLoadedCallback {
         void onDataLoaded(List<NutrientIntake> nutrientIntakes);
     }
 
-//    public interface OnIntakeCheckCallback {
-//        void onIntakeChecked(boolean hasIntake);
-//    }
-
     public interface OnIntakeAddedCallback {
         void onIntakeAdded(boolean success);
+    }
+
+    public interface OnIntakeUpdateCallback{
+        void onIntakeUpdate(boolean success);
     }
 }

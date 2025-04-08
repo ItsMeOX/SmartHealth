@@ -74,7 +74,6 @@ public class FormPageFragment extends DialogFragment {
             if (result.getResultCode() == requireActivity().RESULT_OK && result.getData() != null) {
                 Uri imageUri = result.getData().getData();
                 if (popupImageView != null) {
-                    // Update the popup's ImageView
                     popupImageView.setImageURI(imageUri);
                     uploadImageButton.setVisibility(View.GONE);
                     openCameraButton.setVisibility(View.GONE);
@@ -175,7 +174,7 @@ public class FormPageFragment extends DialogFragment {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     showMultiSelectDialog(tagChosen, mediTag, selectedItems, selectedTags);
                 }
-                return true; // Prevents default spinner behavior
+                return true;
             }
         });
 
@@ -267,18 +266,6 @@ public class FormPageFragment extends DialogFragment {
                             Log.d("debug", "Network Error!" + t.getMessage());
                         }
                     });
-
-//                    Bundle result = new Bundle();
-//                    result.putString("Name", mediName);
-//                    result.putString("Category", type);
-//                    result.putInt("Amount", mediAmount);
-//                    result.putByteArray("Image", imageData);
-//                    result.putString("Dosage", mediDosage);
-//                    result.putString("Contains", mediContains);
-//                    result.putString("Side Effect", mediSideEffect);
-//                    result.putStringArrayList("Tags",tagList);
-
-//                    getParentFragmentManager().setFragmentResult("medicineData", result);
                     dismiss();
                 }
             };
