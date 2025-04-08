@@ -123,11 +123,11 @@ public class AddScheduleFragment extends DialogFragment{
                     int endHour = Integer.parseInt(endTimeParts[0]);
                     int endMinute = Integer.parseInt(endTimeParts[1]);
 
-                    startDate.set(Calendar.HOUR_OF_DAY, startHour);
+                    startDate.set(Calendar.HOUR_OF_DAY, startHour+8);
                     startDate.set(Calendar.MINUTE, startMinute);
                     startDate.set(Calendar.SECOND, 0);
 
-                    endDate.set(Calendar.HOUR_OF_DAY, endHour);
+                    endDate.set(Calendar.HOUR_OF_DAY, endHour+8);
                     endDate.set(Calendar.MINUTE, endMinute);
                     endDate.set(Calendar.SECOND, 0);
 

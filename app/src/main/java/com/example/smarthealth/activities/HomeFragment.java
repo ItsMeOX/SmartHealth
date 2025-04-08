@@ -417,14 +417,17 @@ public class HomeFragment extends Fragment implements
 
         if (dialog != null) {
             LayoutInflater inflater = LayoutInflater.from(requireContext());
-            SimpleDateFormat eventTimeFormat = new SimpleDateFormat("hh:mm aa", Locale.ENGLISH);
+            SimpleDateFormat eventTimeFormat = new SimpleDateFormat("hh:mm", Locale.ENGLISH);
             View eventView = inflater.inflate(R.layout.calendar_event_popup_item, eventListContainer, false);
             TextView eventTitleView = eventView.findViewById(R.id.calendarPopupEventTitle);
             TextView eventTimeView = eventView.findViewById(R.id.calendarPopupEventTime);
             TextView eventDescView = eventView.findViewById(R.id.calendarPopupEventDesc);
 
+            Calendar eventTimeCalendar = (Calendar) event.getEventDateCalendar().first.clone();
+            eventTimeCalendar.add(Calendar.HOUR_OF_DAY, -8);
+
             eventTitleView.setText(event.getEventTitle());
-            eventTimeView.setText(eventTimeFormat.format(event.getEventDateCalendar().first.getTime()));
+            eventTimeView.setText(eventTimeFormat.format(eventTimeCalendar.getTime()));
             eventDescView.setText(event.getEventDescription());
 
             eventListContainer.addView(eventView, eventListContainer.getChildCount()-1); // Add before "Add Event" button
