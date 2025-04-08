@@ -47,7 +47,6 @@ import java.util.List;
 public class FormHistoryFragment extends DialogFragment {
     private AutoCompleteTextView searchBar;
     private ArrayList<MedicineButton> medicineList;
-    private InputMethodManager inputMethodManager;
 
     @Override
     public void onStart() {
@@ -296,11 +295,11 @@ public class FormHistoryFragment extends DialogFragment {
                         Drawable image = imageView.getDrawable();
 
                         ArrayList<String> tagList = new ArrayList<>();
-                        for (int i = 0; i < tagChosen.getChildCount(); i++) {
+                        for (int i = 0; i < tagChosen.getChildCount(); i++){
                             View child = tagChosen.getChildAt(i);
 
                             // Check if the child is a TextView
-                            if (child instanceof TextView) {
+                            if (child instanceof TextView){
                                 TextView tagView = (TextView) child;
                                 String tagText = tagView.getText().toString();
                                 tagList.add(tagText);
@@ -310,9 +309,11 @@ public class FormHistoryFragment extends DialogFragment {
                         // Check for empty fields (adjust this logic as needed)
                         if (amount.getText().toString().isEmpty()) {
                             Toast.makeText(getContext(), "Please Key in Amount", Toast.LENGTH_SHORT).show();
+                            return;
                         }
                         if (Integer.parseInt(amount.getText().toString().trim()) < 0 || Integer.parseInt(amount.getText().toString().trim()) > 999) {
                             Toast.makeText(getContext(), "Enter number between 0 and 999", Toast.LENGTH_SHORT).show();
+                            return;
                         } else {
                             byte[] imageData = drawableToByteArray(image);
                             int mediAmount = Integer.parseInt(amount.getText().toString().trim());

@@ -192,7 +192,7 @@ public class FormPageFragment extends DialogFragment {
                 // Pass corresponding parameters
                 if (mediName.isEmpty() || mediDosage.isEmpty() || amount.isEmpty() || mediSideEffect.isEmpty() ||
                     mediContains.isEmpty() || imageView.getDrawable() == null || Integer.parseInt(amount) > 999
-                || Integer.parseInt(amount) <= 0) {
+                || Integer.parseInt(amount) <= 0 || tagList.isEmpty()) {
                     if (mediName.isEmpty()) {
                         nameView.setError("Required");
                     }
@@ -217,6 +217,10 @@ public class FormPageFragment extends DialogFragment {
                     if(Integer.parseInt(amount) <= 0){
                         amountView.setError("Amount greater than 0");
                     }
+                    if(tagList.isEmpty()){
+                        Toast.makeText(requireContext(), "Please choose a tag", Toast.LENGTH_SHORT).show();
+                    }
+
 
                     return;
                 } else {
