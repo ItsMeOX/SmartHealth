@@ -75,8 +75,10 @@ public class InventoryFragment extends Fragment {
         public void onActivityResult(ActivityResult result) {
             if (result.getResultCode() == Activity.RESULT_OK) {
                 if (camUri != null) {
-//                    byte[] medicineByteArray = uriToByteArray(camUri);
+                    byte[] medicineByteArray = uriToByteArray(camUri);
                     // Send to chatbot;
+
+
                     // Bundle Uri
                     Bundle res = new Bundle();
                     res.putString("SmartScan", camUri.toString());
