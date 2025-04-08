@@ -2,12 +2,21 @@ package com.example.smarthealth.Inventory;
 
 import static android.content.Context.MODE_PRIVATE;
 
+import static com.example.smarthealth.chatbot.ChatBotFragment.JSON;
+
+import android.app.Activity;
+import android.content.ContentValues;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +25,10 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -31,11 +44,22 @@ import com.example.smarthealth.api_service.MedicineDto;
 import com.example.smarthealth.api_service.MedicineService;
 import com.example.smarthealth.api_service.RetrofitClient;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -56,6 +80,91 @@ public class InventoryFragment extends Fragment {
     private MedicineService medicineService;
     private SharedPreferences sharedPreferences;
     private long userId;
+    private Uri camUri;
+    private final ActivityResultLauncher<Intent> cameraLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+
+        OkHttpClient client = new OkHttpClient();
+
+        @Override
+        public void onActivityResult(ActivityResult result) {
+            if (result.getResultCode() == Activity.RESULT_OK) {
+                if (camUri != null) {
+                    byte[] medicineByteArray = uriToByteArray(camUri);
+                    String base64String = Base64.encodeToString(medicineByteArray, Base64.DEFAULT);
+                    callAPI(base64String);
+
+                    // Bundle Uri
+                    Bundle res = new Bundle();
+                    res.putString("SmartScan", camUri.toString());
+                    res.putString("Name", "OngXuan");
+
+                    FormPageFragment formDialog = new FormPageFragment();
+                    formDialog.setArguments(res);
+                    formDialog.show(getParentFragmentManager(), "Smart Scan");
+                }
+                else{
+                    Toast.makeText(requireContext(), "Popup not open!", Toast.LENGTH_SHORT).show();}
+            }
+            else {
+                Toast.makeText(requireContext(), "No Image Selected", Toast.LENGTH_SHORT).show();}
+        }
+
+
+        void callAPI(String base64Image) {
+
+            ChatBotImageMedicine chatBotImageMedicine = new ChatBotImageMedicine(base64Image);
+            JSONObject jsonBody = chatBotImageMedicine.getPrompt();
+            RequestBody body = RequestBody.create(jsonBody.toString(), JSON);
+            Request request = new Request.Builder()
+                    .url(chatBotImageMedicine.getAPI_URL())
+                    .header("Authorization", "Bearer " + chatBotImageMedicine.getAPI_Key())
+                    .post(body)
+                    .build();
+
+
+            client.newCall(request).enqueue(new okhttp3.Callback() {
+                @Override
+                public void onFailure(@NonNull okhttp3.Call call, @NonNull IOException e) {
+                    Log.d("Request Error", "Failed to load response due to " + e.getMessage());
+                }
+
+                @Override
+                public void onResponse(@NonNull okhttp3.Call call, @NonNull okhttp3.Response response) throws IOException {
+                    if (response.isSuccessful()) {
+                        JSONObject jsonObject = null;
+                        try {
+                            jsonObject = new JSONObject(response.body().string());
+                            JSONArray outputArray = jsonObject.getJSONArray("output");
+                            JSONObject messageObject = outputArray.getJSONObject(0);
+                            JSONArray contentArray = messageObject.getJSONArray("content");
+                            String image_result = contentArray.getJSONObject(0).getString("text");
+                            Log.d("Response For Medicine Image", image_result);
+//                            {"name":"Metoclopramide","amount":"10mg, 10 tablets","treatment":["Vomiting","Giddiness"],"recommended_dosage":"1 tablet 3 times a day, half an hour before food","contains":["Metoclopramide"],"side_effects":["Drowsiness"]}
+//
+//                            JSONObject object = new JSONObject(image_result);
+//                            List<Double> nutrients = new ArrayList<>();
+//                            nutrients.add(Double.parseDouble(object.getString("Carbs")));
+//                            nutrients.add(Double.parseDouble(object.getString("Proteins")));
+//                            nutrients.add(Double.parseDouble(object.getString("Fats")));
+//                            nutrients.add(Double.parseDouble(object.getString("Fibre")));
+//                            nutrients.add(Double.parseDouble(object.getString("Sugars")));
+//                            nutrients.add(Double.parseDouble(object.getString("Sodium")));
+//                            callback.onParsed(nutrients);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Log.d("Debug", "Failed to load Json File due to " + e.getMessage());
+                        }
+                    } else {
+                        Log.d("Debug", "Failed to load response due to " + response.body().toString());
+                        String errorBody = response.body() != null ? response.body().string() : "No response body";
+                        Log.d("Failed to load the Response File ", errorBody);
+                    }
+                }
+            });
+        }
+    });
+
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -165,13 +274,8 @@ public class InventoryFragment extends Fragment {
         smartScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Add placeholder medicine to pills category
-                ArrayList<String> list = new ArrayList<>();
-                list.add("Cough");
-                addMedicineToLayout(100L, "Pills","PlaceHolder", 100,
-                        ContextCompat.getDrawable(requireContext(), R.drawable.app_logo),"1 tab per day",
-                        "Paracetamol","Drowsy",list);
-                Toast.makeText(requireContext(), "New Pill Added", Toast.LENGTH_SHORT).show();
+                pickCamera();
+
             }
         });
 
@@ -282,8 +386,65 @@ public class InventoryFragment extends Fragment {
         }
         return null;
     }
-}
 
+    private void pickCamera(){
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.TITLE, "New Medicine");
+        values.put(MediaStore.Images.Media.DESCRIPTION, "Camera");
+        camUri = requireContext().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT,camUri);
+        cameraLauncher.launch(cameraIntent);
+    }
+
+    public Drawable uriToDrawable(Uri uri) {
+        try {
+            // Get the InputStream from the Uri
+            InputStream inputStream = getContext().getContentResolver().openInputStream(uri);
+
+            // Decode the InputStream into a Drawable
+            return Drawable.createFromStream(inputStream, uri.toString());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null; // Return null if there's an error
+    }
+    public byte[] uriToByteArray(Uri uri){
+        Drawable draw = uriToDrawable(uri);
+        return drawableToByteArray(draw);
+    }
+
+    private byte[] drawableToByteArray(Drawable drawable) {
+        if (drawable == null) return null;
+
+        Bitmap bitmap;
+        if (drawable instanceof BitmapDrawable) {
+            bitmap = ((BitmapDrawable) drawable).getBitmap();
+        } else {
+            bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
+                    drawable.getIntrinsicHeight(),
+                    Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(bitmap);
+            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+            drawable.draw(canvas);
+        }
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        return stream.toByteArray();
+    }
+
+    private void smartScanDialog(boolean data){
+
+    }
+
+
+
+
+
+
+
+}
 
 
 

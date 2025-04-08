@@ -7,45 +7,45 @@ import org.json.JSONObject;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 
-public class ChatBotImageFood {
+public class ChatBotImageMedicine {
     private static final String API_URL = "https://api.openai.com/v1/responses";
     private static final String API_Key = "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";
 
-    private final JSONObject response_schema = FoodNutritionSchemaJSON.getResponseSchema();
 
-    private final String systemPrompt = "You are an AI specialized in analyzing food packaging and nutrition labels from images. " +
-            "Carefully follow a step-by-step approach to extract relevant information and respond in JSON format.\n\n" +
-            "First, analyze the image to identify the food item. Then, extract nutritional values based on any visible nutrition labels or text.\n\n" +
-            "1. **Name of the food**\n" +
-            "   - Identify the name of the food item clearly based on visual features or visible text.\n\n" +
-            "2. **Nutritional Components**\n" +
-            "   - Extract the value (in grams) of each of the following, if available:\n" +
-            "     - Carbs\n" +
-            "     - Proteins\n" +
-            "     - Fats\n" +
-            "     - Fibre\n" +
-            "     - Sugars\n" +
-            "     - Sodium\n\n" +
-            "> If any value is not mentioned or unclear in the image, search on the website like \"Restaurant Food Information: name of the food item\" to find the nutritional information.\n" +
-            "> If you can still not find the value, return a value based on the average nutritional information of similar food items.\n" +
-            "> If the value is in milligrams (mg), convert it to grams and use double values (e.g., 120mg = 0.12).\n\n" +
-            "**Format the response strictly in JSON**, using lowercase keys and underscores where applicable. Example format:\n" +
-            "{\n" +
-            "    \"Name\": \"Granola Bar\",\n" +
-            "    \"Carbs\": \"23\",\n" +
-            "    \"Proteins\": \"5\",\n" +
-            "    \"Fats\": \"8\",\n" +
-            "    \"Fibre\": \"3\",\n" +
-            "    \"Sugars\": \"10\",\n" +
-            "    \"Sodium\": \"0.12\"\n" +
-            "}\n\n" +
+    private final JSONObject response_schema = MedicineSchemaJSON.getResponseSchema();
+
+    private final String systemPrompt = "You are an AI specialized in analyzing medicine packaging images.\n" +
+            "Carefully follow a step-by-step approach to extract relevant information and respond in JSON format.\n" +
+            "First, analyze the image to identify the text on the package. Then, extract key details and categorize them under the following:\n\n" +
+            "1. **Name of the medicine**\n" +
+            "   - Identify the brand or generic name clearly displayed on the packaging.\n" +
+            "2. **Amount of the medicine**\n" +
+            "   - Look for numerical values indicating dosage strength (e.g., 500mg, 10 tablets).\n" +
+            "3. **Treatment(s)**\n" +
+            "   - Determine the intended medical condition(s) treated by the medicine. (Select from: Cough, Fever, Cold, Diarrhea, Phlegm, Painkiller, Diabetes, High Cholesterol, Dry Eyes, High Blood Pressure, Others). Can be multiple values.\n" +
+            "4. **Recommended Dosage**\n" +
+            "   - Extract usage instructions such as frequency and amount per dose.\n" +
+            "5. **Contains**\n" +
+            "   - List the main chemical ingredients present in the medicine.\n" +
+            "6. **Side Effects**\n" +
+            "   - Identify potential adverse effects, if mentioned.\n\n" +
+            "If any information is unavailable, search on the website like \"Medicine Information: name of the medicine\" to find the details.\n" +
+            "If you can still not find the value, return a value based on the average information of similar medicines.\n\n" +
+            "Format the response strictly in JSON, ensuring keys are in lowercase and use underscores. Example response:\n" +
+            "    {\n" +
+            "        \"name\": \"Paracetamol\",\n" +
+            "        \"amount\": \"500mg\",\n" +
+            "        \"treatment\": [\"Painkiller\"],\n" +
+            "        \"recommended_dosage\": \"1 tablet every 6 hours\",\n" +
+            "        \"contains\": [\"Paracetamol\"],\n" +
+            "        \"side_effects\": [\"Nausea\", \"Rash\"]\n" +
+            "    }\n\n" +
             "Do not include any commentary or references. Only return the extracted data in JSON format.";
 
-
-    private final String userPrompt = "Analyze this food image and extract the required information";
+    private final String userPrompt = "Analyze this medical product image and extract the required information.";
     private final String base64_image;
 
-    public ChatBotImageFood(String base64_image) {
+    public ChatBotImageMedicine(String base64_image) {
         this.base64_image = base64_image;
     }
     public String getAPI_URL() {
@@ -104,8 +104,8 @@ public class ChatBotImageFood {
         JSONObject imageContent = new JSONObject();
         try {
             imageContent.put("type", "input_image");
-//            imageContent.put("image_url", "dat")
-            imageContent.put("image_url", "data:image/jpeg;base64," + image);
+//            imageContent.put("image_url", "dat");
+            imageContent.put("image_url", "data:image/jpeg;base64," +image);
             return imageContent;
         } catch (JSONException e) {
             throw new RuntimeException(e);
