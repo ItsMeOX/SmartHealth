@@ -10,23 +10,23 @@ public class UpcomingSchedule {
     private final String scheduleDescription;
     private final Calendar scheduleCalendar;
     private final ScheduleType scheduleType;
-    private final boolean isTaken;
+    private final boolean taken;
 
-    public UpcomingSchedule(Long id, String scheduleTitle, String scheduleDescription, boolean isTaken, Calendar scheduleCalendar, ScheduleType scheduleType) {
+    public UpcomingSchedule(Long id, String scheduleTitle, String scheduleDescription, boolean taken, Calendar scheduleCalendar, ScheduleType scheduleType) {
         this.id = id;
         this.scheduleTitle = scheduleTitle;
         this.scheduleDescription = scheduleDescription;
         this.scheduleCalendar = (Calendar) scheduleCalendar.clone();
         this.scheduleType = scheduleType;
-        this.isTaken = isTaken;
+        this.taken = taken;
     }
 
     public Long getId() {
         return id;
     }
 
-    public boolean isTaken() {
-        return isTaken;
+    public boolean getTaken() {
+        return taken;
     }
 
     public String getScheduleTitle() {

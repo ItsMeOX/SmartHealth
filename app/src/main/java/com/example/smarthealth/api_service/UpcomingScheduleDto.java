@@ -13,15 +13,15 @@ public class UpcomingScheduleDto {
     @JsonAdapter(CalendarSerializer.class)
     private Calendar scheduleCalendar;
     private String scheduleType;
-    private boolean isTaken;
+    private boolean taken;
     private int intake;
 
-    public UpcomingScheduleDto(String scheduleTitle, String scheduleDescription, Calendar scheduleCalendar, String scheduleType, boolean isTaken, Long medicineId, int intake) {
+    public UpcomingScheduleDto(String scheduleTitle, String scheduleDescription, Calendar scheduleCalendar, String scheduleType, boolean taken, Long medicineId, int intake) {
         this.scheduleTitle = scheduleTitle;
         this.scheduleDescription = scheduleDescription;
         this.scheduleCalendar = scheduleCalendar;
         this.scheduleType = scheduleType;
-        this.isTaken = isTaken;
+        this.taken = taken;
         this.medicineId = medicineId;
         this.intake = intake;
     }
@@ -73,12 +73,12 @@ public class UpcomingScheduleDto {
         this.scheduleType = scheduleType;
     }
 
-    public boolean isTaken() {
-        return isTaken;
+    public boolean getTaken() {
+        return taken;
     }
 
     public void setTaken(boolean taken) {
-        isTaken = taken;
+        this.taken = taken;
     }
 
     public String getScheduleDescription() {

@@ -509,15 +509,16 @@ public class HomeFragment extends Fragment implements
         takenButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Call<String> call = upcomingScheduleService.takeMedicine(schedule.getId());
-                call.enqueue(new Callback<String>() {
+                Call<Void> call = upcomingScheduleService.takeMedicine(schedule.getId());
+                call.enqueue(new Callback<Void>() {
                     @Override
-                    public void onResponse(Call<String> call, Response<String> response) {
+                    public void onResponse(Call<Void> call, Response<Void> response) {
                         Log.d("debug", "we can take it!!!");
+                        dialog.dismiss();
                     }
 
                     @Override
-                    public void onFailure(Call<String> call, Throwable t) {
+                    public void onFailure(Call<Void> call, Throwable t) {
                         Log.d("debug", "we cannot take it!!! idk why" + t.getMessage());
                     }
                 });

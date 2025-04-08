@@ -45,11 +45,12 @@ public class DatabaseUpcomingScheduleProvider implements UpcomingScheduleProvide
             public void onResponse(Call<List<UpcomingScheduleDto>> call, Response<List<UpcomingScheduleDto>> response) {
                 if(response.isSuccessful() && response.body() != null){
                     for(UpcomingScheduleDto schedule : response.body()){
+                        Log.d("debug", "schdule "+schedule.getTaken());
                         UpcomingSchedule upcomingSchedule = new UpcomingSchedule(
                                 schedule.getId(),
                                 schedule.getScheduleTitle(),
                                 schedule.getScheduleDescription(),
-                                schedule.isTaken(),
+                                schedule.getTaken(),
                                 (Calendar) schedule.getScheduleCalendar(),
                                 schedule.getScheduleType().equals("Meal") ? new MealSchedule() : new MedicineSchedule());
                         schedules.add(upcomingSchedule);
@@ -57,14 +58,14 @@ public class DatabaseUpcomingScheduleProvider implements UpcomingScheduleProvide
                 }
 
                 List<UpcomingSchedule> finalSchedules = new ArrayList<>();
-
                 for(UpcomingSchedule schedule : schedules){
-                    if(!schedule.isTaken()){
+                    if(!schedule.getTaken()) {
                         finalSchedules.add(schedule);
                     }
                 }
-                Log.d("debug", finalSchedules+"");
-
+               finalSchedules.stream().forEach(
+                        x -> Log.d("debug", String.valueOf(x.getTaken()))
+                );
                 callback.onDataLoaded(finalSchedules);
             }
 

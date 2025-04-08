@@ -62,7 +62,9 @@ public class InventoryFragment extends Fragment {
         view = inflater.inflate(R.layout.inventory_fragment, container, false);
 
         medicineService = RetrofitClient.getInstance().create(MedicineService.class);
-        sharedPreferences = getActivity().getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        if(isAdded() && getActivity() != null) {
+            sharedPreferences = getActivity().getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        }
         userId = sharedPreferences.getLong("userId", -1);
         Log.d("User_ID", "current User_ID: " + userId);
 
@@ -345,7 +347,10 @@ public class InventoryFragment extends Fragment {
     private Drawable byteArrayToDrawable(byte[] imageData) {
         if (imageData == null) return null;
         Bitmap bitmap = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
-        return new BitmapDrawable(getResources(), bitmap);
+        if (isAdded() && getResources() != null) {
+            return new BitmapDrawable(getResources(), bitmap);
+        }
+        return null;
     }
 }
 

@@ -35,7 +35,7 @@ public interface UpcomingScheduleService {
     );
 
     @PUT("schedules/take/{scheduleId}")
-    Call<String> takeMedicine(
+    Call<Void> takeMedicine(
             @Path("scheduleId") long scheduleId
     );
 }
