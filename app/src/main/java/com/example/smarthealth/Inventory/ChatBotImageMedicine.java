@@ -19,27 +19,35 @@ public class ChatBotImageMedicine {
             "First, analyze the image to identify the text on the package. Then, extract key details and categorize them under the following:\n\n" +
             "1. **Name of the medicine**\n" +
             "   - Identify the brand or generic name clearly displayed on the packaging.\n" +
-            "2. **Amount of the medicine**\n" +
-            "   - Look for numerical values indicating dosage strength (e.g., 500mg, 10 tablets).\n" +
-            "3. **Treatment(s)**\n" +
-            "   - Determine the intended medical condition(s) treated by the medicine. (Select from: Cough, Fever, Cold, Diarrhea, Phlegm, Painkiller, Diabetes, High Cholesterol, Dry Eyes, High Blood Pressure, Others). Can be multiple values.\n" +
-            "4. **Recommended Dosage**\n" +
+            "2. **Category of the medicine**\n" +
+            "   - Identify the type of medicine (Select from: Pills, Liquids, Others)\n" +
+            "3. **Amount of the medicine**\n" +
+            "   - Look for numerical values indicating dosage strength. It should be the integer indicating the number of pills (tablets) stated on the picture. If there is no number stating the pill, return 0.\n" +
+            "4. **Amount in ml**\n" +
+            "   - Look for numerical values indicating dosage strength. It should be the integer indicating the amount in ml stated on the picture.\n" +
+            "5. **Treatment(s)**\n" +
+            "   - Determine the intended medical condition(s) treated by the medicine.\n" +
+            "     (Select from: Cough, Fever, Cold, Diarrhea, Phlegm, Painkiller, Diabetes, High Cholesterol, Dry Eyes, High Blood Pressure, Others). Can be multiple values.\n" +
+            "6. **Recommended Dosage**\n" +
             "   - Extract usage instructions such as frequency and amount per dose.\n" +
-            "5. **Contains**\n" +
+            "7. **Contains**\n" +
             "   - List the main chemical ingredients present in the medicine.\n" +
-            "6. **Side Effects**\n" +
+            "8. **Side Effects**\n" +
             "   - Identify potential adverse effects, if mentioned.\n\n" +
             "If any information is unavailable, search on the website like \"Medicine Information: name of the medicine\" to find the details.\n" +
-            "If you can still not find the value, return a value based on the average information of similar medicines.\n\n" +
+            "If you still cannot find the value, return a value based on the average information of similar medicines.\n\n" +
             "Format the response strictly in JSON, ensuring keys are in lowercase and use underscores. Example response:\n" +
             "    {\n" +
             "        \"name\": \"Paracetamol\",\n" +
-            "        \"amount\": \"500mg\",\n" +
+            "        \"category\": \"Pills\",\n" +
+            "        \"amount_pill\": \"500\",\n" +
+            "        \"amount_ml\": \"0\",\n" +
             "        \"treatment\": [\"Painkiller\"],\n" +
             "        \"recommended_dosage\": \"1 tablet every 6 hours\",\n" +
             "        \"contains\": [\"Paracetamol\"],\n" +
             "        \"side_effects\": [\"Nausea\", \"Rash\"]\n" +
             "    }\n\n" +
+
             "Do not include any commentary or references. Only return the extracted data in JSON format.";
 
     private final String userPrompt = "Analyze this medical product image and extract the required information.";
