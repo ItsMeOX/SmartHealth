@@ -32,10 +32,13 @@ import com.example.smarthealth.api_service.AuthService;
 import com.example.smarthealth.api_service.GoogleAuthRequest;
 import com.example.smarthealth.api_service.RegistrationRequest;
 import com.example.smarthealth.api_service.RetrofitClient;
+import com.example.smarthealth.api_service.UpcomingScheduleService;
 import com.example.smarthealth.country_code.CountryAdapter;
 import com.example.smarthealth.country_code.CountryItem;
 import com.example.smarthealth.nutrient_intake.DatabaseNutrientIntakeProvider;
 import com.example.smarthealth.nutrient_intake.NutrientIntakeProvider;
+import com.example.smarthealth.upcoming_schedule.DatabaseUpcomingScheduleProvider;
+import com.example.smarthealth.upcoming_schedule.UpcomingScheduleProvider;
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption;
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -66,6 +69,7 @@ public class RegisterActivity extends AppCompatActivity {
     private final CredentialManager credentialManager = CredentialManager.create(this);
     private AuthService authService;
     private NutrientIntakeProvider nutrientIntakeProvider;
+    private UpcomingScheduleProvider upcomingScheduleProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +77,8 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.register_activity);
 
         authService = RetrofitClient.getInstance().create(AuthService.class);
-        nutrientIntakeProvider = new DatabaseNutrientIntakeProvider(this);
+        upcomingScheduleProvider = new DatabaseUpcomingScheduleProvider();
+        nutrientIntakeProvider = new DatabaseNutrientIntakeProvider();
 
         spinnerCountryCode = findViewById(R.id.spinnerCountryCode);
         editTextMobile = findViewById(R.id.editTextMobile);
@@ -182,12 +187,25 @@ public class RegisterActivity extends AppCompatActivity {
                         @Override
                         public void onIntakeAdded(boolean success) {
                             if(success) {
-                                Toast.makeText(RegisterActivity.this, "Initialize Data Successfully!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(RegisterActivity.this, "Initialize Data 1 Successfully!", Toast.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(RegisterActivity.this, "Failed to initialize nutrient data", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
+
+                    upcomingScheduleProvider.initializeUpcomingSchedule(response.body().getId(), new DatabaseUpcomingScheduleProvider.OnUpcomingScheduleAddedCallback() {
+                        @Override
+                        public void onUpcomingScheduleAdded(boolean success) {
+                            if(success) {
+                                Toast.makeText(RegisterActivity.this, "Initialize Data 2 Successfully!", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(RegisterActivity.this, "Failed to initialize upcoming schedule data", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+
+
                     startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
                     finish();
                 } else {

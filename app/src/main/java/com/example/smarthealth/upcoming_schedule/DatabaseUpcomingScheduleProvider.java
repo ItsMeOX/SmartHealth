@@ -4,11 +4,13 @@ import android.util.Log;
 
 import com.example.smarthealth.api_service.EventDto;
 import com.example.smarthealth.api_service.EventService;
+import com.example.smarthealth.api_service.NutrientIntakeDto;
 import com.example.smarthealth.api_service.RetrofitClient;
 import com.example.smarthealth.api_service.UpcomingScheduleDto;
 import com.example.smarthealth.api_service.UpcomingScheduleService;
 import com.example.smarthealth.calendar.CalendarEvent;
 import com.example.smarthealth.calendar.DatabaseCalendarEventProvider;
+import com.example.smarthealth.nutrient_intake.DatabaseNutrientIntakeProvider;
 import com.example.smarthealth.upcoming_schedule.schedule_types.MealSchedule;
 import com.example.smarthealth.upcoming_schedule.schedule_types.MedicineSchedule;
 import com.example.smarthealth.upcoming_schedule.schedule_types.ScheduleType;
@@ -78,7 +80,66 @@ public class DatabaseUpcomingScheduleProvider implements UpcomingScheduleProvide
         return schedules;
     }
 
+    @Override
+    public void initializeUpcomingSchedule(long userId, DatabaseUpcomingScheduleProvider.OnUpcomingScheduleAddedCallback callback) {  // Add callback parameter
+        List<UpcomingScheduleDto> upcomingScheduleDtosToBeInserted = new ArrayList<>();
+
+        Calendar today = (Calendar) Calendar.getInstance().clone();
+        today.set(Calendar.HOUR_OF_DAY, 12);
+
+        upcomingScheduleDtosToBeInserted.add(new UpcomingScheduleDto(
+                "Lunch",
+                "Please have lunch now!",
+                today,
+                "Meal",
+                false,
+                null,
+                0
+        ));
+
+        Calendar secondToday = (Calendar) Calendar.getInstance().clone();
+        secondToday.set(Calendar.HOUR_OF_DAY, 18);
+        upcomingScheduleDtosToBeInserted.add(new UpcomingScheduleDto(
+                "Dinner",
+                "Please have dinner now!",
+                secondToday,
+                "Meal",
+                false,
+                null,
+                0
+        ));
+
+        // Track successful inserts
+        final int[] successfulInserts = {0};
+        final int totalInserts = upcomingScheduleDtosToBeInserted.size();
+
+        for(int i = 0; i < upcomingScheduleDtosToBeInserted.size(); i++){
+            Call<UpcomingScheduleDto> call = upcomingScheduleService.createSchedule(userId, upcomingScheduleDtosToBeInserted.get(i));
+            call.enqueue(new Callback<UpcomingScheduleDto>() {
+                @Override
+                public void onResponse(Call<UpcomingScheduleDto> call, Response<UpcomingScheduleDto> response) {
+                    if (response.isSuccessful()) {
+                        successfulInserts[0]++;
+                        if(successfulInserts[0] == totalInserts) {
+                            callback.onUpcomingScheduleAdded(true); // All inserts successful
+                        }
+                    } else {
+                        callback.onUpcomingScheduleAdded(false);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<UpcomingScheduleDto> call, Throwable t) {
+                    callback.onUpcomingScheduleAdded(false);
+                }
+            });
+        }
+    }
+
     public interface OnDataLoadedCallback {
         void onDataLoaded(List<UpcomingSchedule> upcomingScheduleList);
+    }
+    public interface OnUpcomingScheduleAddedCallback {
+        void onUpcomingScheduleAdded(boolean success);
     }
 }

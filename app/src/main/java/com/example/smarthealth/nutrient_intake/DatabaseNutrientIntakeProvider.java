@@ -29,27 +29,13 @@ import retrofit2.Response;
 
 public class DatabaseNutrientIntakeProvider implements NutrientIntakeProvider {
     private NutrientIntakeService nutrientIntakeService ;
-    private Context context;
-
-    public DatabaseNutrientIntakeProvider(Context context) {
-        this.context = context;
-        nutrientIntakeService = RetrofitClient.getInstance().create(NutrientIntakeService.class);
-    }
-
-//    public void hasUserIntake(long userId, OnIntakeCheckCallback callback) {
-//        Call<Boolean> call = nutrientIntakeService.checkIfUserHasIntakes(userId);
-//        call.enqueue(new Callback<Boolean>() {
-//            @Override
-//            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-//                callback.onIntakeChecked(response.isSuccessful() && response.body() != null && response.body());
-//            }
+//    private Context context;
 //
-//            @Override
-//            public void onFailure(Call<Boolean> call, Throwable t) {
-//                callback.onIntakeChecked(false);
-//            }
-//        });
+//    public DatabaseNutrientIntakeProvider(Context context) {
+//        this.context = context;
+//        nutrientIntakeService = RetrofitClient.getInstance().create(NutrientIntakeService.class);
 //    }
+
     @Override
     public List<NutrientIntake> getNutrientIntakes(long userId, OnDataLoadedCallback callback) {
         // TODO: to be connected to database by Tristan + AI by Haile.
