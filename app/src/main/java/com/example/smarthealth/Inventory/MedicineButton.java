@@ -5,6 +5,15 @@ import android.graphics.drawable.Drawable;
 import java.util.ArrayList;
 
 public class MedicineButton {
+    public Long getMedicineId() {
+        return medicineId;
+    }
+
+    public void setMedicineId(Long medicineId) {
+        this.medicineId = medicineId;
+    }
+
+    private Long medicineId;
     public String medicineName;
     public String medicineCategory;
     public int medicineAmount;
@@ -14,8 +23,9 @@ public class MedicineButton {
     public String medicineSideEffect;
     public ArrayList<String> medicineType;
 
-    MedicineButton(String medicineName, String medicineCategory, int medicineAmount, Drawable medicineImage,
+    MedicineButton(Long medicineId, String medicineName, String medicineCategory, int medicineAmount, Drawable medicineImage,
                    String medicineDosage, String medicineContains, String medicineSideEffect, ArrayList<String> medicineType) {
+        this.medicineId = medicineId;
         this.medicineName = medicineName;
         this.medicineCategory = medicineCategory;
         this.medicineAmount = medicineAmount;

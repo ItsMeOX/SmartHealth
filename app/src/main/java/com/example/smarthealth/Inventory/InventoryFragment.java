@@ -166,7 +166,7 @@ public class InventoryFragment extends Fragment {
                 // Add placeholder medicine to pills category
                 ArrayList<String> list = new ArrayList<>();
                 list.add("Cough");
-                addMedicineToLayout("Pills","PlaceHolder", 100,
+                addMedicineToLayout(100L, "Pills","PlaceHolder", 100,
                         ContextCompat.getDrawable(requireContext(), R.drawable.app_logo),"1 tab per day",
                         "Paracetamol","Drowsy",list);
                 Toast.makeText(requireContext(), "New Pill Added", Toast.LENGTH_SHORT).show();
@@ -200,6 +200,7 @@ public class InventoryFragment extends Fragment {
                     for(MedicineDto medicine : response.body()){
                         Drawable imageDrawable = byteArrayToDrawable(medicine.getMedicineImage());
                         addMedicineToLayout(
+                                medicine.getId(),
                                 medicine.getMedicineName(),
                                 medicine.getMedicineCategory(),
                                 medicine.getMedicineAmount(),
@@ -300,7 +301,7 @@ public class InventoryFragment extends Fragment {
 //        });
     }
 
-    private void addMedicineToLayout(String mediName, String category, int mediAmount,
+    private void addMedicineToLayout(Long medicineId, String mediName, String category, int mediAmount,
                                      Drawable mediImage, String mediDosage, String mediContains,
                                      String mediSideEffect, ArrayList<String> type) {
         ArrayList<MedicineButton> containerList = new ArrayList<>();
@@ -320,7 +321,7 @@ public class InventoryFragment extends Fragment {
         }
 
         // Add placeholder medicine button
-        MedicineButton newButton = new MedicineButton(mediName, category, mediAmount,
+        MedicineButton newButton = new MedicineButton(medicineId, mediName, category, mediAmount,
                 mediImage, mediDosage, mediContains, mediSideEffect, type);
         // Add the placeholder to the appropriate container list
         containerList.add(newButton);

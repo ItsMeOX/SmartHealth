@@ -14,20 +14,32 @@ public class UpcomingScheduleDto {
     private Calendar scheduleCalendar;
     private String scheduleType;
     private boolean isTaken;
+    private int intake;
 
-    public MedicineDto getMedicineDto() {
-        return medicineDto;
+    public UpcomingScheduleDto(String scheduleTitle, String scheduleDescription, Calendar scheduleCalendar, String scheduleType, boolean isTaken, Long medicineId, int intake) {
+        this.scheduleTitle = scheduleTitle;
+        this.scheduleDescription = scheduleDescription;
+        this.scheduleCalendar = scheduleCalendar;
+        this.scheduleType = scheduleType;
+        this.isTaken = isTaken;
+        this.medicineId = medicineId;
+        this.intake = intake;
     }
 
-    public void setMedicineDto(MedicineDto medicineDto) {
-        this.medicineDto = medicineDto;
+    public Long getMedicineId() {
+        return medicineId;
     }
+
+    public void setMedicineId(Long medicineId) {
+        this.medicineId = medicineId;
+    }
+
+    private Long medicineId;
 
     public void setScheduleCalendar(Calendar scheduleCalendar) {
         this.scheduleCalendar = scheduleCalendar;
     }
 
-    private MedicineDto medicineDto;
 
     public Long getId() {
         return id;

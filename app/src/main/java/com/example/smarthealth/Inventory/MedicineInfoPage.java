@@ -70,16 +70,8 @@ public class MedicineInfoPage {
             @Override
             public void onClick(View v) {
                 FragmentManager fragmentManager = ((AppCompatActivity) context).getSupportFragmentManager();
-                AddScheduleFragment scheduleFragment = new AddScheduleFragment();
+                AddScheduleFragment scheduleFragment = new AddScheduleFragment(model);
                 scheduleFragment.show(fragmentManager, "Add To Schedule");
-            }
-        });
-
-        AppCompatButton removeFromSchedule = popupView.findViewById(R.id.removeSchedule);
-        removeFromSchedule.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // remove from database using model data.
             }
         });
     }

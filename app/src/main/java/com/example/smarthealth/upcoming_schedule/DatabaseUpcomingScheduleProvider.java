@@ -63,6 +63,7 @@ public class DatabaseUpcomingScheduleProvider implements UpcomingScheduleProvide
                         finalSchedules.add(schedule);
                     }
                 }
+                Log.d("debug", finalSchedules+"");
 
                 callback.onDataLoaded(finalSchedules);
             }

@@ -99,6 +99,7 @@ public class FormHistoryFragment extends DialogFragment {
                 if(response.isSuccessful() && response.body() != null){
                     for(MedicineDto medicineDto : response.body()){
                         MedicineButton medicineButton = new MedicineButton(
+                                medicineDto.getId(),
                                 medicineDto.getMedicineName(),
                                 medicineDto.getMedicineCategory(),
                                 medicineDto.getMedicineAmount(),
