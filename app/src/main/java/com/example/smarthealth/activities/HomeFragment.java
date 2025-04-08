@@ -1,7 +1,11 @@
 package com.example.smarthealth.activities;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.app.Dialog;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -9,21 +13,49 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.OvershootInterpolator;
-import android.widget.ImageView;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.cardview.widget.CardView;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.smarthealth.R;
-import com.example.smarthealth.calendar.AndroidCalendarEventProvider;
+import com.example.smarthealth.api_service.AuthService;
+import com.example.smarthealth.api_service.NutrientIntakeDto;
+import com.example.smarthealth.api_service.ProfileService;
+import com.example.smarthealth.api_service.UpcomingScheduleService;
+import com.example.smarthealth.api_service.RetrofitClient;
+import com.example.smarthealth.api_service.UserDto;
+import com.example.smarthealth.bot_suggestions.BotSuggestion;
+import com.example.smarthealth.bot_suggestions.BotSuggestionAdapter;
+import com.example.smarthealth.bot_suggestions.BotSuggestionProvider;
+import com.example.smarthealth.bot_suggestions.DatabaseBotSuggestionProvider;
+import com.example.smarthealth.calendar.CalendarEventCache;
+import com.example.smarthealth.calendar.DatabaseCalendarEventProvider;
 import com.example.smarthealth.calendar.CalendarEvent;
 import com.example.smarthealth.calendar.CalendarEventProvider;
 import com.example.smarthealth.calendar.CalendarAdapter;
+import com.example.smarthealth.nutrient_intake.NutrientIntake;
+import com.example.smarthealth.nutrient_intake.NutrientIntakeAdapter;
+import com.example.smarthealth.nutrient_intake.NutrientIntakeProvider;
+import com.example.smarthealth.nutrient_intake.DatabaseNutrientIntakeProvider;
+import com.example.smarthealth.upcoming_schedule.DatabaseUpcomingScheduleProvider;
+import com.example.smarthealth.upcoming_schedule.UpcomingSchedule;
+import com.example.smarthealth.upcoming_schedule.UpcomingScheduleAdapter;
+import com.example.smarthealth.upcoming_schedule.UpcomingScheduleProvider;
+import com.google.android.material.button.MaterialButton;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -31,29 +63,60 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-public class HomeFragment extends Fragment implements CalendarAdapter.OnItemListener {
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class HomeFragment extends Fragment implements
+        CalendarAdapter.OnItemListener,
+        BotSuggestionAdapter.OnItemListener,
+        UpcomingScheduleAdapter.OnItemListener,
+        CalendarFormFragment.NewEventCreatedListener
+{
 
     private TextView monthYearText;
-    private RecyclerView calendarRecyclerView;
     private Calendar selectedDate;
-    private LinearLayout scheduleContainer;
+    private RecyclerView calendarRecyclerView;
+    private RecyclerView nutrientRecyclerView;
+    private RecyclerView scheduleRecyclerView;
+    private RecyclerView botSuggestionsRecyclerView;
     private CalendarEventProvider calendarEventProvider;
-    View view;
+    private NutrientIntakeProvider nutrientIntakeProvider;
+    private UpcomingScheduleProvider upcomingScheduleProvider;
+    private BotSuggestionProvider botSuggestionProvider;
+    private CalendarEventCache calendarEventCache;
+    private View view; // main view for this fragment
+    private SharedPreferences sharedPreferences;
+    private long userId;
+    private ProfileService profileService;
+    private UpcomingScheduleService upcomingScheduleService;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.landing_fragment, container, false);
+        view = inflater.inflate(R.layout.home_fragment, container, false);
 
-        // TODO: change to other calendar adapter, most likely from database.
-        calendarEventProvider = new AndroidCalendarEventProvider(requireContext());
+        sharedPreferences = getActivity().getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        userId = sharedPreferences.getLong("userId", -1);
+        profileService = RetrofitClient.getInstance().create(ProfileService.class);
+        upcomingScheduleService = RetrofitClient.getInstance().create(UpcomingScheduleService.class);
+
+        calendarEventProvider = new DatabaseCalendarEventProvider();
+        nutrientIntakeProvider = new DatabaseNutrientIntakeProvider();
+        upcomingScheduleProvider = new DatabaseUpcomingScheduleProvider();
+        botSuggestionProvider = new DatabaseBotSuggestionProvider();
+        calendarEventCache = new CalendarEventCache();
 
         initCalendarWidgets();
         setUpMainContentSlider();
+        initNutrientWidgets();
         initUpcomingScheduleWidgets();
         initBotSuggestionWidgets();
 
-        selectedDate = Calendar.getInstance();
+        selectedDate = (Calendar) Calendar.getInstance().clone();
         setMonthView();
+        setNutrientIntakeView();
+        setUpcomingSchedules();
+        setBotSuggestionsView();
 
         return view;
     }
@@ -63,10 +126,12 @@ public class HomeFragment extends Fragment implements CalendarAdapter.OnItemList
         View calendarRecycleView = LayoutInflater.from(requireContext()).inflate(R.layout.calendar_view, calendarParentView, false);
         calendarParentView.addView(calendarRecycleView);
         calendarRecyclerView = (RecyclerView) view.findViewById(R.id.calendarRecyclerView);
+        calendarRecyclerView.setNestedScrollingEnabled(false);
         monthYearText = (TextView) view.findViewById(R.id.calendarMonthYear);
     }
 
     private void setMonthView() {
+        Log.d("debug", "setMonthVIew");
         SimpleDateFormat dateFormat = new SimpleDateFormat("MMM yyyy", Locale.ENGLISH);
         String selectedDateText = dateFormat.format(selectedDate.getTime());
         monthYearText.setText(selectedDateText);
@@ -75,10 +140,12 @@ public class HomeFragment extends Fragment implements CalendarAdapter.OnItemList
         ArrayList<Calendar> daysInMonth = results.first;
         int currentDatePosition = results.second;
 
-        CalendarAdapter calendarAdapter = new CalendarAdapter(daysInMonth, calendarEventProvider, currentDatePosition, this);
+        CalendarAdapter calendarAdapter = new CalendarAdapter(daysInMonth, calendarEventCache, currentDatePosition, this);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(requireContext(), 7);
         calendarRecyclerView.setLayoutManager(layoutManager);
         calendarRecyclerView.setAdapter(calendarAdapter);
+
+        calendarEventCache.loadEventsForMonth(userId, selectedDate, calendarEventProvider, calendarAdapter::notifyDataSetChanged);
     }
 
     private Pair<ArrayList<Calendar>, Integer> daysInMonthArray(Calendar selectedDate) {
@@ -95,7 +162,7 @@ public class HomeFragment extends Fragment implements CalendarAdapter.OnItemList
         prevMonth.add(Calendar.MONTH, -1);
         int totalDaysPrevMonth = prevMonth.getActualMaximum(Calendar.DAY_OF_MONTH);
         for (int i = 1; i < dayOfWeek; i++) {
-            Calendar day = (Calendar) selectedDate.clone();
+            Calendar day = (Calendar) prevMonth.clone();
             day.set(Calendar.DAY_OF_MONTH, totalDaysPrevMonth - (6 - i));
             daysInMonth.add(day);
         }
@@ -123,7 +190,6 @@ public class HomeFragment extends Fragment implements CalendarAdapter.OnItemList
 
         return new Pair<>(daysInMonth, currentDatePosition);
     }
-
 
     public void previousMonthAction(View view) {
         selectedDate.add(Calendar.MONTH, -1);
@@ -257,116 +323,213 @@ public class HomeFragment extends Fragment implements CalendarAdapter.OnItemList
         });
     }
 
+    private void initNutrientWidgets() {
+        nutrientRecyclerView = (RecyclerView) view.findViewById(R.id.nutrientIntakeRecyclerView);
+    }
+
+    private void setNutrientIntakeView() {
+        nutrientIntakeProvider.getNutrientIntakes(userId, new DatabaseNutrientIntakeProvider.OnDataLoadedCallback() {
+            @Override
+            public void onDataLoaded(List<NutrientIntake> nutrientIntakeList) {
+                if(getActivity() != null) {
+                    getActivity().runOnUiThread(() -> {
+                        NutrientIntakeAdapter nutrientIntakeAdapter = new NutrientIntakeAdapter(nutrientIntakeList);
+                        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(requireContext(), 2);
+                        nutrientRecyclerView.setLayoutManager(layoutManager);
+                        nutrientRecyclerView.setAdapter(nutrientIntakeAdapter);
+                        nutrientRecyclerView.setNestedScrollingEnabled(false);
+                    });
+                }
+            }
+        });
+    }
+
+    private void loadNutrientIntakes() {
+        nutrientIntakeProvider.getNutrientIntakes(userId, new DatabaseNutrientIntakeProvider.OnDataLoadedCallback() {
+            @Override
+            public void onDataLoaded(List<NutrientIntake> nutrientIntakeList) {
+                if(getActivity() != null) {
+                    getActivity().runOnUiThread(() -> {
+                        NutrientIntakeAdapter nutrientIntakeAdapter = new NutrientIntakeAdapter(nutrientIntakeList);
+                        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(requireContext(), 2);
+                        nutrientRecyclerView.setLayoutManager(layoutManager);
+                        nutrientRecyclerView.setAdapter(nutrientIntakeAdapter);
+                        nutrientRecyclerView.setNestedScrollingEnabled(false);
+                    });
+                }
+            }
+        });
+    }
+
     @Override
-    public void onCalenderCellClick(int position, String dayText) {
-        // TODO 1: link to Android Calendar? and complete this function.
-        // TODO 2: Set popup title to current date
+    public void onCalenderCellClick(int position, List<Calendar> daysOfMonth) {
         Dialog calendarEventDialog = new Dialog(requireActivity());
         calendarEventDialog.setContentView(R.layout.calendar_event_popup);
         if (calendarEventDialog.getWindow() != null) {
             WindowManager.LayoutParams params = calendarEventDialog.getWindow().getAttributes();
-            params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
             params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
             calendarEventDialog.getWindow().setAttributes(params);
         }
 
-        List<CalendarEvent> calendarEvents = calendarEventProvider.getEventsForDay((Calendar) Calendar.getInstance().clone());
         LinearLayout eventListContainer = calendarEventDialog.findViewById(R.id.calendarPopupItemContainer);
-
         TextView dateTextView = calendarEventDialog.findViewById(R.id.calendarPopupDate);
-        dateTextView.setText(dayText);
+
+        SimpleDateFormat titleDateFormat = new SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH);
+        String selectedDateText = titleDateFormat.format(daysOfMonth.get(position).getTime());
+        dateTextView.setText(selectedDateText);
 
         LayoutInflater inflater = LayoutInflater.from(requireContext());
+        SimpleDateFormat eventTimeFormat = new SimpleDateFormat("hh:mm", Locale.ENGLISH);
+        SimpleDateFormat amPmFormat = new SimpleDateFormat("aa", Locale.ENGLISH);
+
+        Calendar currCalendar = (Calendar) daysOfMonth.get(position).clone();
+        List<CalendarEvent> calendarEvents = calendarEventCache.getEventsForDay(userId, currCalendar);
         for (CalendarEvent calendarEvent : calendarEvents) {
             View eventView = inflater.inflate(R.layout.calendar_event_popup_item, eventListContainer, false);
-            TextView eventTextView = eventView.findViewById(R.id.calendarPopupEventTitle);
-            eventTextView.setText(calendarEvent.getEventTitle());
+            TextView eventTitleView = eventView.findViewById(R.id.calendarPopupEventTitle);
+            TextView eventTimeView = eventView.findViewById(R.id.calendarPopupEventTime);
+            TextView eventTimeAmPmView = eventView.findViewById(R.id.calendarPopupEventTimeAmPm);
+            TextView eventDescView = eventView.findViewById(R.id.calendarPopupEventDesc);
+            eventTitleView.setText(calendarEvent.getEventTitle());
+            eventTimeView.setText(eventTimeFormat.format(calendarEvent.getEventDateCalendar().first.getTime()));
+            eventDescView.setText(calendarEvent.getEventDescription());
             eventListContainer.addView(eventView);
+            eventTimeAmPmView.setText(amPmFormat.format(calendarEvent.getEventDateCalendar().first.getTime()));
         }
+
+        Button eventAdder = (Button) inflater.inflate(R.layout.calendar_event_popup_add, eventListContainer, false);
+        eventListContainer.addView(eventAdder);
+        eventAdder.setOnClickListener(v -> {
+            CalendarFormFragment dialog = new CalendarFormFragment(eventListContainer);
+            dialog.setOnCalendarEventCreated(this);
+            dialog.show(getParentFragmentManager(), "CalendarFormDialog");
+        });
 
         calendarEventDialog.show();
     }
 
-    private void initBotSuggestionWidgets() {
-        // TODO: Replace placeholders with suggestion from AI (pls set word limits)
+    @Override
+    public void onNewCalendarEventCreated(CalendarEvent event, LinearLayout eventListContainer) {
+        FragmentManager fragmentManager = getParentFragmentManager();
+        Fragment fragment = fragmentManager.findFragmentByTag("CalendarFormDialog");
+        Dialog dialog = fragment instanceof DialogFragment ? ((DialogFragment) fragment).getDialog() : null;
 
-        String[] titles = {"Increase Protein Intake", "Choose complex carbohydrates", "Stay hydrated"};
-        String[] descriptions = {"Increase in take of fish, chicken, eggs, tofu, legumes to...",
-                "Choose complex carbohydrates for example whole grains, vegetables to avoid sugar spikes. Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao." +
-                        "Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao."
-                        +"Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao."
-                        +"Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao."
-                        +"Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao."
-                        +"Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao."
-                        +"Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao."
-                        +"Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.Lorem ipsum dolmao.",
-                "Drink more water, or herbal teas, soups to stay hydrated, because H2O make you human."};
+        if (dialog != null) {
+            LayoutInflater inflater = LayoutInflater.from(requireContext());
+            SimpleDateFormat eventTimeFormat = new SimpleDateFormat("hh:mm", Locale.ENGLISH);
+            View eventView = inflater.inflate(R.layout.calendar_event_popup_item, eventListContainer, false);
+            TextView eventTitleView = eventView.findViewById(R.id.calendarPopupEventTitle);
+            TextView eventTimeView = eventView.findViewById(R.id.calendarPopupEventTime);
+            TextView eventDescView = eventView.findViewById(R.id.calendarPopupEventDesc);
 
-        for (int i = 0; i < titles.length; i++) {
-            addBotSuggestion(titles[i], descriptions[i]);
+            Calendar eventTimeCalendar = (Calendar) event.getEventDateCalendar().first.clone();
+            eventTimeCalendar.add(Calendar.HOUR_OF_DAY, -8);
+
+            eventTitleView.setText(event.getEventTitle());
+            eventTimeView.setText(eventTimeFormat.format(eventTimeCalendar.getTime()));
+            eventDescView.setText(event.getEventDescription());
+
+            eventListContainer.addView(eventView, eventListContainer.getChildCount()-1); // Add before "Add Event" button
         }
+
+        // Update cache after adding new calendar event
+        calendarEventCache.loadEventForDay(userId, event.getEventDateCalendar().first, calendarEventProvider);
     }
 
-    public void addBotSuggestion(String title, String description) {
-        LinearLayout suggestionContainer = view.findViewById(R.id.botSuggestionsBox);
-        LayoutInflater inflater = LayoutInflater.from(requireContext());
-        View suggestionView = inflater.inflate(R.layout.bot_suggestion_view, suggestionContainer, false);
+    private void initBotSuggestionWidgets() {
+        botSuggestionsRecyclerView = view.findViewById(R.id.botSuggestionsRecyclerView);
+    }
 
-        TextView titleView = suggestionView.findViewById(R.id.suggestionTitle);
-        TextView descView = suggestionView.findViewById(R.id.suggestionDesc);
+    public void setBotSuggestionsView() {
+        List<BotSuggestion> botSuggestionsList = botSuggestionProvider.getBotSuggestions();
 
-        titleView.setText(title);
-        descView.setText(description);
-
-        suggestionView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Create a popup view for user to view full text (if text is too long)
-                Dialog botSuggestionDialog = new Dialog(requireActivity());
-                botSuggestionDialog.setContentView(R.layout.bot_suggestion_popup);
-                if (botSuggestionDialog.getWindow() != null) {
-                    WindowManager.LayoutParams params = botSuggestionDialog.getWindow().getAttributes();
-                    params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
-                    params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-                    botSuggestionDialog.getWindow().setAttributes(params);
-                }
-
-                TextView popupTitleView = botSuggestionDialog.findViewById(R.id.suggestionPopupTitle);
-                TextView popupDescView = botSuggestionDialog.findViewById(R.id.suggestionPopupDesc);
-                popupTitleView.setText(title);
-                popupDescView.setText(description);
-
-                botSuggestionDialog.show();
-            }
-        });
-
-        suggestionContainer.addView(suggestionView);
+        BotSuggestionAdapter botSuggestionAdapter = new BotSuggestionAdapter(botSuggestionsList, this);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false);
+        botSuggestionsRecyclerView.setLayoutManager(layoutManager);
+        botSuggestionsRecyclerView.setAdapter(botSuggestionAdapter);
+        botSuggestionsRecyclerView.setNestedScrollingEnabled(false);
     }
 
     private void initUpcomingScheduleWidgets() {
-        // TODO: fetch schedule from database.
-
-        scheduleContainer = view.findViewById(R.id.upcomingScheduleLayout);
-        addSchedule("Aspirin", "Today", "12:00pm", R.drawable.up_schedule_medicine);
-        addSchedule("Lunch", "Today", "12:30pm", R.drawable.up_schedule_meal);
-        addSchedule("Nospirit", "Today", "01:00pm", R.drawable.up_schedule_medicine);
+        scheduleRecyclerView = (RecyclerView) view.findViewById(R.id.upcomingScheduleRecyclerView);
     }
 
-    public void addSchedule(String scheduleName, String scheduleDay, String scheduleTime, int iconResId) {
-        LayoutInflater inflater = LayoutInflater.from(requireContext());
-        View scheduleView = inflater.inflate(R.layout.upcoming_schedule_view, scheduleContainer, false);
-
-        TextView scheduleNameView = scheduleView.findViewById(R.id.upcomingScheduleName);
-        ImageView scheduleIconView = scheduleView.findViewById(R.id.upcomingScheduleIcon);
-        TextView scheduleDayView = scheduleView.findViewById(R.id.upcomingScheduleDay);
-        TextView scheduleTimeView = scheduleView.findViewById(R.id.upcomingScheduleTime);
-
-        scheduleNameView.setText(scheduleName);
-        scheduleDayView.setText(scheduleDay);
-        scheduleTimeView.setText(scheduleTime);
-
-        scheduleIconView.setImageResource(iconResId);
-        scheduleContainer.addView(scheduleView);
+    public void setUpcomingSchedules() {
+        upcomingScheduleProvider.getTodaySchedules(userId, new DatabaseUpcomingScheduleProvider.OnDataLoadedCallback() {
+            @Override
+            public void onDataLoaded(List<UpcomingSchedule> upcomingScheduleList) {
+                if(getActivity() != null) {
+                    getActivity().runOnUiThread(() -> {
+                        UpcomingScheduleAdapter upcomingScheduleAdapter = new UpcomingScheduleAdapter(upcomingScheduleList, HomeFragment.this);
+                        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
+                        scheduleRecyclerView.setLayoutManager(layoutManager);
+                        scheduleRecyclerView.setAdapter(upcomingScheduleAdapter);
+                    });
+                }
+            }
+        });
     }
 
+    public void onBotSuggestionClick(int position, List<BotSuggestion> botSuggestions) {
+        BotSuggestion botSuggestion = botSuggestions.get(position);
+        Dialog botSuggestionDialog = new Dialog(requireActivity());
+        botSuggestionDialog.setContentView(R.layout.bot_suggestion_popup);
+        if (botSuggestionDialog.getWindow() != null) {
+            WindowManager.LayoutParams params = botSuggestionDialog.getWindow().getAttributes();
+            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            botSuggestionDialog.getWindow().setAttributes(params);
+        }
+
+        TextView popupTitleView = botSuggestionDialog.findViewById(R.id.suggestionPopupTitle);
+        TextView popupDescView = botSuggestionDialog.findViewById(R.id.suggestionPopupDesc);
+        popupTitleView.setText(botSuggestion.getTitle());
+        popupDescView.setText(botSuggestion.getDescription());
+
+        botSuggestionDialog.show();
+    }
+
+    @Override
+    public void onScheduleItemClick(int position, List<UpcomingSchedule> upcomingSchedules) {
+        UpcomingSchedule schedule = upcomingSchedules.get(position);
+
+        Toast.makeText(requireContext(), upcomingSchedules.get(position).getScheduleTitle(), Toast.LENGTH_SHORT).show();
+        Dialog dialog = new Dialog(requireActivity());
+        dialog.setContentView(R.layout.upcoming_schedule_popup);
+        if (dialog.getWindow() != null) {
+            WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
+            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            dialog.getWindow().setAttributes(params);
+        }
+
+        TextView titleView = dialog.findViewById(R.id.upcomingSchedulePopupTitle);
+        TextView descpView = dialog.findViewById(R.id.upcomingSchedulePopupDescription);
+
+        titleView.setText(schedule.getScheduleTitle());
+        descpView.setText(schedule.getScheduleDescription());
+
+        MaterialButton takenButton = dialog.findViewById(R.id.takenButton);
+        takenButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Call<Void> call = upcomingScheduleService.takeMedicine(schedule.getId());
+                call.enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {
+                        Log.d("debug", "we can take it!!!");
+                        dialog.dismiss();
+                    }
+
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
+                        Log.d("debug", "we cannot take it!!! idk why" + t.getMessage());
+                    }
+                });
+            }
+        });
+
+        dialog.show();
+    }
 }

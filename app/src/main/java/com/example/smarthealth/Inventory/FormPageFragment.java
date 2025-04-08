@@ -1,11 +1,13 @@
 package com.example.smarthealth.Inventory;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.DatePickerDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -16,7 +18,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.text.TextUtils;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -35,6 +37,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -43,12 +46,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.smarthealth.R;
+import com.example.smarthealth.api_service.MedicineDto;
+import com.example.smarthealth.api_service.MedicineService;
+import com.example.smarthealth.api_service.RetrofitClient;
+
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class FormPageFragment extends DialogFragment {
     private Uri camUri;
@@ -56,13 +65,15 @@ public class FormPageFragment extends DialogFragment {
     private Button openCameraButton, uploadImageButton;
     private LinearLayout tagChosen;
     final int MAX_SELECTED = 2;
+    private MedicineService medicineService;
+    private long userId;
+    private SharedPreferences sharedPreferences;
     private final ActivityResultLauncher<Intent> galleryLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
         @Override
         public void onActivityResult(ActivityResult result) {
             if (result.getResultCode() == requireActivity().RESULT_OK && result.getData() != null) {
                 Uri imageUri = result.getData().getData();
                 if (popupImageView != null) {
-                    // Update the popup's ImageView
                     popupImageView.setImageURI(imageUri);
                     uploadImageButton.setVisibility(View.GONE);
                     openCameraButton.setVisibility(View.GONE);
@@ -106,6 +117,10 @@ public class FormPageFragment extends DialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         setStyle(DialogFragment.STYLE_NO_TITLE, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+        medicineService = RetrofitClient.getInstance().create(MedicineService.class);
+        sharedPreferences = getActivity().getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        userId = sharedPreferences.getLong("userId", -1);
+        Log.d("User_ID", "current User_ID: " + userId);
         View popupView = inflater.inflate(R.layout.form_fillup, null);
         popupImageView = popupView.findViewById(R.id.image);
         openCameraButton = popupView.findViewById(R.id.open_camera);
@@ -159,7 +174,7 @@ public class FormPageFragment extends DialogFragment {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     showMultiSelectDialog(tagChosen, mediTag, selectedItems, selectedTags);
                 }
-                return true; // Prevents default spinner behavior
+                return true;
             }
         });
 
@@ -192,7 +207,7 @@ public class FormPageFragment extends DialogFragment {
                 // Pass corresponding parameters
                 if (mediName.isEmpty() || mediDosage.isEmpty() || amount.isEmpty() || mediSideEffect.isEmpty() ||
                     mediContains.isEmpty() || imageView.getDrawable() == null || Integer.parseInt(amount) > 999
-                || Integer.parseInt(amount) <= 0 || tagList.isEmpty()) {
+                || Integer.parseInt(amount) <= 0) {
                     if (mediName.isEmpty()) {
                         nameView.setError("Required");
                     }
@@ -217,27 +232,40 @@ public class FormPageFragment extends DialogFragment {
                     if(Integer.parseInt(amount) <= 0){
                         amountView.setError("Amount greater than 0");
                     }
-                    if(tagList.isEmpty()){
-                        Toast.makeText(requireContext(), "Please choose a tag", Toast.LENGTH_SHORT).show();
-                    }
-
 
                     return;
                 } else {
                     int mediAmount = Integer.parseInt(amount);
                     byte[] imageData = drawableToByteArray(image);
 
-                    Bundle result = new Bundle();
-                    result.putString("Name", mediName);
-                    result.putString("Category", type);
-                    result.putInt("Amount", mediAmount);
-                    result.putByteArray("Image", imageData);
-                    result.putString("Dosage", mediDosage);
-                    result.putString("Contains", mediContains);
-                    result.putString("Side Effect", mediSideEffect);
-                    result.putStringArrayList("Tags",tagList);
+                    MedicineDto medicineDto = new MedicineDto(
+                            mediName,
+                            mediAmount,
+                            type,
+                            imageData,
+                            mediDosage,
+                            mediContains,
+                            String.join(",",tagList),
+                            mediSideEffect
+                    );
 
-                    getParentFragmentManager().setFragmentResult("medicineData", result);
+                    Call<MedicineDto> call = medicineService.createMedicine(userId, medicineDto);
+
+                    call.enqueue(new Callback<MedicineDto>() {
+                        @Override
+                        public void onResponse(Call<MedicineDto> call, Response<MedicineDto> response) {
+                            Log.d("debug", "calling this one");
+                            if(response.isSuccessful() && response.body() != null){
+//                                Toast.makeText(getContext(), "Add Medicine Successfully!", Toast.LENGTH_SHORT).show();
+                                Log.d("debug", "Add Medicine Successfully!");
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<MedicineDto> call, Throwable t) {
+                            Log.d("debug", "Network Error!" + t.getMessage());
+                        }
+                    });
                     dismiss();
                 }
             };

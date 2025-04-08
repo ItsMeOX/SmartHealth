@@ -205,14 +205,8 @@
                 app:cornerRadius="50dp"
                 android:layout_marginVertical="10dp"
                 >
-            </com.google.android.material.button.MaterialButton>medicine_fullview.xml
-
-
-
+            </com.google.android.material.button.MaterialButton>
         </LinearLayout>
-
-
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

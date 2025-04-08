@@ -1,6 +1,7 @@
 <resources>
-    <string name="app_name">Infosys</string>
+    <string name="app_name">Smart Health</string>
     <string name="app_title">SMART HEALTH</string>
+    <string name="my_gmap_api_key">AIzaSyC5eDKXidF6dZRHbelzMi4op5VKKIVedDg</string>
     <string name="slide_view_inventory">Medicine Inventory</string>
     <string name="inventory_pills">Pills</string>
     <string name="inventory_liquids">Liquids</string>
@@ -26,13 +27,11 @@
     <string name="back_arrow">Back Arrow</string>
     <string name="key_in_amount">Key in Amount</string>
     <string name="fill_with_history">Fill With History</string>
-
     <string-array name="formMediCategory">
         <item>Pills</item>
         <item>Liquids</item>
         <item>Others</item>
     </string-array>
-
     <string-array name="formMediTag">
         <item>AntiBiotics</item>
         <item>Cough</item>
@@ -47,8 +46,4 @@
         <item>Painkiller</item>
         <item>Others</item>
     </string-array>
-
-
-
-
 </resources>

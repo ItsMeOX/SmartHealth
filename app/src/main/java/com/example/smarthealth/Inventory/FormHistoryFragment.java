@@ -1,10 +1,10 @@
 package com.example.smarthealth.Inventory;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
-import static androidx.core.content.ContextCompat.getSystemService;
+import static android.content.Context.MODE_PRIVATE;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -13,8 +13,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -26,27 +26,36 @@ import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.example.smarthealth.R;
+import com.example.smarthealth.api_service.MedicineDto;
+import com.example.smarthealth.api_service.MedicineService;
+import com.example.smarthealth.api_service.RetrofitClient;
 import com.google.android.material.button.MaterialButton;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class FormHistoryFragment extends DialogFragment {
     private AutoCompleteTextView searchBar;
     private ArrayList<MedicineButton> medicineList;
+    private MedicineService medicineService;
+    private long userId;
+    private SharedPreferences sharedPreferences;
+    private InputMethodManager inputMethodManager;
 
     @Override
     public void onStart() {
@@ -63,6 +72,12 @@ public class FormHistoryFragment extends DialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         setStyle(DialogFragment.STYLE_NO_TITLE, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+
+        medicineService = RetrofitClient.getInstance().create(MedicineService.class);
+        sharedPreferences = getActivity().getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        userId = sharedPreferences.getLong("userId", -1);
+        Log.d("User_ID", "current User_ID: " + userId);
+
         View popupView = inflater.inflate(R.layout.form_history, null);
 
         // Exit Dialog Fragment
@@ -76,171 +91,45 @@ public class FormHistoryFragment extends DialogFragment {
 
         // Medicine List Setup
         medicineList = new ArrayList<>();
-        ArrayList<String> list = new ArrayList<>();
-        list.add("Cough");
-        list.add("Diarrhoea");
-        medicineList.add(new MedicineButton(
-                "Paracetamol",
-                "Pills",
-                90,
-                ContextCompat.getDrawable(requireContext(), R.drawable.app_logo),
-                "Info",
-                "Tel",
-                "Side Effect",
-                list));
 
-        medicineList.add(new MedicineButton(
-                "Fever",
-                "Liquids",
-                100,
-                ContextCompat.getDrawable(requireContext(), R.drawable.clock),
-                "Info",
-                "Lol",
-                "Side Effect",
-                list));
+        Call<List<MedicineDto>> call = medicineService.getAllMedicinesByUser(userId);
+        call.enqueue(new Callback<List<MedicineDto>>() {
+            @Override
+            public void onResponse(Call<List<MedicineDto>> call, Response<List<MedicineDto>> response) {
+                if(response.isSuccessful() && response.body() != null){
+                    for(MedicineDto medicineDto : response.body()){
+                        MedicineButton medicineButton = new MedicineButton(
+                                medicineDto.getId(),
+                                medicineDto.getMedicineName(),
+                                medicineDto.getMedicineCategory(),
+                                medicineDto.getMedicineAmount(),
+                                byteArrayToDrawable(medicineDto.getMedicineImage()),
+                                medicineDto.getMedicineDosage(),
+                                medicineDto.getMedicineContains(),
+                                medicineDto.getMedicineSideEffect(),
+                                new ArrayList<>(
+                                        Arrays.asList(medicineDto.getMedicineType().split(","))
+                                )
+                        );
 
-        medicineList.add(new MedicineButton(
-                "PainKiller",
-                "Others",
-                200,
-                ContextCompat.getDrawable(requireContext(), R.drawable.camera),
-                "Info",
-                "Lpo",
-                "Side Effect",
-                list
-        ));
+                        medicineList.add(medicineButton);
+                    }
+                }
+            }
 
-        medicineList.add(new MedicineButton(
-                "Fever",
-                "Liquids",
-                100,
-                ContextCompat.getDrawable(requireContext(), R.drawable.clock),
-                "Info",
-                "Lol",
-                "Side Effect",
-                list
-        ));
-
-        medicineList.add(new MedicineButton(
-                "Fever",
-                "Liquids",
-                100,
-                ContextCompat.getDrawable(requireContext(), R.drawable.clock),
-                "Info",
-                "Lol",
-                "Side Effect",
-                list
-        ));
-
-        medicineList.add(new MedicineButton(
-                "Fever",
-                "Liquids",
-                100,
-                ContextCompat.getDrawable(requireContext(), R.drawable.clock),
-                "Info",
-                "Lol",
-                "Side Effect",
-                list
-        ));
-
-        medicineList.add(new MedicineButton(
-                "Fever",
-                "Liquids",
-                100,
-                ContextCompat.getDrawable(requireContext(), R.drawable.clock),
-                "Info",
-                "Lol",
-                "Side Effect",
-                list
-        ));
-
-        medicineList.add(new MedicineButton(
-                "Fever",
-                "Liquids",
-                100,
-                ContextCompat.getDrawable(requireContext(), R.drawable.clock),
-                "Info",
-                "Lol",
-                "Side Effect",
-                list
-        ));
-
-        medicineList.add(new MedicineButton(
-                "Fever",
-                "Liquids",
-                100,
-                ContextCompat.getDrawable(requireContext(), R.drawable.clock),
-                "Info",
-                "Lol",
-                "Side Effect",
-                list
-        ));
-
-        medicineList.add(new MedicineButton(
-                "Fever",
-                "Liquids",
-                100,
-                ContextCompat.getDrawable(requireContext(), R.drawable.clock),
-                "Info",
-                "Lol",
-                "Side Effect",
-                list
-        ));
-
-        medicineList.add(new MedicineButton(
-                "Fever",
-                "Liquids",
-                100,
-                ContextCompat.getDrawable(requireContext(), R.drawable.clock),
-                "Info",
-                "Lol",
-                "Side Effect",
-                list
-        ));
-
-        medicineList.add(new MedicineButton(
-                "Fever",
-                "Liquids",
-                100,
-                ContextCompat.getDrawable(requireContext(), R.drawable.clock),
-                "Info",
-                "Lol",
-                "Side Effect",
-                list
-        ));
-
-        medicineList.add(new MedicineButton(
-                "Fever",
-                "Liquids",
-                100,
-                ContextCompat.getDrawable(requireContext(), R.drawable.clock),
-                "Info",
-                "Lol",
-                "Side Effect",
-                list
-        ));
-
-        medicineList.add(new MedicineButton(
-                "Fever",
-                "Liquids",
-                100,
-                ContextCompat.getDrawable(requireContext(), R.drawable.clock),
-                "Info",
-                "Lol",
-                "Side Effect",
-                list
-        ));
-
+            @Override
+            public void onFailure(Call<List<MedicineDto>> call, Throwable t) {
+                Log.d("debug", "Not Adding Okay at Searching!");
+            }
+        });
 
         searchBar = popupView.findViewById(R.id.searchBar);
-//        inputMethodManager = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
 
         MedicineSearchBarAdapter adapter = new MedicineSearchBarAdapter(requireContext(), medicineList);
         searchBar.setAdapter(adapter);
         searchBar.setThreshold(1);
 
         searchBar.setOnTouchListener(new View.OnTouchListener() {
-            @SuppressLint("ClickableViewAccessibility")
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
@@ -295,11 +184,11 @@ public class FormHistoryFragment extends DialogFragment {
                         Drawable image = imageView.getDrawable();
 
                         ArrayList<String> tagList = new ArrayList<>();
-                        for (int i = 0; i < tagChosen.getChildCount(); i++){
+                        for (int i = 0; i < tagChosen.getChildCount(); i++) {
                             View child = tagChosen.getChildAt(i);
 
                             // Check if the child is a TextView
-                            if (child instanceof TextView){
+                            if (child instanceof TextView) {
                                 TextView tagView = (TextView) child;
                                 String tagText = tagView.getText().toString();
                                 tagList.add(tagText);
@@ -309,27 +198,39 @@ public class FormHistoryFragment extends DialogFragment {
                         // Check for empty fields (adjust this logic as needed)
                         if (amount.getText().toString().isEmpty()) {
                             Toast.makeText(getContext(), "Please Key in Amount", Toast.LENGTH_SHORT).show();
-                            return;
                         }
                         if (Integer.parseInt(amount.getText().toString().trim()) < 0 || Integer.parseInt(amount.getText().toString().trim()) > 999) {
                             Toast.makeText(getContext(), "Enter number between 0 and 999", Toast.LENGTH_SHORT).show();
-                            return;
                         } else {
-                            byte[] imageData = drawableToByteArray(image);
                             int mediAmount = Integer.parseInt(amount.getText().toString().trim());
+                            byte[] imageData = drawableToByteArray(image);
 
-                            // Create the Bundle to pass data
-                            Bundle result = new Bundle();
-                            result.putString("Name", mediName);
-                            result.putString("Category", category);
-                            result.putInt("Amount", mediAmount);
-                            result.putByteArray("Image", imageData);
-                            result.putString("Dosage", mediDosage);
-                            result.putString("Contains", mediContains);
-                            result.putString("Side Effect", mediSideEffect);
-                            result.putStringArrayList("Tags", tagList);
+                            MedicineDto medicineDto = new MedicineDto(
+                                    mediName,
+                                    mediAmount,
+                                    category,
+                                    imageData,
+                                    mediDosage,
+                                    mediContains,
+                                    String.join(",",tagList),
+                                    mediSideEffect
+                            );
 
-                            getParentFragmentManager().setFragmentResult("History Data", result);
+                            Call<MedicineDto> call = medicineService.createMedicine(userId, medicineDto);
+
+                            call.enqueue(new Callback<MedicineDto>() {
+                                @Override
+                                public void onResponse(Call<MedicineDto> call, Response<MedicineDto> response) {
+                                    if(response.isSuccessful() && response.body() != null){
+                                        Log.d("debug", "Add Medicine Successfully at History!");
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<MedicineDto> call, Throwable t) {
+                                    Log.d("debug", "Error" + t.getMessage());
+                                }
+                            });
                             dismiss();
                         }
                     }
@@ -359,5 +260,11 @@ public class FormHistoryFragment extends DialogFragment {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
         return stream.toByteArray();
+    }
+
+    private Drawable byteArrayToDrawable(byte[] imageData) {
+        if (imageData == null) return null;
+        Bitmap bitmap = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
+        return new BitmapDrawable(getResources(), bitmap);
     }
 }

@@ -1,50 +1,87 @@
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:layout_marginBottom="1dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:paddingHorizontal="24dp"
-    android:paddingVertical="20dp"
-    android:background="@drawable/floating_box_background"
-    >
-
-    <TextView
-        android:id="@+id/calendarPopupEventTitle"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:fontFamily="@font/inter_semibold"
-        android:text="Event Name"
-        android:textColor="@color/black"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-    />
+        android:paddingHorizontal="16dp"
+        android:background="@color/white"
+        android:paddingVertical="22dp"
+        >
 
-    <TextView
-        android:id="@+id/calendarPopupEventTime"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="14sp"
-        android:text="12:30pm"
-        android:layout_marginTop="5dp"
-        app:layout_constraintTop_toBottomOf="@id/calendarPopupEventTitle"
-        app:layout_constraintBottom_toTopOf="@id/calendarPopupEventDesc"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/calendarPopupTimeLayout"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:background="@drawable/calendar_popup_time_bg"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
 
-    <TextView
-        android:id="@+id/calendarPopupEventDesc"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="14sp"
-        android:text="Event description"
-        android:fontFamily="@font/inter_medium"
-        android:layout_marginTop="5dp"
-        app:layout_constraintTop_toBottomOf="@id/calendarPopupEventTime"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+            <TextView
+                android:id="@+id/calendarPopupEventTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:text="12:30"
+                android:textAlignment="center"
+                android:textColor="#6A4B0A"
+                android:fontFamily="@font/inter_semibold"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_marginBottom="20dp"
+                />
+
+            <TextView
+                android:id="@+id/calendarPopupEventTimeAmPm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:text="AM"
+                android:textAlignment="center"
+                android:textColor="#6A4B0A"
+                android:fontFamily="@font/inter_semibold"
+                app:layout_constraintTop_toBottomOf="@id/calendarPopupEventTime"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                />
 
 
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <TextView
+            android:id="@+id/calendarPopupEventTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:fontFamily="@font/inter_semibold"
+            android:text="Event Name"
+            android:textColor="@color/darkgray"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/calendarPopupTimeLayout"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginStart="16dp"
+            />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/calendarPopupEventDesc"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:text="Event description"
+            android:textColor="@color/lightgray"
+            android:fontFamily="@font/inter_medium"
+            app:layout_constraintTop_toBottomOf="@id/calendarPopupEventTitle"
+            app:layout_constraintLeft_toRightOf="@id/calendarPopupTimeLayout"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginStart="16dp"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

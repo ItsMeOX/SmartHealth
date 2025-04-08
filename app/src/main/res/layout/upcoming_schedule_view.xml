@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="160dp"
-    android:layout_height="160dp"
+    android:layout_height="170dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/floating_box_background"
     android:gravity="center_horizontal"
     android:orientation="vertical"
@@ -13,7 +13,10 @@
         android:contentDescription="upcoming schedule type"
         android:layout_width="20dp"
         android:layout_height="20dp"
-        android:src="@drawable/up_schedule_medicine" />
+        android:src="@drawable/up_schedule_medicine"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <TextView
         android:id="@+id/upcomingScheduleName"
@@ -21,7 +24,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:text="Aspirin"
-        android:textColor="@color/black" />
+        android:textColor="@color/black"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/upcomingScheduleIcon"/>
 
     <TextView
         android:id="@+id/upcomingScheduleDay"
@@ -29,12 +35,19 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="17dp"
         android:textColor="@color/lightgray"
-        android:text="Today" />
+        android:text="Today"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/upcomingScheduleTime"
+        />
 
     <TextView
         android:id="@+id/upcomingScheduleTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="12:00pm"
-        android:textColor="@color/black" />
-</LinearLayout>
+        android:textColor="@color/black"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

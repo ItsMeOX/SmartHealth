@@ -1,5 +1,7 @@
 package com.example.smarthealth.Inventory;
+
 import androidx.lifecycle.ViewModel;
+
 import java.util.ArrayList;
 
 public class SVMInventory extends ViewModel {

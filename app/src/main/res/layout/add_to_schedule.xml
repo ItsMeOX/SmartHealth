@@ -6,6 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/intakeTextField"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
@@ -19,132 +20,171 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"
             android:hint="Intake Per Day"
-            android:inputType="number"
-            >
-        </com.google.android.material.textfield.TextInputEditText>
+            android:inputType="number"></com.google.android.material.textfield.TextInputEditText>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/eventDateMedicineTextField"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="90dp"
+        android:hint="yyyy-mm-dd - yyyy-mm-dd"
+        app:boxStrokeColor="@color/lightgray"
+        android:textColorHint="@color/lightgray"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        app:startIconDrawable="@drawable/calendar_date"
+        app:startIconTint="@color/black"
+        app:layout_constraintTop_toBottomOf="@id/intakeTextField"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="20dp"
         >
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/dosage"
+            android:id="@+id/eventDateMedicineEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:hint="Dosage Per Intake (Tabs/mL)"
-            android:inputType="number"
-            >
-        </com.google.android.material.textfield.TextInputEditText>
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_marginTop="160dp"
-        >
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/time1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:hint="Time Taken 1: Input: 00:00"
-            android:inputType="time"
-            >
-        </com.google.android.material.textfield.TextInputEditText>
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_marginTop="230dp"
-        >
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/time2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:hint="Time Taken 2: Input: 00:00"
-            android:inputType="time"
-            >
-        </com.google.android.material.textfield.TextInputEditText>
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/time3Layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_marginTop="300dp"
-        >
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/time3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:hint="Time Taken 3: Input: 00:00"
-            android:inputType="time"
-            >
-        </com.google.android.material.textfield.TextInputEditText>
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <LinearLayout
-        android:id="@+id/dateSelection"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:weightSum="2"
-        app:layout_constraintTop_toBottomOf="@+id/time3Layout"
-        >
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/dateSelect1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            style="?android:spinnerStyle"
-            android:layout_weight="1"
-            android:text="Start Date"
             android:textColor="@color/black"
-            android:textSize="20sp"
-            android:onClick="openDateSelect"
-            >
-        </com.google.android.material.button.MaterialButton>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/dateSelect2"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"
-            style="?android:spinnerStyle"
-            android:layout_weight="1"
-            android:text="End Date"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            android:onClick="openDateSelect"
-            >
-        </com.google.android.material.button.MaterialButton>
+            android:focusable="false"
+            android:clickable="true"
+            android:inputType="none"
+            android:focusableInTouchMode="true"
+            android:cursorVisible="false"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
 
-    </LinearLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/eventTimeMedicineTextField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="HH:mm - HH:mm"
+        app:boxStrokeColor="@color/lightgray"
+        android:textColorHint="@color/lightgray"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        app:startIconDrawable="@drawable/calendar_time"
+        app:startIconTint="@color/black"
+        app:layout_constraintTop_toBottomOf="@id/eventDateMedicineTextField"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="20dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/eventTimeMedicineEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:layout_marginHorizontal="20dp"
+            android:focusable="false"
+            android:clickable="true"
+            android:inputType="none"
+            android:focusableInTouchMode="true"
+            android:cursorVisible="false"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
+<!--    <com.google.android.material.textfield.TextInputLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"-->
+<!--        android:layout_marginTop="90dp"-->
+<!--        >-->
+
+<!--        <com.google.android.material.textfield.TextInputEditText-->
+<!--            android:id="@+id/time1"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginHorizontal="20dp"-->
+<!--            android:hint="Time Taken 1: Input: 00:00"-->
+<!--            android:inputType="time"-->
+<!--            >-->
+<!--        </com.google.android.material.textfield.TextInputEditText>-->
+<!--    </com.google.android.material.textfield.TextInputLayout>-->
+
+<!--    <com.google.android.material.textfield.TextInputLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"-->
+<!--        android:layout_marginTop="160dp"-->
+<!--        >-->
+
+<!--        <com.google.android.material.textfield.TextInputEditText-->
+<!--            android:id="@+id/time2"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginHorizontal="20dp"-->
+<!--            android:hint="Time Taken 2: Input: 00:00"-->
+<!--            android:inputType="time"-->
+<!--            >-->
+<!--        </com.google.android.material.textfield.TextInputEditText>-->
+<!--    </com.google.android.material.textfield.TextInputLayout>-->
+
+<!--    <com.google.android.material.textfield.TextInputLayout-->
+<!--        android:id="@+id/time3Layout"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"-->
+<!--        android:layout_marginTop="230dp"-->
+<!--        >-->
+
+<!--        <com.google.android.material.textfield.TextInputEditText-->
+<!--            android:id="@+id/time3"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginHorizontal="20dp"-->
+<!--            android:hint="Time Taken 3: Input: 00:00"-->
+<!--            android:inputType="time"-->
+<!--            >-->
+<!--        </com.google.android.material.textfield.TextInputEditText>-->
+<!--    </com.google.android.material.textfield.TextInputLayout>-->
+
+<!--    <LinearLayout-->
+<!--        android:id="@+id/dateSelection"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:weightSum="2"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/time3Layout"-->
+<!--        >-->
+<!--        <com.google.android.material.button.MaterialButton-->
+<!--            android:id="@+id/dateSelect1"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginHorizontal="20dp"-->
+<!--            style="?android:spinnerStyle"-->
+<!--            android:layout_weight="1"-->
+<!--            android:text="Start Date"-->
+<!--            android:textColor="@color/black"-->
+<!--            android:textSize="20sp"-->
+<!--            android:onClick="openDateSelect"-->
+<!--            >-->
+<!--        </com.google.android.material.button.MaterialButton>-->
+
+<!--        <com.google.android.material.button.MaterialButton-->
+<!--            android:id="@+id/dateSelect2"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginHorizontal="20dp"-->
+<!--            style="?android:spinnerStyle"-->
+<!--            android:layout_weight="1"-->
+<!--            android:text="End Date"-->
+<!--            android:textColor="@color/black"-->
+<!--            android:textSize="20sp"-->
+<!--            android:onClick="openDateSelect"-->
+<!--            >-->
+<!--        </com.google.android.material.button.MaterialButton>-->
+
+<!--    </LinearLayout>-->
 
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/confirm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/dateSelection"
+        app:layout_constraintTop_toBottomOf="@+id/eventTimeMedicineTextField"
         android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="20dp"
         app:cornerRadius="50dp"
         android:text="@string/confirm"
         android:textSize="20sp"
