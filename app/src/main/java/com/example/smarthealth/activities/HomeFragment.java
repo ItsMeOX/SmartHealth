@@ -85,19 +85,17 @@ public class HomeFragment extends Fragment implements
     private UpcomingScheduleProvider upcomingScheduleProvider;
     private BotSuggestionProvider botSuggestionProvider;
     private CalendarEventCache calendarEventCache;
+    private CalendarAdapter calendarAdapter;
     private View view; // main view for this fragment
-    private SharedPreferences sharedPreferences;
     private long userId;
-    private ProfileService profileService;
     private UpcomingScheduleService upcomingScheduleService;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.home_fragment, container, false);
 
-        sharedPreferences = getActivity().getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyPrefs", MODE_PRIVATE);
         userId = sharedPreferences.getLong("userId", -1);
-        profileService = RetrofitClient.getInstance().create(ProfileService.class);
         upcomingScheduleService = RetrofitClient.getInstance().create(UpcomingScheduleService.class);
 
         calendarEventProvider = new DatabaseCalendarEventProvider();
@@ -140,7 +138,7 @@ public class HomeFragment extends Fragment implements
         ArrayList<Calendar> daysInMonth = results.first;
         int currentDatePosition = results.second;
 
-        CalendarAdapter calendarAdapter = new CalendarAdapter(daysInMonth, calendarEventCache, currentDatePosition, this);
+        calendarAdapter = new CalendarAdapter(daysInMonth, calendarEventCache, currentDatePosition, this);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(requireContext(), 7);
         calendarRecyclerView.setLayoutManager(layoutManager);
         calendarRecyclerView.setAdapter(calendarAdapter);
@@ -384,7 +382,7 @@ public class HomeFragment extends Fragment implements
         SimpleDateFormat amPmFormat = new SimpleDateFormat("aa", Locale.ENGLISH);
 
         Calendar currCalendar = (Calendar) daysOfMonth.get(position).clone();
-        List<CalendarEvent> calendarEvents = calendarEventCache.getEventsForDay(userId, currCalendar);
+        List<CalendarEvent> calendarEvents = calendarEventCache.getEventsForDay(currCalendar);
         for (CalendarEvent calendarEvent : calendarEvents) {
             View eventView = inflater.inflate(R.layout.calendar_event_popup_item, eventListContainer, false);
             TextView eventTitleView = eventView.findViewById(R.id.calendarPopupEventTitle);
@@ -397,6 +395,7 @@ public class HomeFragment extends Fragment implements
             eventListContainer.addView(eventView);
             eventTimeAmPmView.setText(amPmFormat.format(calendarEvent.getEventDateCalendar().first.getTime()));
         }
+
 
         Button eventAdder = (Button) inflater.inflate(R.layout.calendar_event_popup_add, eventListContainer, false);
         eventListContainer.addView(eventAdder);
@@ -415,26 +414,24 @@ public class HomeFragment extends Fragment implements
         Fragment fragment = fragmentManager.findFragmentByTag("CalendarFormDialog");
         Dialog dialog = fragment instanceof DialogFragment ? ((DialogFragment) fragment).getDialog() : null;
 
-        if (dialog != null) {
-            LayoutInflater inflater = LayoutInflater.from(requireContext());
-            SimpleDateFormat eventTimeFormat = new SimpleDateFormat("hh:mm", Locale.ENGLISH);
-            View eventView = inflater.inflate(R.layout.calendar_event_popup_item, eventListContainer, false);
-            TextView eventTitleView = eventView.findViewById(R.id.calendarPopupEventTitle);
-            TextView eventTimeView = eventView.findViewById(R.id.calendarPopupEventTime);
-            TextView eventDescView = eventView.findViewById(R.id.calendarPopupEventDesc);
+        LayoutInflater inflater = LayoutInflater.from(requireContext());
+        SimpleDateFormat eventTimeFormat = new SimpleDateFormat("hh:mm", Locale.ENGLISH);
+        View eventView = inflater.inflate(R.layout.calendar_event_popup_item, eventListContainer, false);
+        TextView eventTitleView = eventView.findViewById(R.id.calendarPopupEventTitle);
+        TextView eventTimeView = eventView.findViewById(R.id.calendarPopupEventTime);
+        TextView eventDescView = eventView.findViewById(R.id.calendarPopupEventDesc);
 
-            Calendar eventTimeCalendar = (Calendar) event.getEventDateCalendar().first.clone();
-            eventTimeCalendar.add(Calendar.HOUR_OF_DAY, -8);
+        Calendar eventTimeCalendar = (Calendar) event.getEventStartCalendar().clone();
+        eventTimeCalendar.add(Calendar.HOUR_OF_DAY, -8);
 
-            eventTitleView.setText(event.getEventTitle());
-            eventTimeView.setText(eventTimeFormat.format(eventTimeCalendar.getTime()));
-            eventDescView.setText(event.getEventDescription());
+        eventTitleView.setText(event.getEventTitle());
+        eventTimeView.setText(eventTimeFormat.format(eventTimeCalendar.getTime()));
+        eventDescView.setText(event.getEventDescription());
 
-            eventListContainer.addView(eventView, eventListContainer.getChildCount()-1); // Add before "Add Event" button
-        }
+        eventListContainer.addView(eventView, eventListContainer.getChildCount()-1); // Add before "Add Event" button
 
         // Update cache after adding new calendar event
-        calendarEventCache.loadEventForDay(userId, event.getEventDateCalendar().first, calendarEventProvider);
+        calendarEventCache.loadEventForDay(userId, event.getEventDateCalendar().first, calendarEventProvider, calendarAdapter::notifyDataSetChanged);
     }
 
     private void initBotSuggestionWidgets() {
