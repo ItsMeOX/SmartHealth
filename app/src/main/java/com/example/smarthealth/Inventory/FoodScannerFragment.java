@@ -20,8 +20,12 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.smarthealth.R;
+import com.example.smarthealth.activities.EditProfileFragment;
+import com.example.smarthealth.activities.HomeFragment;
 import com.example.smarthealth.nutrient_intake.DatabaseNutrientIntakeProvider;
 import com.google.android.material.button.MaterialButton;
 
@@ -78,12 +82,20 @@ public class FoodScannerFragment extends DialogFragment {
                     callAPI(base64String, new OnNutrientParsedCallback() {
                         @Override
                         public void onParsed(List<Double> nutrientValues) {
+                            Log.d("debug", "nutrientValues "+nutrientValues);
                             if (nutrientValues != null) {
+                                Log.d("debug", "inside nutrientValues");
                                 DatabaseNutrientIntakeProvider dbProvider = new DatabaseNutrientIntakeProvider();
                                 dbProvider.updateNutrientIntake(userId, nutrientValues, new DatabaseNutrientIntakeProvider.OnIntakeUpdateCallback() {
                                     @Override
                                     public void onIntakeUpdate(boolean success) {
                                         if(success){
+                                            Fragment homeFragment = new HomeFragment();
+                                            FragmentTransaction transaction = getActivity()
+                                                    .getSupportFragmentManager()
+                                                    .beginTransaction();
+                                            transaction.replace(R.id.fragmentContainer, homeFragment);
+                                            transaction.commit();
                                             Log.d("debug", "nutrient intake added!");
                                         } else {
                                             Log.d("debug", "nutrient intake failed!");
@@ -130,28 +142,25 @@ public class FoodScannerFragment extends DialogFragment {
                     JSONObject jsonObject = null;
                     try {
                         jsonObject = new JSONObject(response.body().string());
-                        Log.d("debug", jsonObject.toString());
                         JSONArray outputArray = jsonObject.getJSONArray("output");
-                        Log.d("debug", outputArray + "");
                         JSONObject messageObject = outputArray.getJSONObject(0);
-                        Log.d("debug", messageObject + "");
                         JSONArray contentArray = messageObject.getJSONArray("content");
-                        Log.d("debug", contentArray + "");
-                        JSONObject image_result = contentArray.getJSONObject(0).getString();
-                        Log.d("debug", image_result + "");
+                        String image_result = contentArray.getJSONObject(0).getString("text");
+                        Log.d("debug", image_result);
+                        //  "{"Name":"Japanese Milk Bread","Carbs":"50","Proteins":"8","Fats":"4","Fibre":"2","Sugars":"6","Sodium":"0.4"}"
 
+                        JSONObject object = new JSONObject(image_result);
                         List<Double> nutrients = new ArrayList<>();
-                        nutrients.add(Double.parseDouble(jsonObject.getString("Carbs")));
-                        nutrients.add(Double.parseDouble(jsonObject.getString("Proteins")));
-                        nutrients.add(Double.parseDouble(jsonObject.getString("Fats")));
-                        nutrients.add(Double.parseDouble(jsonObject.getString("Fibre")));
-                        nutrients.add(Double.parseDouble(jsonObject.getString("Sugars")));
-                        nutrients.add(Double.parseDouble(jsonObject.getString("Sodium")));
+                        nutrients.add(Double.parseDouble(object.getString("Carbs")));
+                        nutrients.add(Double.parseDouble(object.getString("Proteins")));
+                        nutrients.add(Double.parseDouble(object.getString("Fats")));
+                        nutrients.add(Double.parseDouble(object.getString("Fibre")));
+                        nutrients.add(Double.parseDouble(object.getString("Sugars")));
+                        nutrients.add(Double.parseDouble(object.getString("Sodium")));
                         callback.onParsed(nutrients);
                     } catch (JSONException e) {
                         e.printStackTrace();
                         Log.d("debug", "Failed to load Json File due to " + e.getMessage());
-                        callback.onParsed(null);
                     }
                 } else {
                     Log.d("debug", "Failed to load response due to " + response.body().toString());

@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
 import com.example.smarthealth.R;
 import com.example.smarthealth.activities.LoginActivity;
 import com.example.smarthealth.activities.RegisterActivity;
@@ -130,9 +132,13 @@ public class DatabaseNutrientIntakeProvider implements NutrientIntakeProvider {
 
         call.enqueue(new Callback<List<NutrientIntakeDto>>() {
             @Override
-            public void onResponse(Call<List<NutrientIntakeDto>> call, Response<List<NutrientIntakeDto>> response) {
-                callback.onIntakeUpdate(true);
-                Log.d("debug", "we updated guys!!!");
+            public void onResponse(@NonNull Call<List<NutrientIntakeDto>> call, @NonNull Response<List<NutrientIntakeDto>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    callback.onIntakeUpdate(true);
+                    Log.d("debug", "we updated guys!!!");
+                } else {
+                    Log.d("debug", "We die according to tristan");
+                }
             }
             @Override
             public void onFailure(Call<List<NutrientIntakeDto>> call, Throwable t) {
