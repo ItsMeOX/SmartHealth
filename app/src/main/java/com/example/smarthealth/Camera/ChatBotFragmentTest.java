@@ -1,7 +1,6 @@
-package com.example.smarthealth.chatbot;
+package com.example.smarthealth.Camera;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +15,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.smarthealth.R;
+import com.example.smarthealth.chatbot.ChatBot;
+import com.example.smarthealth.chatbot.Message;
+import com.example.smarthealth.chatbot.MessageAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,7 +35,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class ChatBotFragment extends Fragment {
+public class ChatBotFragmentTest extends Fragment {
     RecyclerView recyclerView;
     TextView welcomeTextView;
     EditText messageEditText;
@@ -132,8 +134,6 @@ public class ChatBotFragment extends Fragment {
                     try {
                         // Parse the JSON response
                         jsonObject = new JSONObject(response.body().string());
-
-                        Log.d("Response", jsonObject.toString());
 
                         // Get the "choices" array
                         JSONArray choicesArray = jsonObject.getJSONArray("choices");

@@ -12,7 +12,7 @@ import okhttp3.OkHttpClient;
 
 public class ChatBot {
     private static final String API_URL = "https://api.openai.com/v1/chat/completions";
-    private static final String API_Key = "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";
+    private static final String API_Key = "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";
 
     private static final MediaType JSON = MediaType.parse("application/json");
     private final OkHttpClient client = new OkHttpClient();;
@@ -52,13 +52,6 @@ public class ChatBot {
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
-    }
-
-
-    // Define a custom callback interface
-    public interface CustomCallback {
-        void onResponseReceived(String response);
-        void onFailureReceived(String errorMessage);
     }
 
 
