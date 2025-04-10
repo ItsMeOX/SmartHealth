@@ -16,6 +16,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.smarthealth.R;
+import com.example.smarthealth.chatbot.messages.BotMessage;
+import com.example.smarthealth.chatbot.messages.Message_API;
+import com.example.smarthealth.chatbot.messages.UserMessage;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -109,7 +112,8 @@ public class ChatBotFragment extends Fragment {
         //okhttp
 
         messageList.add(new Message("Typing...", Message.SENT_BY_BOT));
-        chatBot.addMessage("user", question);
+        Message_API userMessage = new UserMessage(question);
+        chatBot.addMessage(userMessage);
 
         JSONObject Jsonprompt = chatBot.getPrompt();
         RequestBody body = RequestBody.create(Jsonprompt.toString(), JSON);
@@ -144,7 +148,8 @@ public class ChatBotFragment extends Fragment {
                                 .getString("content");
 
                         // Trim the result if needed and add it to the conversation history
-                        chatBot.addMessage("assistant", result.trim());
+                        Message_API botMessage = new BotMessage(result.trim());
+                        chatBot.addMessage(botMessage);
 
                         // Optionally, you can also update the UI or perform other actions with the result
                         addResponse(result.trim());
