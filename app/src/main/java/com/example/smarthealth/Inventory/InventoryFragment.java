@@ -2,7 +2,6 @@ package com.example.smarthealth.Inventory;
 
 import static android.content.Context.MODE_PRIVATE;
 
-import static com.example.smarthealth.chatbot.ChatBotFragment.JSON;
 
 import android.app.Activity;
 import android.content.ContentValues;
@@ -57,6 +56,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -82,9 +82,11 @@ public class InventoryFragment extends Fragment {
     private long userId;
     private Bundle res;
     private Uri camUri;
+
     private final ActivityResultLauncher<Intent> cameraLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
 
         OkHttpClient client = new OkHttpClient();
+        public final MediaType JSON = MediaType.get("application/json");
 
         @Override
         public void onActivityResult(ActivityResult result) {

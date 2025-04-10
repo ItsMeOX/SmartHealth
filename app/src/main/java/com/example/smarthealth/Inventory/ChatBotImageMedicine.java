@@ -33,7 +33,7 @@ public class ChatBotImageMedicine {
             "7. **Contains**\n" +
             "   - List the main chemical ingredients present in the medicine.\n" +
             "8. **Side Effects**\n" +
-            "   - Identify potential adverse effects, if mentioned.\n\n" +
+            "   - Identify potential adverse effects, if mentioned. If none are mentioned, indicate with \"N/A\" \n\n" +
             "If any information is unavailable, search on the website like \"Medicine Information: name of the medicine\" to find the details.\n" +
             "If you still cannot find the value, return a value based on the average information of similar medicines.\n\n" +
             "Format the response strictly in JSON, ensuring keys are in lowercase and use underscores. Example response:\n" +

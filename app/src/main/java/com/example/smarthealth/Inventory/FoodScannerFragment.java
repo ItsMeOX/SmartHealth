@@ -1,7 +1,6 @@
 package com.example.smarthealth.Inventory;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.example.smarthealth.chatbot.ChatBotFragment.JSON;
 
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -40,6 +39,7 @@ import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -50,7 +50,10 @@ public class FoodScannerFragment extends DialogFragment {
     private ImageView foodImage;
     private long userId;
     private SharedPreferences sharedPreferences;
+
+    public static final MediaType JSON = MediaType.get("application/json");
     OkHttpClient client = new OkHttpClient();
+
     @Override
     @Nullable
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
