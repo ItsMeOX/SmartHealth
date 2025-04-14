@@ -96,11 +96,15 @@ Introducing **Smart Health** – your personal health companion that tracks, adv
       </div>
     </td>
     <td>
+      <div align="center">
+            <img src="docs/user.png" alt="User Details Page" width="300"/>
+            <p>User Details Page</p>
+        </div>
     </td>
     <td>
         <div align="center">
-            <img src="docs/user.png" alt="User Details Page" width="300"/>
-            <p>User Details Page</p>
+            <img src="docs/edit_profile.png" alt="User Details Page" width="300"/>
+            <p>Edit Profile Page</p>
         </div>
     </td>
   </tr>
