@@ -110,17 +110,17 @@ Introducing **Smart Health** – your personal health companion that tracks, adv
   </tr>
 </table>
 
-## See Also
+## 🔗 See Also
 
 Smart Health Backend Server - https://github.com/TristanNguyen04/SmartHealth-backend
 
-## Acknowledgements
+## 🤝 Acknowledgements
 
-### External API Usages:
+### 🌐 External API Usages
 - OpenAI API (BobSeek Implementation; Food & Medicine Image Processing) - https://openai.com/index/openai-api/
 - Google Maps Places API - https://developers.google.com/maps/documentation/places/web-service/overview
 
-### Project Developers
+### 👨‍💻 Project Developers
 
 Team 21
 
@@ -133,6 +133,6 @@ Team 21
 | Thng Aik Kiat  	    | 1007781        |
 | G K Dharesan       	| 1007885        |
 
-### Epilogue
+### 📜 Epilogue
 
 This project is an undertaking of 50.001 Information Systems and Programming (2025 Spring) offered by **Singapore University of Technology and Design (SUTD)**, , in collaboration with **Singapore Telecommunications Limited (Singtel)**.
