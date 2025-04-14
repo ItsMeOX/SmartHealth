@@ -103,7 +103,7 @@ Introducing **Smart Health** – your personal health companion that tracks, adv
     </td>
     <td>
         <div align="center">
-            <img src="docs/edit_profile.png" alt="User Details Page" width="300"/>
+            <img src="docs/edit_profile.png" alt="Edit Profile Page" width="300"/>
             <p>Edit Profile Page</p>
         </div>
     </td>
