@@ -122,7 +122,7 @@ Smart Health Backend Server - https://github.com/TristanNguyen04/SmartHealth-bac
 
 ### 👨‍💻 Project Developers
 
-Team 21
+**Team 21**
 
 | Member                | Student Number |
 |-----------------------|----------------|
