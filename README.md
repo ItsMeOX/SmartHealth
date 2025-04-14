@@ -2,7 +2,7 @@
 
 <div align="center">
   <div>
-    <img src="https://img.shields.io/badge/-Android Studio-black?style=for-the-badge&logoColor=white&logo=android&color=3CC10E" alt="Android Studio" />
+    <img src="https://img.shields.io/badge/Android%20Studio-3DDC84?style=flat&logo=android-studio&logoColor=white" alt="Android Studio" />
     <img src="https://img.shields.io/badge/OpenAI-%23412991?logo=openai&logoColor=white" alt="openAI" />
     <img src="https://img.shields.io/badge/Google-4285F4?logo=google&logoColor=white" alt="Google Places" />
   </div>
