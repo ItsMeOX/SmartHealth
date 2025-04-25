@@ -113,6 +113,8 @@ Introducing **Smart Health** – your personal health companion that tracks, adv
 ## 🔗 See Also
 
 Smart Health Backend Server - https://github.com/TristanNguyen04/SmartHealth-backend
+Smart Health Video Demo - [https://www.canva.com/design/DAGkjawcVMA/miehsj0nFXkSHsETK0HHbQ/watch?utm_content=DAGkjawcVMA&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=ha57208dc30]
+Smart Health Poster - [https://www.canva.com/design/DAGkrgTKdWU/drjn3jDgymktyfC_Tkqeag/view?utm_content=DAGkrgTKdWU&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=hb156acb077] 
 
 ## 🤝 Acknowledgements
 
