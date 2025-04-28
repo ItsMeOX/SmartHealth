@@ -82,7 +82,6 @@ abstract class MapExploration {
             httpUrlConnection.setRequestProperty("Content-Type", "application/json");
             if (bhasFieldMask)
             {
-                //"places.displayName,places.formattedAddress,places.location"
                 httpUrlConnection.setRequestProperty("X-Goog-FieldMask", fieldMask);
             }
             httpUrlConnection.setDoOutput(true); // Allow writing to the connection
@@ -104,7 +103,7 @@ abstract class MapExploration {
 
             data = stringBuffer.toString();
             // Log the response for debugging
-            Log.d("API Response", data);
+            Log.d("debug", "API response" + data);
 
             bufferedReader.close();
         } catch (IOException e) {
@@ -119,7 +118,6 @@ abstract class MapExploration {
         }
 
         googlePlaceData = data;
-        Log.d("googleplacedata",googlePlaceData);
     }
 
     private void parseDetails() throws JSONException {
