@@ -17,13 +17,13 @@ public class MedicineButton {
     public String medicineName;
     public String medicineCategory;
     public int medicineAmount;
-    public Drawable medicineImage;
+    public String medicineImage;
     public String medicineDosage;
     public String medicineContains;
     public String medicineSideEffect;
     public ArrayList<String> medicineType;
 
-    MedicineButton(Long medicineId, String medicineName, String medicineCategory, int medicineAmount, Drawable medicineImage,
+    MedicineButton(Long medicineId, String medicineName, String medicineCategory, int medicineAmount, String medicineImage,
                    String medicineDosage, String medicineContains, String medicineSideEffect, ArrayList<String> medicineType) {
         this.medicineId = medicineId;
         this.medicineName = medicineName;
@@ -58,7 +58,7 @@ public class MedicineButton {
         return medicineAmount;
     }
 
-    public Drawable getMedicineImage() {
+    public String getMedicineImage() {
         return medicineImage;
     }
 

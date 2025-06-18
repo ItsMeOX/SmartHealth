@@ -329,13 +329,14 @@ public class InventoryFragment extends Fragment {
                     liquidsContainers.clear();
                     othersContainers.clear();
                     for(MedicineDto medicine : response.body()){
-                        Drawable imageDrawable = byteArrayToDrawable(medicine.getMedicineImage());
+//                        String imageDrawable = byteArrayToDrawable(medicine.getMedicineImage());
+                        String image = medicine.getMedicineImage();
                         addMedicineToLayout(
                                 medicine.getId(),
                                 medicine.getMedicineName(),
                                 medicine.getMedicineCategory(),
                                 medicine.getMedicineAmount(),
-                                imageDrawable,
+                                image,
                                 medicine.getMedicineDosage(),
                                 medicine.getMedicineContains(),
                                 medicine.getMedicineSideEffect(),
@@ -363,7 +364,7 @@ public class InventoryFragment extends Fragment {
     }
 
     private void addMedicineToLayout(Long medicineId, String mediName, String category, int mediAmount,
-                                     Drawable mediImage, String mediDosage, String mediContains,
+                                     String mediImage, String mediDosage, String mediContains,
                                      String mediSideEffect, ArrayList<String> type) {
         ArrayList<MedicineButton> containerList = new ArrayList<>();
         MedicineAdapter adapter = null;

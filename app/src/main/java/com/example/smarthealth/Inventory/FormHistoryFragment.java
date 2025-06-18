@@ -34,17 +34,22 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
+import com.bumptech.glide.Glide;
 import com.example.smarthealth.R;
 import com.example.smarthealth.api_service.MedicineDto;
 import com.example.smarthealth.api_service.MedicineService;
 import com.example.smarthealth.api_service.RetrofitClient;
 import com.google.android.material.button.MaterialButton;
+import com.google.gson.Gson;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -102,7 +107,7 @@ public class FormHistoryFragment extends DialogFragment {
                                 medicineDto.getMedicineName(),
                                 medicineDto.getMedicineCategory(),
                                 medicineDto.getMedicineAmount(),
-                                byteArrayToDrawable(medicineDto.getMedicineImage()),
+                                medicineDto.getMedicineImage(),
                                 medicineDto.getMedicineDosage(),
                                 medicineDto.getMedicineContains(),
                                 medicineDto.getMedicineSideEffect(),
@@ -157,7 +162,13 @@ public class FormHistoryFragment extends DialogFragment {
                 String category = selectedMedicine.getMedicineCategory();
                 ArrayList<String> tags = selectedMedicine.getMedicineType();
 
-                image.setImageDrawable(selectedMedicine.getMedicineImage());
+                String imageUrl = selectedMedicine.getMedicineImage();
+
+                Log.d("DEBUG", "Selected medicine image URL: " + imageUrl);
+
+                Glide.with(view.getContext()) // use `getContext()` or activity/fragment context
+                        .load(imageUrl)
+                        .into(image);
                 name.setText(selectedMedicine.getMedicineName());
                 dosage.setText(selectedMedicine.getMedicineDosage());
                 contain.setText(selectedMedicine.getMedicineContains());
@@ -208,28 +219,46 @@ public class FormHistoryFragment extends DialogFragment {
                                     mediName,
                                     mediAmount,
                                     category,
-                                    imageData,
+                                    null,
                                     mediDosage,
                                     mediContains,
                                     String.join(",",tagList),
                                     mediSideEffect
                             );
 
-                            Call<MedicineDto> call = medicineService.createMedicine(userId, medicineDto);
+                            Gson gson = new Gson();
+                            String json = gson.toJson(medicineDto);
 
+                            okhttp3.RequestBody medicineDtoBody = okhttp3.RequestBody.create(
+                                    json,
+                                    MediaType.parse("application/json")
+                            );
+
+                            MultipartBody.Part imagePart = null;
+                            if (imageData != null) {
+                                okhttp3.RequestBody requestFile = okhttp3.RequestBody.create(
+                                        imageData,
+                                        MediaType.parse("image/*")
+                                );
+                                String fileName = UUID.randomUUID().toString() + ".jpg";
+                                imagePart = MultipartBody.Part.createFormData("imageFile", fileName, requestFile);
+                            }
+
+                            Call<MedicineDto> call = medicineService.createMedicine(userId, medicineDtoBody, imagePart);
                             call.enqueue(new Callback<MedicineDto>() {
                                 @Override
                                 public void onResponse(Call<MedicineDto> call, Response<MedicineDto> response) {
                                     if(response.isSuccessful() && response.body() != null){
-                                        Log.d("debug", "Add Medicine Successfully at History!");
+                                        Log.d("debug", "Add Medicine Successfully!");
                                     }
                                 }
 
                                 @Override
                                 public void onFailure(Call<MedicineDto> call, Throwable t) {
-                                    Log.d("debug", "Error" + t.getMessage());
+                                    Log.d("debug", "Network Error! " + t.getMessage());
                                 }
                             });
+
                             dismiss();
                         }
                     }

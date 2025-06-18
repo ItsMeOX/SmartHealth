@@ -51,10 +51,15 @@ import com.example.smarthealth.R;
 import com.example.smarthealth.api_service.MedicineDto;
 import com.example.smarthealth.api_service.MedicineService;
 import com.example.smarthealth.api_service.RetrofitClient;
+import com.google.gson.Gson;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.UUID;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -300,30 +305,46 @@ public class FormPageFragment extends DialogFragment {
                             mediName,
                             mediAmount,
                             type,
-                            imageData,
+                            null,
                             mediDosage,
                             mediContains,
                             String.join(",",tagList),
                             mediSideEffect
                     );
 
-                    Call<MedicineDto> call = medicineService.createMedicine(userId, medicineDto);
+                    Gson gson = new Gson();
+                    String json = gson.toJson(medicineDto);
 
+                    okhttp3.RequestBody medicineDtoBody = okhttp3.RequestBody.create(
+                            json,
+                            MediaType.parse("application/json")
+                    );
+
+                    MultipartBody.Part imagePart = null;
+                    if (imageData != null) {
+                        okhttp3.RequestBody requestFile = okhttp3.RequestBody.create(
+                                imageData,
+                                MediaType.parse("image/*")
+                        );
+                        String fileName = UUID.randomUUID().toString() + ".jpg";
+                        imagePart = MultipartBody.Part.createFormData("imageFile", fileName, requestFile);
+                    }
+
+                    Call<MedicineDto> call = medicineService.createMedicine(userId, medicineDtoBody, imagePart);
                     call.enqueue(new Callback<MedicineDto>() {
                         @Override
                         public void onResponse(Call<MedicineDto> call, Response<MedicineDto> response) {
-                            Log.d("debug", "calling this one");
                             if(response.isSuccessful() && response.body() != null){
-//                                Toast.makeText(getContext(), "Add Medicine Successfully!", Toast.LENGTH_SHORT).show();
                                 Log.d("debug", "Add Medicine Successfully!");
                             }
                         }
 
                         @Override
                         public void onFailure(Call<MedicineDto> call, Throwable t) {
-                            Log.d("debug", "Network Error!" + t.getMessage());
+                            Log.d("debug", "Network Error! " + t.getMessage());
                         }
                     });
+
                     dismiss();
                 }
             };

@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.bumptech.glide.Glide;
 import com.example.smarthealth.R;
 
 import java.util.ArrayList;
@@ -50,7 +51,12 @@ public class MedicineSearchBarAdapter extends ArrayAdapter<MedicineButton> {
         ImageView medicineImage = convertView.findViewById(R.id.imageHistory);
         TextView medicineName = convertView.findViewById(R.id.nameHistory);
 
-        medicineImage.setImageDrawable(medicine.getMedicineImage());
+        String imageUrl = medicine.getMedicineImage();
+
+        Glide.with(convertView.getContext())
+                .load(imageUrl)
+                .into(medicineImage);
+//        medicineImage.setImageDrawable(medicine.getMedicineImage());
         medicineName.setText(medicine.getMedicineName());
 
         return convertView;

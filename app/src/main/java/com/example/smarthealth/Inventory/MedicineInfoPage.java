@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.FragmentManager;
 
+import com.bumptech.glide.Glide;
 import com.example.smarthealth.R;
 
 import java.util.ArrayList;
@@ -35,7 +36,12 @@ public class MedicineInfoPage {
         mediDosage.setText(model.getMedicineDosage());
         mediContain.setText(model.getMedicineContains());
         mediSideEffect.setText(model.getMedicineSideEffect());
-        mediImage.setImageDrawable(model.getMedicineImage());
+
+        String imageUrl = model.getMedicineImage();
+        Glide.with(context)
+                .load(imageUrl)
+                .into(mediImage);
+//        mediImage.setImageDrawable(model.getMedicineImage());
         mediName.setText(model.getMedicineName().trim());
         if(model.getMedicineCategory().equals("Liquids")){
             String s = String.format(Integer.toString(model.getMedicineAmount()) + " ml");

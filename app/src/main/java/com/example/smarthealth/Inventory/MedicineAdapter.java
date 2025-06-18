@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.smarthealth.R;
 
 import java.util.ArrayList;
@@ -46,7 +47,12 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.ViewHo
         MedicineButton model = medicineSubList.get(position);
 
         // Set the button's data (name, description, etc.)
-        holder.medicineImage.setImageDrawable(model.getMedicineImage());
+        String imageUrl = model.getMedicineImage();
+
+        Glide.with(holder.itemView.getContext())
+                .load(imageUrl)
+                .into(holder.medicineImage);
+//        holder.medicineImage.setImageDrawable(model.getMedicineImage());
         holder.medicineName.setText(model.getMedicineName());
         holder.medicineTag.setText(model.getMedicineType().get(0));
         holder.medicineAmount.setText(String.valueOf(model.getMedicineAmount()));

@@ -7,8 +7,8 @@ public class MedicineDto {
     private String medicineName;
     private String medicineCategory;
     private int medicineAmount;
-    @JsonAdapter(ByteArrayDeserializer.class)
-    private byte[] medicineImage;
+//    @JsonAdapter(ByteArrayDeserializer.class)
+    private String medicineImage;
     private String medicineDosage;
     private String medicineContains;
     private String medicineSideEffect;
@@ -16,7 +16,7 @@ public class MedicineDto {
     private Long userId;
 
     public MedicineDto(String medicineName, int medicineAmount, String medicineCategory,
-                       byte[] medicineImage, String medicineDosage, String medicineContains,
+                       String medicineImage, String medicineDosage, String medicineContains,
                        String medicineType, String medicineSideEffect) {
         this.medicineName = medicineName;
         this.medicineAmount = medicineAmount;
@@ -68,11 +68,11 @@ public class MedicineDto {
         this.medicineDosage = medicineDosage;
     }
 
-    public byte[] getMedicineImage() {
+    public String getMedicineImage() {
         return medicineImage;
     }
 
-    public void setMedicineImage(byte[] medicineImage) {
+    public void setMedicineImage(String medicineImage) {
         this.medicineImage = medicineImage;
     }
 

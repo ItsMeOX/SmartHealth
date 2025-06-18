@@ -17,7 +17,7 @@ import okhttp3.OkHttpClient;
 
 public class ChatBot {
     private static final String API_URL = "https://api.openai.com/v1/chat/completions";
-    private static final String API_Key = "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";
+    private static final String API_Key = "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";
 
     private static final MediaType JSON = MediaType.parse("application/json");
     private final OkHttpClient client = new OkHttpClient();;
