@@ -9,7 +9,7 @@ import okhttp3.OkHttpClient;
 
 public class ChatBotImageMedicine {
     private static final String API_URL = "https://api.openai.com/v1/responses";
-    private static final String API_Key = "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";
+    private static final String API_Key = "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";
 
     private final JSONObject response_schema = MedicineSchemaJSON.getResponseSchema();
 
